@@ -4,12 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, ArrowLeft, CheckCircle2, ShieldAlert, LogIn, LogOut, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-// ফায়ারবেস সঠিক রিলেটিভ পাথ দিয়ে ইমপোর্ট করা হলো
 import { auth } from '../firebase'; 
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 export default function AdminPage() {
-  // 🔐 আপনার ফায়ারবেস ইমেইলটি এখানে দেওয়া আছে যা দিয়ে অ্যাডমিন এক্সেস দেওয়া হবে
   const ADMIN_EMAILS = ["iamhasib121@gmail.com"];
 
   const [user, setUser] = useState<any>(null);
@@ -44,7 +42,6 @@ export default function AdminPage() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  // ফায়ারবেস অথ স্টেট ট্র্যাক করা
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser && ADMIN_EMAILS.includes(currentUser.email || "")) {
@@ -61,7 +58,6 @@ export default function AdminPage() {
     return () => unsubscribe();
   }, []);
 
-  // ফায়ারবেস দিয়ে লগইন হ্যান্ডেল করা
   const handleFirebaseLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
