@@ -1,7 +1,8 @@
+
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, User, Search, Star, ArrowRight, ShieldCheck, Truck, Headphones, RotateCcw } from 'lucide-react';
+import { ShoppingCart, Heart, User, Search, Star, MessageCircle, ShieldCheck, Truck, Headphones, RotateCcw } from 'lucide-react';
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All Products');
@@ -26,12 +27,19 @@ export default function Home() {
     { id: 8, name: "Party Tulle Frock", category: "Kids' Wear (কিডস ওয়্যার)", price: "Tk 1,300", rating: 4.5, image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=500&auto=format&fit=crop" },
     { id: 9, name: "Cute Plush Teddy Toy", category: "Kids' Wear (কিডস ওয়্যার)", price: "Tk 550", rating: 4.7, image: "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?q=80&w=500&auto=format&fit=crop" },
     { id: 10, name: "Padded Winter Jacket", category: "Winter Jacket (উইন্টার জ্যাকেট)", price: "Tk 3,200", rating: 4.9, image: "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=500&auto=format&fit=crop" },
-    { id: 11, name: "Fleece Pullover Hoodie", category: "Winter Jacket (উইন্টার জ্যাケット)", price: "Tk 1,600", rating: 4.6, image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=500&auto=format&fit=crop" },
+    { id: 11, name: "Fleece Pullover Hoodie", category: "Winter Jacket (উইন্টার জ্যাকেট)", price: "Tk 1,600", rating: 4.6, image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=500&auto=format&fit=crop" },
     { id: 12, name: "Cable Knit Woolen Sweater", category: "Winter Jacket (উইন্টার জ্যাকেট)", price: "Tk 1,400", rating: 4.4, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=500&auto=format&fit=crop" },
     { id: 13, name: "Kacchi Mutton Biryani", category: "Food (ফুড)", price: "Tk 320", rating: 4.9, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=500&auto=format&fit=crop" },
     { id: 14, name: "Assorted Snacks Box", category: "Food (ফুড)", price: "Tk 250", rating: 4.7, image: "https://images.unsplash.com/photo-1599487484170-7c1e604581ed?q=80&w=500&auto=format&fit=crop" },
     { id: 15, name: "Traditional Misti Box", category: "Food (ফুড)", price: "Tk 400", rating: 4.8, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=500&auto=format&fit=crop" },
   ];
+
+  // হোয়াটসঅ্যাপ অর্ডার ফাংশন (আপনার এবং আপনার বন্ধুর নম্বর)
+  const handleWhatsAppOrder = (product, targetNumber) => {
+    const message = `আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি অর্ডার করতে চাই:\n\n*প্রোডাক্ট:* ${product.name}\n*দাম:* ${product.price}\n\nদয়া করে অর্ডারটি কনফার্ম করুন।`;
+    const url = `https://wa.me/${targetNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
 
   const filteredProducts = activeCategory === 'All Products' 
     ? products 
@@ -54,7 +62,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Banner text */}
+      {/* Hero Banner */}
       <div className="text-center py-6 px-4 bg-[#421217] border-b border-white/10">
         <p className="text-xs text-gray-300 max-w-xl mx-auto">
           Crafted with care, delivered to your door. Artisan Bangladeshi products.
@@ -111,9 +119,28 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="p-3 pt-0 flex items-center justify-between mt-auto">
-                <span className="text-xs font-bold text-[#581c23]">{product.price}</span>
-                <button className="bg-[#581c23] text-white text-[10px] px-2.5 py-1.5 rounded hover:bg-[#4a151b] font-medium">Add to Cart</button>
+              
+              <div className="p-3 pt-0 flex flex-col gap-2 mt-auto">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#581c23]">{product.price}</span>
+                </div>
+                {/* WhatsApp Order Buttons (Number 1: 01303422278 & Number 2: 01879955594) */}
+                <div className="grid grid-cols-2 gap-1">
+                  <button 
+                    onClick={() => handleWhatsAppOrder(product, "8801303422278")}
+                    className="bg-[#25D366] text-white text-[10px] py-1.5 rounded font-medium hover:bg-[#20ba5a] flex items-center justify-center gap-1"
+                    title="Order via WhatsApp 1"
+                  >
+                    <MessageCircle size={12} /> Order 1
+                  </button>
+                  <button 
+                    onClick={() => handleWhatsAppOrder(product, "8801879955594")}
+                    className="bg-[#128C7E] text-white text-[10px] py-1.5 rounded font-medium hover:bg-[#0f756b] flex items-center justify-center gap-1"
+                    title="Order via WhatsApp 2"
+                  >
+                    <MessageCircle size={12} /> Order 2
+                  </button>
+                </div>
               </div>
             </div>
           ))}
