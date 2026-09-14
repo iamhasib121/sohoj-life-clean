@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { db } from "@/app/firebase"; // আপনার ফায়ারবেস পাথ ঠিক রাখবেন
+import { db } from "@/app/firebase";
 import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import Link from "next/link";
 
@@ -11,6 +11,10 @@ export default function HomeStore() {
   const [cart, setCart] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Product Details Modal State
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   // Checkout Form States
   const [customerName, setCustomerName] = useState("");
@@ -19,8 +23,20 @@ export default function HomeStore() {
   const [orderSubmitting, setOrderSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
+  // Hero Slider Banner Index
+  const [currentBanner, setCurrentBanner] = useState(0);
+  const banners = [
+    { title: "Curated for Every Occasion", subtitle: "খাঁটি মানসম্মত লাইফস্টাইল এবং প্রিমিয়াম কালেকশন।" },
+    { title: "Exclusive Fashion & Lifestyle", subtitle: "আপনার দৈনন্দিন স্টাইলকে করুন আরও আকর্ষণীয়।" },
+    { title: "Sohoj Life Express Delivery", subtitle: "দ্রুততম সময়ে আপনার দোরগোড়ায় পণ্য পৌঁছে দিচ্ছি।" }
+  ];
+
   useEffect(() => {
     fetchStoreProducts();
+    const bannerInterval = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(bannerInterval);
   }, []);
 
   const fetchStoreProducts = async () => {
@@ -36,7 +52,8 @@ export default function HomeStore() {
   };
 
   // Add to Cart
-  const addToCart = (product: any) => {
+  const addToCart = (product: any, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     const existing = cart.find(item => item.id === product.id);
     if (existing) {
       setCart(cart.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item));
@@ -54,7 +71,7 @@ export default function HomeStore() {
   // Total Calculation
   const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
-  // Handle Order Submit
+  // Handle Order Submit (COD)
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) {
@@ -89,9 +106,20 @@ export default function HomeStore() {
     }
   };
 
-  const filteredProducts = selectedCategory === "All" 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+  // WhatsApp Quick Order
+  const handleWhatsAppOrder = (product: any, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const phoneNumber = "8801700000000"; // আপনার WhatsApp নম্বর এখানে বসাতে পারেন
+    const message = encodeURIComponent(`Hello Sohoj Life, I want to order this product:\nName: ${product.name}\nPrice: ৳${product.price}\nImage: ${product.image}`);
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+  };
+
+  // Filtering & Searching Logic
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-[#22050d] text-white">
@@ -101,36 +129,53 @@ export default function HomeStore() {
           <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life</h1>
           <p className="text-xs text-amber-200/70">Elevate Your Style with Luxury Essentials</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link href="/admin" className="text-xs bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/30">
             Admin Portal
           </Link>
           <button 
             onClick={() => setIsCartOpen(true)} 
-            className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 relative transition"
+            className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 relative transition text-sm"
           >
             🛒 Cart ({cart.reduce((sum, item) => sum + item.qty, 0)})
           </button>
         </div>
       </header>
 
-      {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-[#4a0d1e] to-[#22050d] py-12 px-4 text-center border-b border-amber-900/30">
-        <h2 className="text-3xl md:text-5xl font-extrabold text-amber-400 mb-3">Curated for Every Occasion</h2>
-        <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base">খাঁটি মানসম্মত লাইফস্টাইল এবং প্রিমিয়াম কালেকশন এখন আপনার হাতের মুঠোয়।</p>
+      {/* Hero Slider Banner */}
+      <div className="bg-gradient-to-r from-[#4a0d1e] to-[#22050d] py-12 px-4 text-center border-b border-amber-900/30 transition-all duration-500">
+        <h2 className="text-2xl md:text-4xl font-extrabold text-amber-400 mb-2">{banners[currentBanner].title}</h2>
+        <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base">{banners[currentBanner].subtitle}</p>
+        <div className="flex justify-center gap-2 mt-4">
+          {banners.map((_, idx) => (
+            <span key={idx} className={`h-2 rounded-full transition-all duration-300 ${currentBanner === idx ? "w-6 bg-amber-400" : "w-2 bg-amber-900"}`} />
+          ))}
+        </div>
       </div>
 
-      {/* Category Filter Tabs */}
-      <div className="max-w-7xl mx-auto px-4 py-6 flex flex-wrap gap-2 justify-center">
-        {["All", "Men's Wear", "Women's Wear", "Kids' Wear", "Accessories"].map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${selectedCategory === cat ? "bg-amber-500 text-black" : "bg-[#330814] text-amber-200 border border-amber-900/40"}`}
-          >
-            {cat}
-          </button>
-        ))}
+      {/* Search and Category Filter Section */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-md mx-auto mb-6">
+          <input 
+            type="text" 
+            placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-3 rounded-xl bg-[#330814] border border-amber-600/40 text-white text-sm focus:outline-none focus:border-amber-400 shadow-inner"
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2 justify-center">
+          {["All", "Men's Wear", "Women's Wear", "Kids' Wear", "Accessories"].map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${selectedCategory === cat ? "bg-amber-500 text-black shadow-lg" : "bg-[#330814] text-amber-200 border border-amber-900/40 hover:border-amber-600"}`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Main Products Grid */}
@@ -138,27 +183,40 @@ export default function HomeStore() {
         {loading ? (
           <div className="text-center py-20 text-amber-300">প্রোডাক্ট লোড হচ্ছে...</div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">এই ক্যাটাগরিতে কোনো প্রোডাক্ট পাওয়া যায়নি। অ্যাডমিন প্যানেল থেকে প্রোডাক্ট যোগ করুন।</div>
+          <div className="text-center py-20 text-gray-400">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map((prod) => (
-              <div key={prod.id} className="bg-[#330814] rounded-xl overflow-hidden border border-amber-600/30 flex flex-col justify-between shadow-lg hover:border-amber-400 transition">
+              <div 
+                key={prod.id} 
+                onClick={() => setSelectedProduct(prod)}
+                className="bg-[#330814] rounded-xl overflow-hidden border border-amber-600/30 flex flex-col justify-between shadow-lg hover:border-amber-400 transition cursor-pointer group"
+              >
                 <div>
-                  <div className="h-48 overflow-hidden bg-black/40">
-                    <img src={prod.image} alt={prod.name} className="w-full h-full object-cover hover:scale-105 transition duration-300" />
+                  <div className="h-48 overflow-hidden bg-black/40 relative">
+                    <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                    <span className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-amber-300 text-xs px-2 py-1 rounded">
+                      Stock: {prod.stock || 10}
+                    </span>
                   </div>
                   <div className="p-4">
                     <span className="text-xs text-amber-400 bg-amber-950/60 px-2 py-1 rounded">{prod.category}</span>
-                    <h3 className="font-bold text-lg text-white mt-2">{prod.name}</h3>
+                    <h3 className="font-bold text-lg text-white mt-2 group-hover:text-amber-300 transition">{prod.name}</h3>
                     <p className="text-amber-200 font-semibold mt-1">৳{prod.price}</p>
                   </div>
                 </div>
-                <div className="p-4 pt-0">
+                <div className="p-4 pt-0 grid grid-cols-2 gap-2">
                   <button 
-                    onClick={() => addToCart(prod)} 
-                    className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg transition text-sm"
+                    onClick={(e) => addToCart(prod, e)} 
+                    className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg transition text-xs"
                   >
                     Add to Cart
+                  </button>
+                  <button 
+                    onClick={(e) => handleWhatsAppOrder(prod, e)} 
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition text-xs flex items-center justify-center gap-1"
+                  >
+                    💬 WhatsApp
                   </button>
                 </div>
               </div>
@@ -167,10 +225,48 @@ export default function HomeStore() {
         )}
       </main>
 
+      {/* PRODUCT DETAILS MODAL */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-[#330814] border border-amber-600/40 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl">
+            <button 
+              onClick={() => setSelectedProduct(null)} 
+              className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold bg-[#22050d] w-8 h-8 rounded-full flex items-center justify-center border border-amber-900/40"
+            >
+              ✕
+            </button>
+            <div className="flex flex-col md:flex-row gap-6">
+              <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full md:w-48 h-48 object-cover rounded-xl border border-amber-900/40" />
+              <div>
+                <span className="text-xs text-amber-400 bg-amber-950/60 px-2.5 py-1 rounded">{selectedProduct.category}</span>
+                <h2 className="text-xl font-bold text-white mt-2">{selectedProduct.name}</h2>
+                <p className="text-2xl font-extrabold text-amber-300 mt-1">৳{selectedProduct.price}</p>
+                <p className="text-sm text-gray-300 mt-2">স্টক স্ট্যাটাস: <span className="text-green-400 font-semibold">{selectedProduct.stock || 10} পিস এভেইলেবল</span></p>
+                <p className="text-xs text-gray-400 mt-3">খাঁটি ও প্রিমিয়াম মানের এই পণ্যটি Sohoj Life থেকে ক্যাশ অন ডেলিভারিতে অর্ডার করতে পারেন।</p>
+              </div>
+            </div>
+            <div className="mt-6 flex gap-3">
+              <button 
+                onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }} 
+                className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-xl text-sm transition"
+              >
+                Add to Cart
+              </button>
+              <button 
+                onClick={() => handleWhatsAppOrder(selectedProduct)} 
+                className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-3 rounded-xl text-sm transition"
+              >
+                Order via WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* SLIDE-OVER CART & CHECKOUT DRAWER */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-[#330814] h-full p-6 flex flex-col justify-between border-l border-amber-600/35 overflow-y-auto">
+          <div className="w-full max-w-md bg-[#330814] h-full p-6 flex flex-col justify-between border-l border-amber-600/35 overflow-y-auto shadow-2xl">
             <div>
               <div className="flex justify-between items-center mb-6 border-b border-amber-900/50 pb-4">
                 <h2 className="text-xl font-bold text-amber-400">Your Shopping Cart</h2>
