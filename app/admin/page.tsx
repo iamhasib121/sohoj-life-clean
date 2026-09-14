@@ -63,7 +63,8 @@ export default function AdminPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
-      setLoginError("লগইন ব্যর্থ হয়েছে! ইমেল বা পাসওয়ার্ড সঠিক নয়।");
+      console.error("Firebase Login Error:", error.code, error.message);
+      setLoginError(`লগইন ব্যর্থ: ${error.code}`);
     }
   };
 
@@ -128,7 +129,7 @@ export default function AdminPage() {
     return <div className="min-h-screen bg-[#2D060B] flex items-center justify-center text-[#D4AF37]">Loading...</div>;
   }
 
-  // ইউজার লগইন করা না থাকলে সুন্দর লগইন পেজ দেখাবে
+  // ইউজার লগইন করা না থাকলে লগইন পেজ দেখাবে
   if (!user) {
     return (
       <div className="min-h-screen bg-[#2D060B] flex items-center justify-center px-4 font-sans">
@@ -142,7 +143,7 @@ export default function AdminPage() {
           </div>
 
           {loginError && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs mb-4 text-center">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs mb-4 text-center break-words">
               {loginError}
             </div>
           )}
@@ -247,7 +248,7 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="blocktext-zinc-300 mb-1">Price (Number only, e.g. 1850)</label>
+              <label className="block text-zinc-300 mb-1">Price (Number only, e.g. 1850)</label>
               <input 
                 type="number" 
                 placeholder="1850" 
