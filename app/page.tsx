@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, Sparkles, ArrowRight, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck, Star } from 'lucide-react';
+import { ShoppingBag, Search, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck, Star } from 'lucide-react';
 import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
@@ -129,93 +129,99 @@ export default function StorePage() {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
   };
 
+  // Exact Logo Component replicating the reference screenshot
+  const Logo = () => (
+    <div className="flex items-center gap-2 bg-[#2D060B] border border-[#D4AF37]/50 px-3 py-1.5 rounded-lg shadow-md">
+      <div className="bg-[#D4AF37] text-black font-black px-2 py-0.5 rounded text-xs tracking-wider shadow">SL</div>
+      <div className="flex flex-col">
+        <span className="text-white font-black tracking-widest text-xs flex items-center gap-1">
+          Sohoj <span className="text-[#D4AF37]">Life</span>
+        </span>
+        <span className="text-[7px] text-[#D4AF37] tracking-[0.2em] font-bold">PREMIUM BRANDS</span>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#3F0C13] text-[#2D2D2D] font-sans selection:bg-[#D4AF37] selection:text-white">
       {/* Top Announcement Bar */}
-      <div className="bg-[#2D060B] text-[#D4AF37] py-2 px-4 text-center text-xs font-semibold tracking-wider border-b border-[#5C111C] flex items-center justify-center gap-2">
-        <Sparkles size={14} className="text-[#D4AF37]" /> <span>Free Express Shipping on Orders Over Tk 2,000</span>
+      <div className="bg-[#2D060B] text-[#D4AF37] py-1.5 px-4 text-center text-[11px] font-medium border-b border-[#5C111C]">
+        ✨ Free Express Shipping on Orders Over Tk 2,000
       </div>
 
-      {/* Navbar */}
-      <header className="sticky top-0 z-40 bg-[#3F0C13]/95 backdrop-blur-md border-b border-[#5C111C] shadow-lg">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#AA7C11] text-white flex items-center justify-center font-black text-lg shadow">
-              SL
-            </div>
-            <div>
-              <span className="text-lg font-bold tracking-tight text-white">Sohoj <span className="text-[#D4AF37]">Life</span></span>
-              <span className="block text-[9px] text-[#D4AF37] uppercase tracking-widest font-semibold">Premium Brand</span>
-            </div>
-          </div>
+      {/* Navbar with Exact Logo */}
+      <header className="sticky top-0 z-40 bg-[#3F0C13]/95 backdrop-blur-md border-b border-[#5C111C]">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
+          <Logo />
 
-          {/* Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-md relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+          <div className="hidden md:flex flex-1 max-w-sm relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" size={14} />
             <input 
               type="text" 
-              placeholder="Search products..." 
+              placeholder="Search products" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#2D060B] text-white placeholder-zinc-400 pl-11 pr-4 py-2.5 rounded-full border border-[#5C111C] focus:border-[#D4AF37] focus:outline-none text-xs transition shadow-inner"
+              className="w-full bg-[#2D060B] text-white placeholder-zinc-400 pl-10 pr-4 py-1.5 rounded-full border border-[#5C111C] focus:border-[#D4AF37] focus:outline-none text-xs transition"
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-xs text-white">
             <button 
               onClick={() => setIsCartOpen(true)}
-              className="relative bg-[#2D060B] hover:bg-[#5C111C] text-white px-4.5 py-2.5 rounded-full border border-[#5C111C] flex items-center gap-2 transition text-xs font-bold shadow"
+              className="flex items-center gap-1.5 bg-[#2D060B] hover:bg-[#5C111C] px-3 py-1.5 rounded-full border border-[#5C111C] transition font-semibold"
             >
-              <ShoppingBag size={16} className="text-[#D4AF37]" />
-              <span className="text-white">Cart</span>
-              {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#D4AF37] text-black text-[10px] w-4.5 h-4.5 rounded-full flex items-center justify-center font-bold">
-                  {cart.reduce((sum, item) => sum + item.quantity, 0)}
-                </span>
-              )}
+              <ShoppingBag size={14} className="text-[#D4AF37]" /> Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
             </button>
             <Link 
               href="/admin" 
-              className="bg-[#D4AF37] hover:bg-[#c29d30] text-black px-4.5 py-2.5 rounded-full text-xs font-bold tracking-wide transition shadow flex items-center gap-1.5"
+              className="bg-[#D4AF37] hover:bg-[#c29d30] text-black px-3 py-1.5 rounded-full font-bold transition flex items-center gap-1 shadow"
             >
-              <ShieldCheck size={14} /> Admin
+              <ShieldCheck size={12} /> Admin
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero Banner */}
-      <main className="max-w-7xl mx-auto px-6 py-10">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#2D060B] to-[#4F101A] border border-[#5C111C] p-10 md:p-14 mb-12 shadow-2xl text-center flex flex-col items-center justify-center">
-          <span className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase mb-2">Curated for Every Occasion</span>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
-            Elevate Your Style <br /><span className="text-[#D4AF37]">With Luxury Essentials</span>
-          </h1>
-          <p className="text-zinc-300 text-xs md:text-sm max-w-md mb-8 leading-relaxed">
-            Discover our exclusive curated collection of premium traditional wear, executive winter outfits, and elite lifestyle products.
-          </p>
+      {/* Hero Banner Section */}
+      <main className="max-w-6xl mx-auto px-4 py-6">
+        <div className="text-center text-zinc-300 text-[11px] mb-4">
+          crafted with care, delivered to your door across bangladesh.
+        </div>
+
+        <div className="flex justify-center items-center gap-3 mb-8">
           <button 
             onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-[#D4AF37] hover:bg-[#c29d30] text-black px-7 py-3 rounded-full font-bold text-xs tracking-wider transition shadow-lg flex items-center gap-2"
+            className="bg-[#D4AF37] hover:bg-[#c29d30] text-black px-5 py-2 rounded-full text-xs font-bold shadow transition"
           >
-            Explore Collection <ArrowRight size={16} />
+            Shop Now →
+          </button>
+          <button 
+            onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
+            className="border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-5 py-2 rounded-full text-xs font-bold transition"
+          >
+            Explore Categories
           </button>
         </div>
 
-        {/* Categories Section */}
+        <div className="flex justify-center items-center gap-6 text-[11px] text-zinc-300 font-medium mb-12">
+          <span>✨ New Arrivals Weekly</span>
+          <span>⭐ Handpicked Quality</span>
+          <span>🔄 7-Day Easy Return</span>
+        </div>
+
+        {/* Shop By Category Section */}
         <div id="shop" className="text-center mb-8">
-          <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">Shop By Category</span>
-          <h2 className="text-xl md:text-2xl font-black text-white mt-1 mb-6">Curated for Every Occasion</h2>
+          <span className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest block mb-1">SHOP BY CATEGORY</span>
+          <h2 className="text-xl font-black text-white mb-6">Curated for Every Occasion</h2>
           
-          <div className="flex items-center justify-center gap-2 overflow-x-auto pb-4 no-scrollbar flex-wrap">
+          <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 flex-wrap">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition shadow-sm ${
+                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition ${
                   selectedCategory === cat 
-                    ? 'bg-[#D4AF37] text-black shadow-md' 
+                    ? 'bg-[#D4AF37] text-black shadow' 
                     : 'bg-[#2D060B] hover:bg-[#5C111C] text-zinc-300 border border-[#5C111C]'
                 }`}
               >
@@ -224,11 +230,12 @@ export default function StorePage() {
             ))}
           </div>
 
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-between items-center mt-6 px-2 text-xs text-zinc-300">
+            <span>Showing {filteredProducts.length} products</span>
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-[#2D060B] text-zinc-300 px-4 py-2 rounded-full border border-[#5C111C] text-xs font-semibold focus:outline-none"
+              className="bg-[#2D060B] text-zinc-300 px-3 py-1.5 rounded-full border border-[#5C111C] text-xs focus:outline-none"
             >
               <option value="featured">Sort: Featured</option>
               <option value="low-high">Price: Low to High</option>
@@ -237,46 +244,46 @@ export default function StorePage() {
           </div>
         </div>
 
-        {/* Product Grid (White Cards Style matching reference) */}
+        {/* Product Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="bg-white rounded-2xl h-80 animate-pulse"></div>
+              <div key={n} className="bg-white rounded-xl h-64 animate-pulse"></div>
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20 bg-[#2D060B] rounded-2xl border border-[#5C111C]">
+          <div className="text-center py-16 bg-[#2D060B] rounded-xl border border-[#5C111C]">
             <p className="text-zinc-400 text-xs">No items found.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
               <div 
                 key={product.id}
-                className="group bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-md hover:shadow-xl transition flex flex-col justify-between"
+                className="bg-white rounded-xl border border-zinc-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
               >
                 <div>
                   <div className="relative aspect-[4/5] bg-zinc-100 overflow-hidden">
                     <img 
                       src={product.image} 
                       alt={product.name} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="p-4 text-center">
-                    <h3 className="font-bold text-zinc-900 text-xs line-clamp-1 mb-1">{product.name}</h3>
+                  <div className="p-3 text-center">
+                    <h3 className="font-bold text-zinc-800 text-xs line-clamp-1 mb-1">{product.name}</h3>
                     <div className="flex items-center justify-center gap-1 text-amber-500 text-[10px] mb-1">
-                      <Star size={12} fill="currentColor" /> <span>4.9</span>
+                      <Star size={10} fill="currentColor" /> <span>4.9</span>
                     </div>
-                    <p className="text-sm font-black text-[#581c25]">{product.price}</p>
+                    <p className="text-xs font-black text-[#3F0C13]">{product.price}</p>
                   </div>
                 </div>
-                <div className="p-4 pt-0">
+                <div className="p-3 pt-0">
                   <button 
                     onClick={() => addToCart(product)}
-                    className="w-full bg-[#3F0C13] hover:bg-[#581c25] text-white py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 shadow"
+                    className="w-full bg-[#3F0C13] hover:bg-[#581c25] text-white py-2 rounded-lg font-bold text-[11px] transition shadow"
                   >
-                    <ShoppingBag size={14} className="text-[#D4AF37]" /> Add to Cart
+                    Add to Cart
                   </button>
                 </div>
               </div>
@@ -285,27 +292,71 @@ export default function StorePage() {
         )}
       </main>
 
-      {/* Footer Features */}
-      <div className="bg-[#2D060B] border-t border-[#5C111C] py-8 px-6 mt-16 text-center text-zinc-300 text-xs">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-[#D4AF37] mb-1">Cash on Delivery</span>
-            <span className="text-[11px] text-zinc-400">Pay when it arrives</span>
+      {/* Footer Features Bar */}
+      <div className="bg-[#2D060B] border-t border-[#5C111C] py-6 px-4 mt-16 text-center text-zinc-300 text-xs">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <span className="font-bold text-[#D4AF37] block mb-0.5">Cash on Delivery</span>
+            <span className="text-[10px] text-zinc-400">Pay when it arrives</span>
           </div>
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-[#D4AF37] mb-1">Fast Delivery</span>
-            <span className="text-[11px] text-zinc-400">All over Bangladesh</span>
+          <div>
+            <span className="font-bold text-[#D4AF37] block mb-0.5">Fast Delivery</span>
+            <span className="text-[10px] text-zinc-400">All nationwide</span>
           </div>
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-[#D4AF37] mb-1">Secure Checkout</span>
-            <span className="text-[11px] text-zinc-400">100% safe payments</span>
+          <div>
+            <span className="font-bold text-[#D4AF37] block mb-0.5">Secure Checkout</span>
+            <span className="text-[10px] text-zinc-400">100% safe payments</span>
           </div>
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-[#D4AF37] mb-1">24/7 Support</span>
-            <span className="text-[11px] text-zinc-400">Always here to help</span>
+          <div>
+            <span className="font-bold text-[#D4AF37] block mb-0.5">24/7 Support</span>
+            <span className="text-[10px] text-zinc-400">Always here to help</span>
           </div>
         </div>
       </div>
+
+      {/* Bottom Footer Details with Logo */}
+      <footer className="bg-[#200408] text-zinc-400 py-8 px-6 text-xs border-t border-[#3F0C13]">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <div className="mb-3">
+              <Logo />
+            </div>
+            <p className="text-[11px] max-w-xs text-zinc-400">
+              Your trusted destination for premium lifestyle and authentic Bengali fashion — making everyday life simple and beautiful.
+            </p>
+          </div>
+          <div className="flex gap-12">
+            <div>
+              <span className="text-white font-bold block mb-2 text-[11px]">SHOP</span>
+              <ul className="space-y-1 text-[11px] text-zinc-400">
+                <li>Men's Wear</li>
+                <li>Women's Wear</li>
+                <li>Kids' Wear</li>
+                <li>Winter Jackets</li>
+                <li>Food</li>
+              </ul>
+            </div>
+            <div>
+              <span className="text-white font-bold block mb-2 text-[11px]">COMPANY</span>
+              <ul className="space-y-1 text-[11px] text-zinc-400">
+                <li>About Us</li>
+                <li>Our Story</li>
+                <li>Careers</li>
+                <li>Blog</li>
+              </ul>
+            </div>
+            <div>
+              <span className="text-white font-bold block mb-2 text-[11px]">SUPPORT</span>
+              <ul className="space-y-1 text-[11px] text-zinc-400">
+                <li>Contact</li>
+                <li>Shipping</li>
+                <li>Returns</li>
+                <li>FAQ</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Cart Drawer */}
       {isCartOpen && (
