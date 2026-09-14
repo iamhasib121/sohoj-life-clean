@@ -1,16 +1,22 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, ArrowLeft, CheckCircle2, ShieldAlert, LogIn, LogOut } from 'lucide-react';
+import { Plus, Trash2, ArrowLeft, CheckCircle2, ShieldAlert, LogIn, LogOut, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function AdminPage() {
-  // 🔐 আপনার যে ইমেইলগুলোকে অ্যাডমিন বানাতে চান, এখানে কমা দিয়ে লিখে দিন:
-  const ADMIN_EMAILS = ["iamhasib121@gmail.com", "admin@sohojlife.com"];
+// ফায়ারবেস ইমপোর্ট
+import { auth } from '@/app/firebase'; 
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
-  const [userEmail, setUserEmail] = useState<string>(""); // টেস্ট করার জন্য বা ফায়ারবেস অথ থেকে সেট হবে
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true); // সুরক্ষার জন্য চেক
+export default function AdminPage() {
+  // 🔐 আপনার ফায়ারবেস ইমেইলটি এখানে লিখে দিন যা দিয়ে অ্যাডমিন এক্সেস দিতে চান
+  const ADMIN_EMAILS = ["iamhasib121@gmail.com"];
+
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [inputEmail, setInputEmail] = useState<string>("");
+  const [inputPassword, setInputPassword] = useState<string>("");
+  const [authError, setAuthError] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
   const categories = [
@@ -38,15 +44,47 @@ export default function AdminPage() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  // সিমুলেটেড অথেন্টিকেশন চেক (আপনি ফায়ারবেস auth.currentUser দিয়েও করতে পারেন)
-  const handleLogin = (e: React.FormEvent) => {
+  // ফায়ারবেস অথ স্টেট ট্র্যাক করা
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser && ADMIN_EMAILS.includes(currentUser.email || "")) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
+        if (currentUser) {
+          signOut(auth);
+        }
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // ফায়ারবেস দিয়ে লগইন হ্যান্ডেল করা
+  const handleFirebaseLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (ADMIN_EMAILS.includes(inputEmail.trim())) {
-      setUserEmail(inputEmail);
-      setIsLoggedIn(true);
-      showPopup("Welcome to Admin Dashboard!");
-    } else {
-      alert("Access Denied! You are not authorized as an Admin.");
+    setAuthError(null);
+
+    if (!ADMIN_EMAILS.includes(inputEmail.trim())) {
+      setAuthError("Access Denied: This email is not authorized as an admin.");
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, inputEmail.trim(), inputPassword.trim());
+      showPopup("Successfully logged into Admin Dashboard!");
+    } catch (error: any) {
+      setAuthError(error.message || "Failed to login. Check your email & password.");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      showPopup("Logged out successfully.");
+    } catch (error) {
+      console.error("Logout error", error);
     }
   };
 
@@ -74,9 +112,13 @@ export default function AdminPage() {
     }
   };
 
-  // যদি ইউজার অ্যাডমিন লিস্টে না থাকে বা লগইন না করে তবে তাকে লগইন স্ক্রিন বা এরর দেখাবে
-  // সুরক্ষার স্বার্থে টেস্ট করার জন্য প্রথমবার ইউজারকে একটি ইমেইল দিতে হবে যা ADMIN_EMAILS এ আছে।
-  const isAuthorized = isLoggedIn && (userEmail === "" || ADMIN_EMAILS.includes(userEmail));
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#581c23] flex items-center justify-center text-white">
+        <Loader2 className="animate-spin text-[#f5d77f]" size={32} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#581c23] text-white font-sans p-6">
@@ -90,35 +132,51 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#f5d77f]">Secure Admin Dashboard</h1>
-            <p className="text-xs text-gray-300 mt-1">Restricted Access Only for Authorized Personnel.</p>
+            <h1 className="text-2xl font-bold text-[#f5d77f]">Firebase Secure Admin Dashboard</h1>
+            <p className="text-xs text-gray-300 mt-1">Protected by Firebase Authentication.</p>
           </div>
           <Link href="/" className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1">
             <ArrowLeft size={14} /> Back to Store
           </Link>
         </div>
 
-        {/* যদি ইমেইল ভেরিফাই না হয় বা সিকিউরিটি পাস না করে */}
-        {!isLoggedIn ? (
+        {!user ? (
           <div className="max-w-md mx-auto bg-[#4a151b] p-8 rounded-2xl border border-white/10 shadow-2xl text-center mt-12">
             <ShieldAlert size={48} className="mx-auto text-[#f5d77f] mb-4" />
-            <h2 className="text-lg font-bold mb-2">Admin Authentication Required</h2>
-            <p className="text-xs text-gray-300 mb-6">Please enter your authorized admin email address to proceed.</p>
+            <h2 className="text-lg font-bold mb-2">Admin Sign In</h2>
+            <p className="text-xs text-gray-300 mb-6">Log in with your Firebase admin credentials.</p>
             
-            <form onSubmit={handleLogin} className="space-y-4 text-xs text-left">
+            {authError && (
+              <div className="bg-red-500/20 border border-red-500/30 text-red-200 p-3 rounded-lg text-xs mb-4">
+                {authError}
+              </div>
+            )}
+
+            <form onSubmit={handleFirebaseLogin} className="space-y-4 text-xs text-left">
               <div>
-                <label className="block text-gray-300 mb-1">Admin Email Address</label>
+                <label className="block text-gray-300 mb-1">Email Address</label>
                 <input 
                   type="email" 
-                  placeholder="e.g. iamhasib121@gmail.com" 
+                  placeholder="iamhasib121@gmail.com" 
                   value={inputEmail} 
                   onChange={(e) => setInputEmail(e.target.value)} 
                   className="w-full bg-[#3b1014] text-white p-3 rounded-lg border border-white/10 focus:outline-none focus:border-[#f5d77f]" 
                   required 
                 />
               </div>
+              <div>
+                <label className="block text-gray-300 mb-1">Password</label>
+                <input 
+                  type="password" 
+                  placeholder="Enter your password" 
+                  value={inputPassword} 
+                  onChange={(e) => setInputPassword(e.target.value)} 
+                  className="w-full bg-[#3b1014] text-white p-3 rounded-lg border border-white/10 focus:outline-none focus:border-[#f5d77f]" 
+                  required 
+                />
+              </div>
               <button type="submit" className="w-full bg-[#f5d77f] text-[#581c23] py-3 rounded-lg font-bold hover:bg-yellow-400 transition flex items-center justify-center gap-2">
-                <LogIn size={16} /> Verify & Enter Dashboard
+                <LogIn size={16} /> Sign In
               </button>
             </form>
           </div>
@@ -150,9 +208,12 @@ export default function AdminPage() {
                 <button type="submit" className="w-full bg-[#f5d77f] text-[#581c23] py-2.5 rounded-lg font-bold hover:bg-yellow-400 transition">Publish Product</button>
               </form>
 
-              <button onClick={() => setIsLoggedIn(false)} className="w-full mt-6 bg-red-500/20 text-red-300 border border-red-500/30 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 hover:bg-red-500/30 transition">
-                <LogOut size={14} /> Lock Admin Session
-              </button>
+              <div className="mt-6 pt-4 border-t border-white/10 text-xs">
+                <p className="text-gray-300 mb-2 truncate">Logged in as: <span className="text-[#f5d77f] font-semibold">{user.email}</span></p>
+                <button onClick={handleLogout} className="w-full bg-red-500/20 text-red-300 border border-red-500/30 py-2 rounded-lg font-semibold flex items-center justify-center gap-1 hover:bg-red-500/30 transition">
+                  <LogOut size={14} /> Logout
+                </button>
+              </div>
             </div>
 
             <div className="lg:col-span-2 bg-[#4a151b] p-6 rounded-2xl border border-white/10 shadow-xl">
@@ -190,5 +251,4 @@ export default function AdminPage() {
       </div>
     </div>
   );
-}
 }
