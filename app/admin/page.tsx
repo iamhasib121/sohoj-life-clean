@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { auth, db } from "@/app/firebase"; // আপনার প্রজেক্টের ফায়ারবেস পাথ অনুযায়ী ঠিক করে নিবেন
+import { auth, db } from "@/app/firebase";
 import { 
   collection, 
-  addFirestore, // বা addDoc
   addDoc, 
   getDocs, 
   deleteDoc, 
@@ -63,7 +62,6 @@ export default function AdminDashboard() {
     await signOut(auth);
   };
 
-  // Fetch Products
   const fetchProducts = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "products"));
@@ -74,7 +72,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Fetch Orders
   const fetchOrders = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "orders"));
@@ -85,7 +82,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Save or Update Product
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !price || !image) {
@@ -95,7 +91,6 @@ export default function AdminDashboard() {
 
     try {
       if (editingId) {
-        // Update
         const docRef = doc(db, "products", editingId);
         await updateDoc(docRef, {
           name,
@@ -107,7 +102,6 @@ export default function AdminDashboard() {
         alert("প্রোডাক্ট সফলভাবে আপডেট হয়েছে!");
         setEditingId(null);
       } else {
-        // Add New
         await addDoc(collection(db, "products"), {
           name,
           category,
@@ -119,7 +113,6 @@ export default function AdminDashboard() {
         alert("নতুন প্রোডাক্ট সফলভাবে যুক্ত হয়েছে!");
       }
 
-      // Reset Form
       setName("");
       setPrice("");
       setStock("10");
@@ -130,7 +123,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Edit Trigger
   const handleEditClick = (prod: any) => {
     setEditingId(prod.id);
     setName(prod.name);
@@ -141,7 +133,6 @@ export default function AdminDashboard() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Delete Product
   const handleDeleteProduct = async (id: string) => {
     if (confirm("আপনি কি নিশ্চিত এই প্রোডাক্টটি ডিলিট করতে চান?")) {
       await deleteDoc(doc(db, "products", id));
@@ -149,7 +140,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Update Order Status
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
       const docRef = doc(db, "orders", orderId);
@@ -165,7 +155,6 @@ export default function AdminDashboard() {
     return <div className="min-h-screen bg-[#330814] text-white flex items-center justify-center">লোড হচ্ছে...</div>;
   }
 
-  // Login Screen if not authenticated
   if (!user) {
     return (
       <div className="min-h-screen bg-[#330814] flex items-center justify-center p-4">
@@ -204,8 +193,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#22050d] text-white p-4 md:p-8">
-      {/* Top Header */}
-      <div className="flex justify-between items-center bg-[#330814] p-4 rounded-xl border border-amber-600/30 mb-8">
+      <div className="flex justify-between items-center bg-[#330814] p-4 rounded-xl border border-amber-600/30 mb-8 shadow-md">
         <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life Admin Dashboard</h1>
         <div className="flex items-center gap-4">
           <button onClick={() => router.push('/')} className="text-sm bg-amber-900/40 hover:bg-amber-900/70 px-4 py-2 rounded text-amber-200">
@@ -217,43 +205,39 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Analytics Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 shadow-lg">
           <h3 className="text-gray-400 text-sm">Total Products</h3>
           <p className="text-3xl font-bold text-amber-400 mt-2">{products.length}</p>
         </div>
-        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 shadow-lg">
           <h3 className="text-gray-400 text-sm">Customer Orders</h3>
           <p className="text-3xl font-bold text-amber-400 mt-2">{orders.length}</p>
         </div>
-        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 shadow-lg">
           <h3 className="text-gray-400 text-sm">Admin Status</h3>
           <p className="text-lg font-semibold text-green-400 mt-2">● Active & Secure</p>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
       <div className="flex gap-4 mb-6 border-b border-amber-900/40 pb-3">
         <button 
           onClick={() => setActiveTab("products")} 
-          className={`px-6 py-2 rounded-lg font-semibold transition ${activeTab === "products" ? "bg-amber-500 text-black" : "bg-[#330814] text-amber-200"}`}
+          className={`px-6 py-2 rounded-lg font-semibold transition ${activeTab === "products" ? "bg-amber-500 text-black shadow-lg" : "bg-[#330814] text-amber-200"}`}
         >
           Manage Products
         </button>
         <button 
           onClick={() => setActiveTab("orders")} 
-          className={`px-6 py-2 rounded-lg font-semibold transition ${activeTab === "orders" ? "bg-amber-500 text-black" : "bg-[#330814] text-amber-200"}`}
+          className={`px-6 py-2 rounded-lg font-semibold transition ${activeTab === "orders" ? "bg-amber-500 text-black shadow-lg" : "bg-[#330814] text-amber-200"}`}
         >
           Manage Orders ({orders.length})
         </button>
       </div>
 
-      {/* TAB 1: PRODUCTS MANAGEMENT */}
       {activeTab === "products" && (
         <div>
-          {/* Add / Edit Form */}
-          <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 mb-8">
+          <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 mb-8 shadow-xl">
             <h2 className="text-lg font-bold text-amber-400 mb-4">
               {editingId ? "✏️ Edit Product" : "➕ Add New Product"}
             </h2>
@@ -310,7 +294,7 @@ export default function AdminDashboard() {
                   type="url" 
                   value={image} 
                   onChange={(e) => setImage(e.target.value)} 
-                  placeholder="https://i.ibb.co/... or ImgBB link" 
+                  placeholder="https://i.ibb.co/... or direct image link" 
                   className="w-full p-3 rounded bg-[#22050d] border border-amber-600/40 text-white"
                   required 
                 />
@@ -332,12 +316,11 @@ export default function AdminDashboard() {
             </form>
           </div>
 
-          {/* Product List */}
-          <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+          <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 shadow-xl">
             <h2 className="text-lg font-bold text-amber-400 mb-4">Manage Existing Products ({products.length})</h2>
             <div className="space-y-4">
               {products.length === 0 ? (
-                <p className="text-gray-400 text-center py-4">কোনো প্রোডাক্ট পাওয়া যায়নি। উপরে ফর্ম থেকে নতুন প্রোডাক্ট যুক্ত করুন।</p>
+                <p className="text-gray-400 text-center py-4">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>
               ) : (
                 products.map((prod) => (
                   <div key={prod.id} className="flex flex-col md:flex-row justify-between items-center bg-[#22050d] p-4 rounded-lg border border-amber-900/30 gap-4">
@@ -364,9 +347,8 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* TAB 2: ORDERS MANAGEMENT */}
       {activeTab === "orders" && (
-        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 shadow-xl">
           <h2 className="text-lg font-bold text-amber-400 mb-4">Customer Orders List</h2>
           {orders.length === 0 ? (
             <p className="text-gray-400 text-center py-8">এখনো কোনো অর্ডার আসেনি।</p>
