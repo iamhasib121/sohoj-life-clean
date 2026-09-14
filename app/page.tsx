@@ -1,183 +1,285 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, Search, Star, MessageCircle, CheckCircle2, Settings, Lock } from 'lucide-react';
+import { ShoppingBag, Heart, Search, SlidersHorizontal, ArrowRight, ShieldCheck, Truck, Headphones, Sparkles, Check } from 'lucide-react';
 import Link from 'next/link';
 
-export default function Home() {
-  const [activeCategory, setActiveCategory] = useState('All Products');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+export default function StoreFront() {
+  const [selectedCategory, setSelectedCategory] = useState("All Products");
+  const [sortOrder, setSortOrder] = useState("default"); // default, low-high, high-low
+  const [cartCount, setCartCount] = useState(2);
+  const [wishlistCount, setWishlistCount] = useState(3);
   const [notification, setNotification] = useState<string | null>(null);
-
-  const categories = [
-    "All Products", 
-    "Men's Wear (মেনস ওয়্যার)", 
-    "Women's Wear (উমেনস ওয়্যার)", 
-    "Kids' Wear (কিডস ওয়্যার)", 
-    "Winter Jacket (উইন্টার জ্যাকেট)", 
-    "Food (ফুড)"
-  ];
-
-  const products = [
-    { id: 1, name: "Premium Cotton Punjabi", category: "Men's Wear (মেনস ওয়্যার)", price: "Tk 1,850", rating: 4.7, image: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=500&auto=format&fit=crop", description: "High-quality premium cotton fabric designed for comfort and elegance during festive occasions and daily wear." },
-    { id: 2, name: "Slim Fit Formal Shirt", category: "Men's Wear (মেনস ওয়্যার)", price: "Tk 1,200", rating: 4.5, image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=500&auto=format&fit=crop", description: "Professional slim-fit formal shirt tailored with fine cotton blend for office and formal events." },
-    { id: 3, name: "Graphic Print T-Shirt", category: "Men's Wear (মেনস ওয়্যার)", price: "Tk 650", rating: 4.3, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=500&auto=format&fit=crop", description: "Trendy graphic tee made with 100% breathable cotton for casual streetwear style." },
-    { id: 4, name: "Jamdani Silk Saree", category: "Women's Wear (উমেনস ওয়্যার)", price: "Tk 4,500", rating: 4.9, image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=500&auto=format&fit=crop", description: "Traditional exquisite Jamdani silk saree featuring intricate traditional motifs and rich pallu." },
-    { id: 5, name: "Embroidered Salwar Kameez", category: "Women's Wear (উমেনস ওয়্যার)", price: "Tk 2,800", rating: 4.6, image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=500&auto=format&fit=crop", description: "Gorgeous embroidered salwar kameez set crafted with premium georgette and inner lining." },
-    { id: 6, name: "Black Print Cotton Kurti", category: "Women's Wear (উমেনস ওয়্যার)", price: "Tk 1,100", rating: 4.4, image: "https://images.unsplash.com/photo-1564584217132-2271fea3f357?q=80&w=500&auto=format&fit=crop", description: "Stylish everyday black print cotton kurti offering absolute comfort and modern aesthetic." },
-    { id: 7, name: "Floral Baby Dress", category: "Kids' Wear (কিডস ওয়্যার)", price: "Tk 850", rating: 4.8, image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=500&auto=format&fit=crop", description: "Cute and soft floral baby dress designed with skin-friendly fabric for toddlers." },
-    { id: 8, name: "Party Tulle Frock", category: "Kids' Wear (কিডস ওয়্যার)", price: "Tk 1,300", rating: 4.5, image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=500&auto=format&fit=crop", description: "Beautiful party wear tulle frock with bow detailing, perfect for birthdays and celebrations." },
-    { id: 9, name: "Cute Plush Teddy Toy", category: "Kids' Wear (কিডস ওয়্যার)", price: "Tk 550", rating: 4.7, image: "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?q=80&w=500&auto=format&fit=crop", description: "Super soft, huggable plush teddy bear toy safe for kids of all ages." },
-    { id: 10, name: "Padded Winter Jacket", category: "Winter Jacket (উইন্টার জ্যাকেট)", price: "Tk 3,200", rating: 4.9, image: "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=500&auto=format&fit=crop", description: "Heavy-duty windproof padded winter jacket engineered to keep you warm in extreme cold." },
-    { id: 11, name: "Fleece Pullover Hoodie", category: "Winter Jacket (উইন্টার জ্যাকেট)", price: "Tk 1,600", rating: 4.6, image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=500&auto=format&fit=crop", description: "Cozy fleece-lined pullover hoodie with kangaroo pocket for ultimate casual warmth." },
-    { id: 12, name: "Cable Knit Woolen Sweater", category: "Winter Jacket (উইন্টার জ্যাকেট)", price: "Tk 1,400", rating: 4.4, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=500&auto=format&fit=crop", description: "Classic cable knit textured woolen sweater offering a sophisticated winter look." },
-    { id: 13, name: "Kacchi Mutton Biryani", category: "Food (ফুড)", price: "Tk 320", rating: 4.9, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=500&auto=format&fit=crop", description: "Authentic aromatic traditional Kacchi Mutton Biryani cooked with tender meat and premium spices." },
-    { id: 14, name: "Assorted Snacks Box", category: "Food (ফুড)", price: "Tk 250", rating: 4.7, image: "https://images.unsplash.com/photo-1599487484170-7c1e604581ed?q=80&w=500&auto=format&fit=crop", description: "Crunchy and delicious assorted traditional snacks box perfect for evening tea time." },
-    { id: 15, name: "Traditional Misti Box", category: "Food (ফুড)", price: "Tk 400", rating: 4.8, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=500&auto=format&fit=crop", description: "Assorted premium traditional Bengali sweets made with pure chhena and rich syrup." },
-  ];
 
   const showPopup = (msg: string) => {
     setNotification(msg);
-    setTimeout(() => setNotification(null), 3000);
+    setTimeout(() => setNotification(null), 2500);
   };
 
-  const handleWhatsAppOrder = (product: any, targetNumber: string) => {
-    const message = `আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি অর্ডার করতে চাই:\n\n*প্রোডাক্ট:* ${product.name}\n*দাম:* ${product.price}\n\nদয়া করে অর্ডারটি কনফার্ম করুন।`;
-    const url = `https://wa.me/${targetNumber}?text=${encodeURIComponent(message)}`;
-    showPopup(`Redirecting to WhatsApp for ${product.name}...`);
-    window.open(url, '_blank');
-  };
+  const categories = [
+    { name: "All Products", icon: Sparkles },
+    { name: "Men's Wear (মেনস ওয়্যার)", icon: Sparkles },
+    { name: "Women's Wear (উমেনস ওয়্যার)", icon: Sparkles },
+    { name: "Kids' Wear (কিডস ওয়্যার)", icon: Sparkles },
+    { name: "Winter Jacket (উইন্টার জ্যাকেট)", icon: Sparkles },
+    { name: "Food (ফুড)", icon: Sparkles }
+  ];
 
-  const filteredProducts = products.filter(product => {
-    const matchesCategory = activeCategory === 'All Products' || product.category === activeCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.category.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+  const [products] = useState([
+    { id: 1, name: "Premium Cotton Punjabi", category: "Men's Wear (মেনস ওয়্যার)", priceNum: 1850, price: "Tk 1,850", image: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=500&auto=format&fit=crop" },
+    { id: 2, name: "Slim Fit Formal Shirt", category: "Men's Wear (মেনস ওয়্যার)", priceNum: 1200, price: "Tk 1,200", image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=500&auto=format&fit=crop" },
+    { id: 3, name: "Graphic Print T-Shirt", category: "Men's Wear (মেনস ওয়্যার)", priceNum: 650, price: "Tk 650", image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=500&auto=format&fit=crop" },
+    { id: 4, name: "Jamdani Silk Saree", category: "Women's Wear (উমেনস ওয়্যার)", priceNum: 4500, price: "Tk 4,500", image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=500&auto=format&fit=crop" },
+    { id: 5, name: "Embroidered Salwar Kameez", category: "Women's Wear (উমেনস ওয়্যার)", priceNum: 2800, price: "Tk 2,800", image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=500&auto=format&fit=crop" },
+    { id: 6, name: "Winter Warm Jacket", category: "Winter Jacket (উইন্টার জ্যাকেট)", priceNum: 3200, price: "Tk 3,200", image: "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=500&auto=format&fit=crop" }
+  ]);
+
+  // Filter & Sort Logic
+  const filteredProducts = products.filter(p => selectedCategory === "All Products" || p.category === selectedCategory);
+  
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortOrder === "low-high") return a.priceNum - b.priceNum;
+    if (sortOrder === "high-low") return b.priceNum - a.priceNum;
+    return 0;
   });
 
   return (
-    <div className="min-h-screen bg-[#581c23] text-white font-sans selection:bg-[#f5d77f] selection:text-[#581c23] relative">
-      
+    <div className="min-h-screen bg-[#581c23] text-white font-sans flex flex-col justify-between">
+      {/* Toast Notification */}
       {notification && (
-        <div className="fixed top-20 right-4 z-50 bg-[#f5d77f] text-[#581c23] px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-bold animate-bounce border border-white/20">
-          <CheckCircle2 size={16} />
+        <div className="fixed top-5 right-4 z-50 bg-[#f5d77f] text-[#581c23] px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-bold transition-all">
+          <Check size={16} />
           <span>{notification}</span>
         </div>
       )}
 
-      {/* Header */}
-      <header className="border-b border-white/10 bg-[#4a151b] sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-xl font-extrabold tracking-wider text-[#f5d77f] cursor-pointer" onClick={() => { setActiveCategory('All Products'); setSearchQuery(''); }}>Sohoj Life</span>
-          </div>
-
-          <div className="flex-1 max-w-md relative hidden sm:block">
-            <input 
-              type="text" 
-              placeholder="Search products..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#3b1014] text-xs text-white placeholder-gray-400 px-4 py-2 pl-9 rounded-full border border-white/10 focus:outline-none focus:border-[#f5d77f] transition-all"
-            />
-            <Search size={15} className="absolute left-3 top-2.5 text-gray-400" />
-          </div>
-
-          <div className="flex items-center space-x-3 text-sm">
-            {/* Admin Link Secured */}
-            <Link 
-              href="/admin"
-              className="bg-black/30 border border-white/10 text-[#f5d77f] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-black/50 transition"
-            >
-              <Lock size={12} /> Admin Area
-            </Link>
-            <button onClick={() => showPopup("Wishlist activated!")} className="hover:text-[#f5d77f] p-1.5 rounded-full hover:bg-white/10 transition hidden sm:block"><Heart size={18}/></button>
-            <button onClick={() => showPopup("Cart ready!")} className="hover:text-[#f5d77f] p-1.5 rounded-full hover:bg-white/10 transition hidden sm:block"><ShoppingCart size={18}/></button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-                activeCategory === cat 
-                  ? 'bg-[#f5d77f] text-[#581c23] font-bold shadow-lg scale-105' 
-                  : 'bg-[#4a151b] text-gray-200 border border-white/10 hover:bg-white/10'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {filteredProducts.map((product) => (
-            <div key={product.id} className="bg-white text-gray-900 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between group">
+      <div>
+        {/* Top Header */}
+        <header className="border-b border-white/10 bg-[#4a151b]/80 backdrop-blur-md sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
+            
+            {/* Logo Component */}
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#f5d77f] to-[#d4af37] flex items-center justify-center shadow-lg shadow-black/30">
+                <span className="text-[#581c23] font-black text-xl tracking-wider">SL</span>
+              </div>
               <div>
-                <div className="h-44 w-full bg-gray-100 overflow-hidden relative cursor-pointer" onClick={() => setSelectedProduct(product)}>
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                </div>
-                <div className="p-3">
-                  <span className="text-[10px] text-gray-500 uppercase">{product.category.split(' ')[0]}</span>
-                  <h3 onClick={() => setSelectedProduct(product)} className="text-xs font-semibold text-gray-800 line-clamp-1 mt-0.5 cursor-pointer hover:text-[#581c23]">{product.name}</h3>
-                  <div className="flex items-center gap-1 mt-1 text-[11px] text-amber-500">
-                    <Star size={12} fill="currentColor" />
-                    <span className="text-gray-700 font-medium">{product.rating}</span>
+                <h1 className="text-xl font-extrabold tracking-wide text-[#f5d77f] flex items-center gap-1.5">
+                  Sohoj Life
+                </h1>
+                <p className="text-[10px] text-gray-300 tracking-wider uppercase">Your Trusted Lifestyle Store</p>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="flex-1 max-w-md hidden md:flex items-center relative">
+              <Search size={16} className="absolute left-3.5 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Search products..." 
+                className="w-full bg-[#3b1014] text-white pl-10 pr-4 py-2.5 rounded-xl border border-white/10 text-xs focus:outline-none focus:border-[#f5d77f] transition"
+              />
+            </div>
+
+            {/* Actions & Admin Link */}
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => { setWishlistCount(prev => prev + 1); showPopup("Added to Wishlist!"); }}
+                className="relative p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition"
+              >
+                <Heart size={18} className="text-[#f5d77f]" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+
+              <button 
+                onClick={() => { setCartCount(prev => prev + 1); showPopup("Added to Cart!"); }}
+                className="relative p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition"
+              >
+                <ShoppingBag size={18} className="text-[#f5d77f]" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-[#f5d77f] text-[#581c23] text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              <Link href="/admin" className="bg-[#f5d77f] hover:bg-[#ebd070] text-[#581c23] px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+                Admin Area
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Hero Promotional Banner */}
+        <section className="max-w-7xl mx-auto px-6 py-6">
+          <div className="bg-gradient-to-r from-[#4a151b] via-[#3b1014] to-[#4a151b] border border-[#f5d77f]/20 rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between shadow-2xl relative overflow-hidden">
+            <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-64 h-64 bg-[#f5d77f]/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="max-w-lg z-10">
+              <span className="bg-[#f5d77f]/20 text-[#f5d77f] px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider">
+                Special Eid & Winter Offer
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black text-[#f5d77f] mt-3 mb-2">
+                Discover Premium Quality Lifestyle Products
+              </h2>
+              <p className="text-xs text-gray-300 leading-relaxed mb-6">
+                Explore our exclusive collection of traditional wear, winter outfits, and daily essentials crafted with perfection.
+              </p>
+              <button 
+                onClick={() => showPopup("Exploring collections...")}
+                className="bg-[#f5d77f] text-[#581c23] px-5 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-2 hover:bg-[#ebd070] transition shadow-lg"
+              >
+                Shop Now <ArrowRight size={14} />
+              </button>
+            </div>
+            <div className="mt-6 md:mt-0 z-10 hidden md:block">
+              <div className="w-48 h-36 rounded-xl overflow-hidden border-2 border-[#f5d77f]/30 shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=400&auto=format&fit=crop" alt="Banner" className="w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Category Filter & Price Sort Bar */}
+        <section className="max-w-7xl mx-auto px-6 mb-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-[#4a151b]/40 p-4 rounded-2xl border border-white/10">
+            
+            {/* Categories */}
+            <div className="flex items-center gap-2 overflow-x-auto w-full pb-2 md:pb-0 scrollbar-none">
+              {categories.map((cat) => {
+                const IconComponent = cat.icon;
+                const isSelected = selectedCategory === cat.name;
+                return (
+                  <button
+                    key={cat.name}
+                    onClick={() => setSelectedCategory(cat.name)}
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-1.5 border ${
+                      isSelected 
+                        ? 'bg-[#f5d77f] text-[#581c23] border-[#f5d77f] shadow-md' 
+                        : 'bg-[#3b1014] text-gray-300 border-white/10 hover:bg-[#4a151b]'
+                    }`}
+                  >
+                    <IconComponent size={14} className={isSelected ? 'text-[#581c23]' : 'text-[#f5d77f]'} />
+                    {cat.name}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Price Sorting Options */}
+            <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+              <SlidersHorizontal size={14} className="text-[#f5d77f]" />
+              <select 
+                value={sortOrder} 
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="bg-[#3b1014] text-white text-xs px-3 py-2 rounded-xl border border-white/10 focus:outline-none focus:border-[#f5d77f]"
+              >
+                <option value="default">Sort by: Featured</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
+              </select>
+            </div>
+
+          </div>
+        </section>
+
+        {/* Product Grid with Hover Effects */}
+        <section className="max-w-7xl mx-auto px-6 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {sortedProducts.map((p) => (
+              <div 
+                key={p.id} 
+                className="bg-[#4a151b] rounded-2xl overflow-hidden border border-white/10 shadow-lg group hover:border-[#f5d77f]/40 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="overflow-hidden relative h-56 bg-black/20">
+                    <img 
+                      src={p.image} 
+                      alt={p.name} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    />
+                    <span className="absolute top-3 left-3 bg-[#581c23]/80 backdrop-blur-md text-[#f5d77f] text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/10">
+                      {p.category.split(' ')[0]}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-xs font-bold text-gray-100 group-hover:text-[#f5d77f] transition line-clamp-1">{p.name}</h3>
+                    <p className="text-sm font-extrabold text-[#f5d77f] mt-1">{p.price}</p>
                   </div>
                 </div>
-              </div>
-              
-              <div className="p-3 pt-0 flex flex-col gap-2 mt-auto">
-                <span className="text-xs font-bold text-[#581c23]">{product.price}</span>
-                <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => handleWhatsAppOrder(product, "8801303422278")} className="bg-[#25D366] text-white text-[10px] py-1.5 rounded font-medium flex items-center justify-center gap-1">
-                    <MessageCircle size={12} /> Order 1
-                  </button>
-                  <button onClick={() => handleWhatsAppOrder(product, "8801879955594")} className="bg-[#128C7E] text-white text-[10px] py-1.5 rounded font-medium flex items-center justify-center gap-1">
-                    <MessageCircle size={12} /> Order 2
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
 
-      {/* Quick View Modal */}
-      {selectedProduct && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white text-gray-900 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative">
-            <button onClick={() => setSelectedProduct(null)} className="absolute top-3 right-3 bg-gray-200 hover:bg-gray-300 text-gray-700 p-1.5 rounded-full z-10">✕</button>
-            <div className="grid grid-cols-1 sm:grid-cols-2">
-              <div className="h-64 sm:h-full bg-gray-100">
-                <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="p-6 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded uppercase font-semibold">{selectedProduct.category}</span>
-                  <h3 className="text-base font-bold text-gray-900 mt-2">{selectedProduct.name}</h3>
-                  <p className="text-sm font-bold text-[#581c23] mt-1">{selectedProduct.price}</p>
-                  <p className="text-xs text-gray-600 mt-3 leading-relaxed">{selectedProduct.description}</p>
-                </div>
-                <div className="mt-6 pt-4 border-t border-gray-100 grid grid-cols-2 gap-2">
-                  <button onClick={() => { handleWhatsAppOrder(selectedProduct, "8801303422278"); setSelectedProduct(null); }} className="bg-[#25D366] text-white text-xs py-2 rounded-lg font-semibold flex items-center justify-center gap-1">
-                    <MessageCircle size={14} /> WhatsApp 1
+                <div className="p-4 pt-0 grid grid-cols-2 gap-2">
+                  <button 
+                    onClick={() => { setCartCount(prev => prev + 1); showPopup(`Added ${p.name} to cart!`); }}
+                    className="w-full bg-[#3b1014] hover:bg-[#581c23] text-white py-2 rounded-xl text-[11px] font-bold border border-white/10 transition"
+                  >
+                    Add to Cart
                   </button>
-                  <button onClick={() => { handleWhatsAppOrder(selectedProduct, "8801879955594"); setSelectedProduct(null); }} className="bg-[#128C7E] text-white text-xs py-2 rounded-lg font-semibold flex items-center justify-center gap-1">
-                    <MessageCircle size={14} /> WhatsApp 2
+                  <button 
+                    onClick={() => showPopup(`Proceeding to checkout for ${p.name}`)}
+                    className="w-full bg-[#f5d77f] hover:bg-[#ebd070] text-[#581c23] py-2 rounded-xl text-[11px] font-extrabold transition shadow-sm"
+                  >
+                    Order Now
                   </button>
                 </div>
               </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Professional Footer Section */}
+      <footer className="bg-[#3b1014] border-t border-white/10 pt-12 pb-6 text-gray-300 text-xs">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          
+          <div>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-[#f5d77f] flex items-center justify-center text-[#581c23] font-bold">SL</div>
+              <span className="text-base font-extrabold text-[#f5d77f]">Sohoj Life</span>
+            </div>
+            <p className="text-[11px] text-gray-400 leading-relaxed">
+              Your ultimate destination for quality lifestyle products, clothing, and everyday essentials delivered right to your doorstep in Bangladesh.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-3 uppercase text-[11px] tracking-wider text-[#f5d77f]">Customer Care</h4>
+            <ul className="space-y-2 text-[11px]">
+              <li><a href="#" className="hover:text-[#f5d77f] transition">Help Center</a></li>
+              <li><a href="#" className="hover:text-[#f5d77f] transition">Track Your Order</a></li>
+              <li><a href="#" className="hover:text-[#f5d77f] transition">Returns & Refunds</a></li>
+              <li><a href="#" className="hover:text-[#f5d77f] transition">Privacy Policy</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-3 uppercase text-[11px] tracking-wider text-[#f5d77f]">Contact Info</h4>
+            <ul className="space-y-2 text-[11px] text-gray-400">
+              <li className="flex items-center gap-1.5"><Headphones size={13} className="text-[#f5d77f]" /> Hotline: +880 1700-000000</li>
+              <li>Email: support@sohojlife.com</li>
+              <li>Tangail & Dhaka, Bangladesh</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-3 uppercase text-[11px] tracking-wider text-[#f5d77f]">Secure Payments</h4>
+            <p className="text-[11px] text-gray-400 mb-3">We accept bKash, SSLCommerz, and Cash on Delivery.</p>
+            <div className="flex gap-2">
+              <span className="bg-[#4a151b] px-3 py-1.5 rounded-lg border border-white/10 font-bold text-[10px] text-[#f5d77f]">bKash</span>
+              <span className="bg-[#4a151b] px-3 py-1.5 rounded-lg border border-white/10 font-bold text-[10px] text-white">COD</span>
+              <span className="bg-[#4a151b] px-3 py-1.5 rounded-lg border border-white/10 font-bold text-[10px] text-blue-300">Visa</span>
             </div>
           </div>
+
         </div>
-      )}
+
+        <div className="max-w-7xl mx-auto px-6 border-t border-white/10 pt-6 text-center text-[10px] text-gray-400">
+          © {new Date().getFullYear()} Sohoj Life. All rights reserved. Developed with ❤️ for Hasib.
+        </div>
+      </footer>
     </div>
   );
 }
