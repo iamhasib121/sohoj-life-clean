@@ -12,6 +12,7 @@ export default function HomeStore() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("Featured");
 
   // Product Details Modal State
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -104,26 +105,43 @@ export default function HomeStore() {
 
   const handleWhatsAppOrder = (product: any, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    const phoneNumber = "8801700000000"; // আপনার WhatsApp নম্বর এখানে বসাতে পারেন
+    const phoneNumber = "8801700000000";
     const message = encodeURIComponent(`Hello Sohoj Life, I want to order this product:\nName: ${product.name}\nPrice: ৳${product.price}\nImage: ${product.image}`);
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
 
+  // Filtering, Searching & Sorting Logic
   const filteredProducts = products.filter(p => {
     const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
+  }).sort((a, b) => {
+    if (sortBy === "Price: Low to High") return a.price - b.price;
+    if (sortBy === "Price: High to Low") return b.price - a.price;
+    if (sortBy === "Top Rated") return (b.rating || 4.5) - (a.rating || 4.5);
+    return 0; // Featured
   });
 
   return (
     <div className="min-h-screen bg-[#22050d] text-white">
+      {/* Top Header */}
       <header className="bg-[#330814] border-b border-amber-900/40 sticky top-0 z-40 px-4 md:px-8 py-4 flex justify-between items-center shadow-md">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life</h1>
-          <p className="text-xs text-amber-200/70">Elevate Your Style with Luxury Essentials</p>
-        </div>
         <div className="flex items-center gap-3">
-          <Link href="/admin" className="text-xs bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/30">
+          {/* Logo Icon with Leaf Badge */}
+          <div className="relative bg-[#4a0d1e] p-2 rounded-xl border border-amber-600/40">
+            <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span className="absolute -top-1 -right-1 bg-amber-500 text-black rounded-full p-0.5 text-[10px]">🍃</span>
+          </div>
+          <div>
+            <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life</h1>
+            <p className="text-xs text-amber-200/70">Elevate Your Style with Luxury Essentials</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Link href="/admin" className="text-xs bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/35">
             Admin Portal
           </Link>
           <button 
@@ -135,6 +153,7 @@ export default function HomeStore() {
         </div>
       </header>
 
+      {/* Hero Slider Banner */}
       <div className="bg-gradient-to-r from-[#4a0d1e] to-[#22050d] py-12 px-4 text-center border-b border-amber-900/30 transition-all duration-500">
         <h2 className="text-2xl md:text-4xl font-extrabold text-amber-400 mb-2">{banners[currentBanner].title}</h2>
         <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base">{banners[currentBanner].subtitle}</p>
@@ -145,17 +164,36 @@ export default function HomeStore() {
         </div>
       </div>
 
+      {/* Search, Category Filter & Sorting Section */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="max-w-md mx-auto mb-6">
-          <input 
-            type="text" 
-            placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 rounded-xl bg-[#330814] border border-amber-600/40 text-white text-sm focus:outline-none focus:border-amber-400 shadow-inner"
-          />
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+          <div className="w-full md:w-96">
+            <input 
+              type="text" 
+              placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full p-3 rounded-xl bg-[#330814] border border-amber-600/40 text-white text-sm focus:outline-none focus:border-amber-400 shadow-inner"
+            />
+          </div>
+
+          {/* Sort By Dropdown */}
+          <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+            <span className="text-xs text-amber-200 font-semibold">Sort by</span>
+            <select 
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-[#330814] border border-amber-600/40 text-amber-200 text-sm px-4 py-2 rounded-xl focus:outline-none focus:border-amber-400"
+            >
+              <option value="Featured">Featured</option>
+              <option value="Price: Low to High">Price: Low to High</option>
+              <option value="Price: High to Low">Price: High to Low</option>
+              <option value="Top Rated">Top Rated</option>
+            </select>
+          </div>
         </div>
 
+        {/* Categories */}
         <div className="flex flex-wrap gap-2 justify-center">
           {["All", "Men's Wear", "Women's Wear", "Kids' Wear", "Accessories"].map((cat) => (
             <button
@@ -169,7 +207,10 @@ export default function HomeStore() {
         </div>
       </div>
 
+      {/* Main Products Grid */}
       <main className="max-w-7xl mx-auto px-4 pb-16">
+        <p className="text-xs text-gray-400 mb-4">Showing {filteredProducts.length} products</p>
+        
         {loading ? (
           <div className="text-center py-20 text-amber-300">প্রোডাক্ট লোড হচ্ছে...</div>
         ) : filteredProducts.length === 0 ? (
@@ -180,31 +221,51 @@ export default function HomeStore() {
               <div 
                 key={prod.id} 
                 onClick={() => setSelectedProduct(prod)}
-                className="bg-[#330814] rounded-xl overflow-hidden border border-amber-600/30 flex flex-col justify-between shadow-xl hover:border-amber-400 transition cursor-pointer group"
+                className="bg-[#330814] rounded-2xl overflow-hidden border border-amber-600/30 flex flex-col justify-between shadow-xl hover:border-amber-400 transition cursor-pointer group p-3"
               >
                 <div>
-                  <div className="h-48 overflow-hidden bg-black/40 relative">
+                  <div className="h-60 overflow-hidden bg-black/40 relative rounded-xl">
                     <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                    <span className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-amber-300 text-xs px-2 py-1 rounded">
-                      Stock: {prod.stock || 10}
+                    
+                    {/* Category / Type Badge */}
+                    <span className="absolute top-3 left-3 bg-white/90 text-black text-xs px-3 py-1 rounded-full font-semibold shadow">
+                      {prod.category}
                     </span>
+
+                    {/* Quick Add Hover Button inside Image */}
+                    <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition duration-300">
+                      <button 
+                        onClick={(e) => addToCart(prod, e)} 
+                        className="w-full bg-white/95 hover:bg-white text-black font-bold py-2.5 rounded-xl text-xs shadow-lg backdrop-blur-md flex items-center justify-center gap-1"
+                      >
+                        + Quick Add
+                      </button>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <span className="text-xs text-amber-400 bg-amber-950/60 px-2 py-1 rounded">{prod.category}</span>
-                    <h3 className="font-bold text-lg text-white mt-2 group-hover:text-amber-300 transition">{prod.name}</h3>
-                    <p className="text-amber-200 font-semibold mt-1">৳{prod.price}</p>
+
+                  <div className="p-2 pt-4">
+                    <h3 className="font-bold text-base text-white group-hover:text-amber-300 transition line-clamp-1">{prod.name}</h3>
+                    
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="text-amber-400 text-sm">★</span>
+                      <span className="text-xs text-gray-300 font-semibold">{prod.rating || "4.7"}</span>
+                    </div>
+
+                    <p className="text-amber-300 font-extrabold text-lg mt-2">৳{prod.price}</p>
                   </div>
                 </div>
-                <div className="p-4 pt-0 grid grid-cols-2 gap-2">
+
+                <div className="p-2 pt-0 grid grid-cols-2 gap-2 mt-2">
                   <button 
                     onClick={(e) => addToCart(prod, e)} 
-                    className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg transition text-xs shadow-md"
+                    className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2.5 rounded-xl transition text-xs shadow-md"
                   >
                     Add to Cart
                   </button>
                   <button 
                     onClick={(e) => handleWhatsAppOrder(prod, e)} 
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition text-xs flex items-center justify-center gap-1 shadow-md"
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1 shadow-md"
                   >
                     💬 WhatsApp
                   </button>
@@ -215,6 +276,7 @@ export default function HomeStore() {
         )}
       </main>
 
+      {/* PRODUCT DETAILS MODAL */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="bg-[#330814] border border-amber-600/40 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl">
@@ -229,9 +291,12 @@ export default function HomeStore() {
               <div>
                 <span className="text-xs text-amber-400 bg-amber-950/60 px-2.5 py-1 rounded">{selectedProduct.category}</span>
                 <h2 className="text-xl font-bold text-white mt-2">{selectedProduct.name}</h2>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-amber-400">★</span>
+                  <span className="text-xs text-gray-300">{selectedProduct.rating || "4.7"} / 5.0</span>
+                </div>
                 <p className="text-2xl font-extrabold text-amber-300 mt-1">৳{selectedProduct.price}</p>
                 <p className="text-sm text-gray-300 mt-2">স্টক স্ট্যাটাস: <span className="text-green-400 font-semibold">{selectedProduct.stock || 10} পিস এভেইলেবল</span></p>
-                <p className="text-xs text-gray-400 mt-3">খাঁটি ও প্রিমিয়াম মানের এই পণ্যটি Sohoj Life থেকে ক্যাশ অন ডেলিভারিতে অর্ডার করতে পারেন।</p>
               </div>
             </div>
             <div className="mt-6 flex gap-3">
@@ -252,6 +317,7 @@ export default function HomeStore() {
         </div>
       )}
 
+      {/* SLIDE-OVER CART & CHECKOUT DRAWER */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm">
           <div className="w-full max-w-md bg-[#330814] h-full p-6 flex flex-col justify-between border-l border-amber-600/35 overflow-y-auto shadow-2xl">
