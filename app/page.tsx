@@ -131,28 +131,28 @@ export default function StorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#3F0C13] text-[#2D2D2D] font-sans selection:bg-[#D4AF37] selection:text-white">
+    <div className="min-h-screen bg-[#FDFBF7] text-zinc-900 font-sans selection:bg-[#D4AF37] selection:text-white">
       {/* Top Announcement Bar */}
       <div className="bg-[#2D060B] text-[#D4AF37] py-2 px-4 text-center text-xs font-medium border-b border-[#5C111C]">
         ✨ Free Express Shipping on Orders Over Tk 2,000 — Cash on Delivery available
       </div>
 
-      {/* Navbar */}
-      <header className="sticky top-0 z-40 bg-[#3F0C13]/95 backdrop-blur-md border-b border-[#5C111C]">
+      {/* Navbar matching clean design */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="bg-[#D4AF37] text-black font-black px-2.5 py-1 rounded text-xs shadow">SL</div>
+            <div className="bg-[#3F0C13] text-[#D4AF37] font-black px-2.5 py-1 rounded text-xs shadow">SL</div>
             <div>
-              <span className="text-white font-bold tracking-tight text-sm block leading-none">Sohoj <span className="text-[#D4AF37]">Life</span></span>
-              <span className="text-[8px] text-[#D4AF37] uppercase tracking-widest font-semibold block mt-0.5">PREMIUM LIFESTYLE</span>
+              <span className="text-zinc-900 font-bold tracking-tight text-sm block leading-none">Sohoj <span className="text-[#3F0C13]">Life</span></span>
+              <span className="text-[8px] text-zinc-500 uppercase tracking-widest font-semibold block mt-0.5">PREMIUM LIFESTYLE</span>
             </div>
           </Link>
 
-          {/* Action Icons matching the user interface */}
-          <div className="flex items-center gap-4 text-white">
+          {/* Action Icons */}
+          <div className="flex items-center gap-4 text-zinc-700">
             <button 
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-2 hover:text-[#D4AF37] transition"
+              className="p-2 hover:text-[#3F0C13] transition"
               title="Search"
             >
               <Search size={18} />
@@ -160,7 +160,7 @@ export default function StorePage() {
 
             <button 
               onClick={() => alert("Wishlist feature coming soon!")}
-              className="p-2 hover:text-[#D4AF37] transition relative"
+              className="p-2 hover:text-[#3F0C13] transition relative"
               title="Wishlist"
             >
               <Heart size={18} />
@@ -168,7 +168,7 @@ export default function StorePage() {
 
             <Link 
               href="/admin" 
-              className="p-2 hover:text-[#D4AF37] transition flex items-center gap-1"
+              className="p-2 hover:text-[#3F0C13] transition flex items-center gap-1"
               title="Admin Login"
             >
               <User size={18} />
@@ -176,12 +176,12 @@ export default function StorePage() {
 
             <button 
               onClick={() => setIsCartOpen(true)}
-              className="p-2 hover:text-[#D4AF37] transition relative flex items-center"
+              className="p-2 hover:text-[#3F0C13] transition relative flex items-center"
               title="Cart"
             >
               <ShoppingBag size={18} />
               {cart.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                <span className="absolute -top-1 -right-1 bg-[#3F0C13] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                   {cart.reduce((sum, item) => sum + item.quantity, 0)}
                 </span>
               )}
@@ -191,7 +191,7 @@ export default function StorePage() {
 
         {/* Expandable Search Bar */}
         {isSearchOpen && (
-          <div className="bg-[#2D060B] px-6 py-3 border-t border-[#5C111C] flex items-center justify-center">
+          <div className="bg-zinc-100 px-6 py-3 border-t border-zinc-200 flex items-center justify-center">
             <div className="w-full max-w-xl relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
               <input 
@@ -199,12 +199,12 @@ export default function StorePage() {
                 placeholder="Search products across store..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#3F0C13] text-white placeholder-zinc-400 pl-10 pr-10 py-2 rounded-full border border-[#5C111C] focus:border-[#D4AF37] focus:outline-none text-xs transition"
+                className="w-full bg-white text-zinc-900 placeholder-zinc-400 pl-10 pr-10 py-2 rounded-full border border-zinc-300 focus:border-[#3F0C13] focus:outline-none text-xs transition shadow-sm"
                 autoFocus
               />
               <button 
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900"
               >
                 <X size={14} />
               </button>
@@ -215,14 +215,14 @@ export default function StorePage() {
 
       {/* Hero Banner Section */}
       <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-gradient-to-b from-[#4A0C14] to-[#34080E] rounded-2xl p-8 md:p-12 text-center text-white border border-[#63141F] shadow-2xl mb-12 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4AF37]/10 via-transparent to-transparent pointer-events-none"></div>
+        <div className="bg-gradient-to-r from-[#3F0C13] to-[#5C111C] rounded-2xl p-8 md:p-12 text-center text-white shadow-xl mb-12 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4AF37]/20 via-transparent to-transparent pointer-events-none"></div>
           
           <span className="text-[10px] uppercase tracking-[0.25em] text-[#D4AF37] font-bold block mb-2">CURATED FOR EVERY OCCASION</span>
           <h1 className="text-2xl md:text-4xl font-black mb-3 tracking-tight text-white">
             Elevate Your Style <br className="hidden md:block" /> With Luxury Essentials
           </h1>
-          <p className="text-zinc-300 text-xs md:text-sm max-w-xl mx-auto mb-8 font-light">
+          <p className="text-zinc-200 text-xs md:text-sm max-w-xl mx-auto mb-8 font-light">
             Discover our exclusive curated collection of premium traditional wear, executive winter outfits, and elite lifestyle products.
           </p>
 
@@ -238,8 +238,8 @@ export default function StorePage() {
 
         {/* Shop By Category Section */}
         <div id="shop" className="text-center mb-8">
-          <span className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest block mb-1">SHOP BY CATEGORY</span>
-          <h2 className="text-xl font-bold text-white mb-6">Curated for Every Occasion</h2>
+          <span className="text-[10px] text-[#3F0C13] font-bold uppercase tracking-widest block mb-1">SHOP BY CATEGORY</span>
+          <h2 className="text-xl font-bold text-zinc-900 mb-6">Curated for Every Occasion</h2>
           
           <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 flex-wrap">
             {categories.map((cat) => (
@@ -248,8 +248,8 @@ export default function StorePage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition ${
                   selectedCategory === cat 
-                    ? 'bg-[#D4AF37] text-black shadow' 
-                    : 'bg-[#2D060B] hover:bg-[#5C111C] text-zinc-300 border border-[#5C111C]'
+                    ? 'bg-[#3F0C13] text-white shadow' 
+                    : 'bg-white hover:bg-zinc-100 text-zinc-700 border border-zinc-200'
                 }`}
               >
                 {cat}
@@ -257,12 +257,12 @@ export default function StorePage() {
             ))}
           </div>
 
-          <div className="flex justify-between items-center mt-6 px-2 text-xs text-zinc-300">
+          <div className="flex justify-between items-center mt-6 px-2 text-xs text-zinc-600">
             <span>Showing {filteredProducts.length} products</span>
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-[#2D060B] text-zinc-300 px-3 py-1.5 rounded-full border border-[#5C111C] text-xs focus:outline-none"
+              className="bg-white text-zinc-700 px-3 py-1.5 rounded-full border border-zinc-200 text-xs focus:outline-none shadow-sm"
             >
               <option value="featured">Sort: Featured</option>
               <option value="low-high">Price: Low to High</option>
@@ -275,12 +275,12 @@ export default function StorePage() {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="bg-white rounded-xl h-64 animate-pulse"></div>
+              <div key={n} className="bg-white rounded-xl h-64 animate-pulse border border-zinc-200"></div>
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-16 bg-[#2D060B] rounded-xl border border-[#5C111C]">
-            <p className="text-zinc-400 text-xs">No items found.</p>
+          <div className="text-center py-16 bg-white rounded-xl border border-zinc-200 shadow-sm">
+            <p className="text-zinc-500 text-xs">No items found.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -320,29 +320,29 @@ export default function StorePage() {
       </main>
 
       {/* Footer Features Bar */}
-      <div className="bg-[#2D060B] border-t border-[#5C111C] py-6 px-4 mt-16 text-center text-zinc-300 text-xs">
+      <div className="bg-white border-t border-zinc-200 py-6 px-4 mt-16 text-center text-zinc-700 text-xs shadow-sm">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">Cash on Delivery</span>
-            <span className="text-[10px] text-zinc-400">Pay when it arrives</span>
+            <span className="font-bold text-[#3F0C13] block mb-0.5">Cash on Delivery</span>
+            <span className="text-[10px] text-zinc-500">Pay when it arrives</span>
           </div>
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">Fast Delivery</span>
-            <span className="text-[10px] text-zinc-400">All nationwide</span>
+            <span className="font-bold text-[#3F0C13] block mb-0.5">Fast Delivery</span>
+            <span className="text-[10px] text-zinc-500">All nationwide</span>
           </div>
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">Secure Checkout</span>
-            <span className="text-[10px] text-zinc-400">100% safe payments</span>
+            <span className="font-bold text-[#3F0C13] block mb-0.5">Secure Checkout</span>
+            <span className="text-[10px] text-zinc-500">100% safe payments</span>
           </div>
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">24/7 Support</span>
-            <span className="text-[10px] text-zinc-400">Always here to help</span>
+            <span className="font-bold text-[#3F0C13] block mb-0.5">24/7 Support</span>
+            <span className="text-[10px] text-zinc-500">Always here to help</span>
           </div>
         </div>
       </div>
 
       {/* Bottom Footer Details */}
-      <footer className="bg-[#200408] text-zinc-400 py-8 px-6 text-xs border-t border-[#3F0C13]">
+      <footer className="bg-zinc-900 text-zinc-400 py-8 px-6 text-xs border-t border-zinc-800">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -414,7 +414,7 @@ export default function StorePage() {
                           <div className="flex items-center gap-2 mt-1.5">
                             <button onClick={() => updateQuantity(item.id, -1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Minus size={10} /></button>
                             <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Plus size={10} /></button>
+                            <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Plus size5={10} /></button>
                           </div>
                         </div>
                       </div>
@@ -468,4 +468,5 @@ export default function StorePage() {
       )}
     </div>
   );
+}
 }
