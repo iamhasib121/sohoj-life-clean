@@ -1,8 +1,8 @@
 
+use client';
 
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { ShoppingBag, Search, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck, Star, Heart, UserRound } from 'lucide-react';
-import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -104,7 +104,7 @@ export default function StorePage() {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.priceNum * item.quantity), 0);
 
-  const handleWhatsAppCheckout = (e: React.FormEvent) => {
+  const handleWhatsAppCheckout = (e: FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) return;
     if (!customerName || !customerPhone || !customerAddress) {
