@@ -1,5 +1,4 @@
-
-use client';
+'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { ShoppingBag, Search, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck, Star, Heart, UserRound } from 'lucide-react';
