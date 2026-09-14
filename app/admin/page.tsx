@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, ArrowLeft, CheckCircle2, ShieldAlert, LogIn, LogOut, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-// ফায়ারবেস ইমপোর্ট
-import { auth } from '@/app/firebase'; 
+// ফায়ারবেস সঠিক রিলেটিভ পাথ দিয়ে ইমপোর্ট করা হলো
+import { auth } from '../firebase'; 
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 export default function AdminPage() {
-  // 🔐 আপনার ফায়ারবেস ইমেইলটি এখানে লিখে দিন যা দিয়ে অ্যাডমিন এক্সেস দিতে চান
+  // 🔐 আপনার ফায়ারবেস ইমেইলটি এখানে দেওয়া আছে যা দিয়ে অ্যাডমিন এক্সেস দেওয়া হবে
   const ADMIN_EMAILS = ["iamhasib121@gmail.com"];
 
   const [user, setUser] = useState<any>(null);
