@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, Sparkles, Star, ArrowRight, X, Plus, Minus, MessageCircle, ExternalLink } from 'lucide-react';
+import { ShoppingBag, Search, Sparkles, ArrowRight, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
@@ -130,56 +130,56 @@ export default function StorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-amber-400 selection:text-black">
       {/* Top Announcement Bar */}
-      <div className="bg-zinc-900 text-zinc-300 py-2.5 px-4 text-center text-xs font-semibold tracking-wider border-b border-zinc-800 flex items-center justify-center gap-2">
+      <div className="bg-gradient-to-r from-zinc-900 via-amber-950/40 to-zinc-900 text-amber-300 py-2.5 px-4 text-center text-xs font-bold tracking-wider border-b border-zinc-800 flex items-center justify-center gap-2 shadow-sm">
         <Sparkles size={14} className="text-amber-400" /> <span>Enjoy Free Express Shipping on Orders Over Tk 2,000</span>
       </div>
 
       {/* Navbar */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-black/80 border-b border-zinc-900">
+      <header className="sticky top-0 z-40 backdrop-blur-2xl bg-black/90 border-b border-zinc-800/80 shadow-xl">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center font-black text-lg tracking-tighter">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-black flex items-center justify-center font-black text-xl shadow-lg shadow-amber-500/20">
               SL
             </div>
             <div>
-              <span className="text-lg font-bold tracking-tight">Sohoj Life</span>
-              <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-medium">Luxury Store</span>
+              <span className="text-lg font-black tracking-tight text-white">Sohoj <span className="text-amber-400">Life</span></span>
+              <span className="block text-[10px] text-zinc-400 uppercase tracking-widest font-extrabold">Luxury Store</span>
             </div>
           </div>
 
           {/* Search Bar */}
           <div className="hidden md:flex flex-1 max-w-md relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
             <input 
               type="text" 
-              placeholder="Search products..." 
+              placeholder="Search luxury products..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-zinc-900/80 text-white pl-11 pr-4 py-2.5 rounded-full border border-zinc-800 focus:border-white focus:outline-none text-xs transition"
+              className="w-full bg-zinc-900 text-white pl-11 pr-4 py-3 rounded-2xl border border-zinc-700/85 focus:border-amber-400 focus:outline-none text-xs font-medium shadow-inner transition"
             />
           </div>
 
-          {/* Actions */}
+          {/* High Visibility Actions */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setIsCartOpen(true)}
-              className="relative bg-zinc-900 hover:bg-zinc-800 text-white px-4.5 py-2.5 rounded-full border border-zinc-800 flex items-center gap-2 transition text-xs font-semibold"
+              className="relative bg-zinc-900 hover:bg-zinc-800 text-white px-5 py-3 rounded-2xl border border-zinc-700 flex items-center gap-2.5 transition text-xs font-bold shadow-lg group"
             >
-              <ShoppingBag size={16} className="text-amber-400" />
-              <span>Cart</span>
+              <ShoppingBag size={18} className="text-amber-400 group-hover:scale-110 transition" />
+              <span className="text-white font-extrabold">Cart</span>
               {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-white text-black text-[10px] w-4.5 h-4.5 rounded-full flex items-center justify-center font-bold">
+                <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-black shadow-md animate-bounce">
                   {cart.reduce((sum, item) => sum + item.quantity, 0)}
                 </span>
               )}
             </button>
             <Link 
               href="/admin" 
-              className="bg-white hover:bg-zinc-200 text-black px-4.5 py-2.5 rounded-full text-xs font-bold transition"
+              className="bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black px-5 py-3 rounded-2xl text-xs font-black tracking-wider uppercase transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5"
             >
-              Admin
+              <ShieldCheck size={16} /> Admin
             </Link>
           </div>
         </div>
@@ -187,35 +187,38 @@ export default function StorePage() {
 
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-6 py-10">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-900 to-black border border-zinc-800/80 p-10 md:p-16 mb-12 flex flex-col items-start justify-center">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black border border-zinc-800 p-10 md:p-16 mb-12 shadow-2xl">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
           <div className="max-w-2xl relative z-10">
-            <span className="text-amber-400 text-xs font-bold tracking-widest uppercase mb-3 block">New Collection 2026</span>
+            <span className="inline-flex items-center gap-1.5 text-amber-400 bg-amber-500/10 border border-amber-500/20 text-xs font-extrabold px-3.5 py-1.5 rounded-full mb-4">
+              <Sparkles size={14} /> NEW COLLECTION 2026
+            </span>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 leading-[1.1]">
-              Refined Style. <br />Exquisite Quality.
+              Refined Style. <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-200">Exquisite Quality.</span>
             </h1>
-            <p className="text-zinc-400 text-sm md:text-base mb-8 max-w-lg leading-relaxed font-normal">
+            <p className="text-zinc-300 text-sm md:text-base mb-8 max-w-lg leading-relaxed font-medium">
               Explore our curated selection of premium traditional wear, jackets, and essential lifestyle goods.
             </p>
             <button 
               onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-white hover:bg-zinc-200 text-black px-7 py-3.5 rounded-full font-bold text-xs tracking-wide transition flex items-center gap-2"
+              className="bg-gradient-to-r from-amber-400 to-yellow-500 text-black px-7 py-3.5 rounded-2xl font-black text-xs tracking-wide transition shadow-xl shadow-amber-500/20 flex items-center gap-2 hover:scale-105 duration-200"
             >
               Shop Collection <ArrowRight size={16} />
             </button>
           </div>
         </div>
 
-        {/* Categories */}
+        {/* Categories & Sorting */}
         <div id="shop" className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 pt-4">
           <div className="flex items-center gap-2 overflow-x-auto w-full pb-2 no-scrollbar">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-semibold transition ${
+                className={`whitespace-nowrap px-5 py-3 rounded-2xl text-xs font-bold transition shadow-sm ${
                   selectedCategory === cat 
-                    ? 'bg-white text-black font-bold' 
-                    : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-400 border border-zinc-800'
+                    ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-black shadow-amber-500/20' 
+                    : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800'
                 }`}
               >
                 {cat}
@@ -226,7 +229,7 @@ export default function StorePage() {
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-zinc-900 text-zinc-300 px-4 py-2.5 rounded-full border border-zinc-800 text-xs focus:outline-none"
+            className="bg-zinc-900 text-zinc-200 px-4 py-3 rounded-2xl border border-zinc-800 text-xs font-bold focus:outline-none focus:border-amber-400"
           >
             <option value="featured">Sort: Featured</option>
             <option value="low-high">Price: Low to High</option>
@@ -238,19 +241,19 @@ export default function StorePage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="bg-zinc-900/40 rounded-2xl h-80 animate-pulse border border-zinc-800/40"></div>
+              <div key={n} className="bg-zinc-900/40 rounded-3xl h-88 animate-pulse border border-zinc-800/40"></div>
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20 bg-zinc-900/30 rounded-2xl border border-zinc-800">
-            <p className="text-zinc-500 text-sm">No items found.</p>
+          <div className="text-center py-20 bg-zinc-900/30 rounded-3xl border border-zinc-800">
+            <p className="text-zinc-400 text-sm font-semibold">No items found.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
               <div 
                 key={product.id}
-                className="group bg-zinc-900/40 rounded-2xl border border-zinc-800/80 overflow-hidden hover:border-zinc-700 transition flex flex-col justify-between"
+                className="group bg-zinc-900/90 rounded-3xl border border-zinc-800 overflow-hidden hover:border-amber-400/50 transition-all duration-300 flex flex-col justify-between shadow-xl hover:-translate-y-1"
               >
                 <div>
                   <div className="relative aspect-[4/5] bg-zinc-950 overflow-hidden">
@@ -260,17 +263,17 @@ export default function StorePage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                     />
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-white text-xs line-clamp-1 mb-1">{product.name}</h3>
-                    <p className="text-sm font-bold text-amber-400">{product.price}</p>
+                  <div className="p-5">
+                    <h3 className="font-bold text-white text-xs line-clamp-1 mb-1.5 group-hover:text-amber-400 transition">{product.name}</h3>
+                    <p className="text-sm font-black text-amber-400">{product.price}</p>
                   </div>
                 </div>
-                <div className="p-4 pt-0">
+                <div className="p-5 pt-0">
                   <button 
                     onClick={() => addToCart(product)}
-                    className="w-full bg-zinc-900 hover:bg-white hover:text-black text-zinc-200 py-3 rounded-xl font-bold text-xs transition border border-zinc-800 flex items-center justify-center gap-2"
+                    className="w-full bg-zinc-800 hover:bg-gradient-to-r hover:from-amber-400 hover:to-yellow-500 hover:text-black text-zinc-200 py-3.5 rounded-2xl font-black text-xs transition duration-300 border border-zinc-700/80 flex items-center justify-center gap-2 shadow-inner"
                   >
-                    <ShoppingBag size={14} /> Add to Bag
+                    <ShoppingBag size={16} /> Add to Bag
                   </button>
                 </div>
               </div>
@@ -281,76 +284,85 @@ export default function StorePage() {
 
       {/* Cart Drawer */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
-          <div className="w-full max-w-md bg-zinc-950 border-l border-zinc-800 h-full p-6 flex flex-col justify-between overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex justify-end">
+          <div className="w-full max-w-md bg-zinc-950 border-l border-zinc-800 h-full p-6 md:p-8 flex flex-col justify-between overflow-y-auto shadow-2xl">
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-zinc-900">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <ShoppingBag size={16} className="text-amber-400" /> Your Shopping Bag ({cart.reduce((sum, item) => sum + item.quantity, 0)})
+              <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                <h2 className="text-sm font-black text-white flex items-center gap-2">
+                  <ShoppingBag size={18} className="text-amber-400" /> Your Shopping Bag ({cart.reduce((sum, item) => sum + item.quantity, 0)})
                 </h2>
-                <button onClick={() => setIsCartOpen(false)} className="text-zinc-400 hover:text-white p-1 rounded-lg">
-                  <X size={18} />
+                <button onClick={() => setIsCartOpen(false)} className="text-zinc-400 hover:text-white p-2 rounded-xl bg-zinc-900 border border-zinc-800">
+                  <X size={16} />
                 </button>
               </div>
 
               {cart.length === 0 ? (
-                <div className="text-center py-20 text-zinc-500 text-xs">Your bag is empty</div>
+                <div className="text-center py-24 text-zinc-400 text-xs font-semibold">Your bag is empty</div>
               ) : (
                 <>
-                  <div className="space-y-3 my-4">
+                  <div className="space-y-3.5 my-6">
                     {cart.map(item => (
-                      <div key={item.id} className="flex items-center gap-3 bg-zinc-900/60 p-3 rounded-xl border border-zinc-900">
-                        <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg" />
+                      <div key={item.id} className="flex items-center gap-3.5 bg-zinc-900/80 p-3.5 rounded-2xl border border-zinc-800">
+                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-xl" />
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-white text-xs truncate">{item.name}</h4>
-                          <p className="text-amber-400 text-xs font-medium">{item.price}</p>
-                          <div className="flex items-center gap-2 mt-1.5">
-                            <button onClick={() => updateQuantity(item.id, -1)} className="p-1 bg-zinc-800 rounded text-zinc-300"><Minus size={10} /></button>
-                            <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-zinc-800 rounded text-zinc-300"><Plus size={10} /></button>
+                          <h4 className="font-bold text-white text-xs truncate">{item.name}</h4>
+                          <p className="text-amber-400 text-xs font-bold mt-0.5">{item.price}</p>
+                          <div className="flex items-center gap-2.5 mt-2">
+                            <button onClick={() => updateQuantity(item.id, -1)} className="p-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-200"><Minus size={12} /></button>
+                            <span className="text-xs font-black w-5 text-center text-white">{item.quantity}</span>
+                            <button onClick={() => updateQuantity(item.id, 1)} className="p-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-200"><Plus size={12} /></button>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <form onSubmit={handleWhatsAppCheckout} className="space-y-3 pt-4 border-t border-zinc-900 text-xs">
-                    <h3 className="font-bold text-zinc-300">Checkout Details</h3>
-                    <input 
-                      type="text" 
-                      placeholder="Full Name" 
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full bg-zinc-900 text-white p-3 rounded-xl border border-zinc-800 focus:outline-none focus:border-white"
-                      required
-                    />
-                    <input 
-                      type="tel" 
-                      placeholder="Mobile Number" 
-                      value={customerPhone}
-                      onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full bg-zinc-900 text-white p-3 rounded-xl border border-zinc-800 focus:outline-none focus:border-white"
-                      required
-                    />
-                    <textarea 
-                      placeholder="Delivery Address" 
-                      value={customerAddress}
-                      onChange={(e) => setCustomerAddress(e.target.value)}
-                      rows={2}
-                      className="w-full bg-zinc-900 text-white p-3 rounded-xl border border-zinc-800 focus:outline-none focus:border-white resize-none"
-                      required
-                    ></textarea>
+                  <form onSubmit={handleWhatsAppCheckout} className="space-y-4 pt-4 border-t border-zinc-800 text-xs">
+                    <h3 className="font-bold text-amber-400 uppercase tracking-wider text-[11px]">Checkout Details</h3>
+                    <div>
+                      <label className="block text-zinc-300 font-semibold mb-1">Full Name</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Md. Hasibul Hasan" 
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        className="w-full bg-zinc-900 text-white p-3.5 rounded-2xl border border-zinc-800 focus:outline-none focus:border-amber-400 font-medium"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-zinc-300 font-semibold mb-1">Mobile Number</label>
+                      <input 
+                        type="tel" 
+                        placeholder="e.g. 017XXXXXXXX" 
+                        value={customerPhone}
+                        onChange={(e) => setCustomerPhone(e.target.value)}
+                        className="w-full bg-zinc-900 text-white p-3.5 rounded-2xl border border-zinc-800 focus:outline-none focus:border-amber-400 font-medium"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-zinc-300 font-semibold mb-1">Delivery Address</label>
+                      <textarea 
+                        placeholder="e.g. House 12, Road 5, Tangail" 
+                        value={customerAddress}
+                        onChange={(e) => setCustomerAddress(e.target.value)}
+                        rows={2}
+                        className="w-full bg-zinc-900 text-white p-3.5 rounded-2xl border border-zinc-800 focus:outline-none focus:border-amber-400 font-medium resize-none"
+                        required
+                      ></textarea>
+                    </div>
 
                     <div className="flex justify-between items-center font-bold text-sm pt-2">
-                      <span className="text-zinc-400">Total:</span>
-                      <span className="text-amber-400">Tk {cartTotal.toLocaleString()}</span>
+                      <span className="text-zinc-400">Total Amount:</span>
+                      <span className="text-amber-400 text-base">Tk {cartTotal.toLocaleString()}</span>
                     </div>
 
                     <button 
                       type="submit"
-                      className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition"
+                      className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-black py-4 rounded-2xl font-black flex items-center justify-center gap-2.5 transition shadow-lg shadow-emerald-500/20"
                     >
-                      <MessageCircle size={16} /> Order via WhatsApp <ExternalLink size={14} />
+                      <MessageCircle size={18} fill="currentColor" /> Order via WhatsApp <ExternalLink size={14} />
                     </button>
                   </form>
                 </>
