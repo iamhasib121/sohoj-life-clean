@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  background-color: #ffffff;
+  background-color: #fdfbf7;
   color: #1a1a1a;
 }
 
 body {
-  background-color: #ffffff;
+  background-color: #fdfbf7;
   color: #1a1a1a;
   min-height: 100vh;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -20,12 +20,12 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f1ede4;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: #d4cebe;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: #b5ada0;
 }
