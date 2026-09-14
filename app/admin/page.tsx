@@ -73,10 +73,9 @@ export default function AdminPage() {
                 <label className="block text-gray-300 mb-1">Email</label>
                 <input 
                   type="email" 
-                  value={email} 
                   onChange={(e) => setEmail(e.target.value)} 
-                  placeholder="iamhasib121@gmail.com" 
-                  className="w-full bg-[#3b1014] text-white p-3 rounded-lg border border-white/10" 
+                  placeholder="Enter your email" 
+                  className="w-full bg-[#3b1014] text-white p-3 rounded-lg border border-white/10 focus:outline-none focus:border-[#f5d77f]" 
                   required 
                 />
               </div>
@@ -87,11 +86,11 @@ export default function AdminPage() {
                   value={password} 
                   onChange={(e) => setPassword(e.target.value)} 
                   placeholder="Enter password" 
-                  className="w-full bg-[#3b1014] text-white p-3 rounded-lg border border-white/10" 
+                  className="w-full bg-[#3b1014] text-white p-3 rounded-lg border border-white/10 focus:outline-none focus:border-[#f5d77f]" 
                   required 
                 />
               </div>
-              <button type="submit" className="w-full bg-[#f5d77f] text-[#581c23] py-3 rounded-lg font-bold flex items-center justify-center gap-2">
+              <button type="submit" className="w-full bg-[#f5d77f] text-[#581c23] py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-[#ebd070] transition">
                 <LogIn size={16} /> Login
               </button>
             </form>
