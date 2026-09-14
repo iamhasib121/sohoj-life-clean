@@ -51,7 +51,6 @@ export default function HomeStore() {
     }
   };
 
-  // Add to Cart
   const addToCart = (product: any, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const existing = cart.find(item => item.id === product.id);
@@ -63,15 +62,12 @@ export default function HomeStore() {
     setIsCartOpen(true);
   };
 
-  // Remove from Cart
   const removeFromCart = (id: string) => {
     setCart(cart.filter(item => item.id !== id));
   };
 
-  // Total Calculation
   const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
-  // Handle Order Submit (COD)
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) {
@@ -106,7 +102,6 @@ export default function HomeStore() {
     }
   };
 
-  // WhatsApp Quick Order
   const handleWhatsAppOrder = (product: any, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const phoneNumber = "8801700000000"; // আপনার WhatsApp নম্বর এখানে বসাতে পারেন
@@ -114,7 +109,6 @@ export default function HomeStore() {
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
 
-  // Filtering & Searching Logic
   const filteredProducts = products.filter(p => {
     const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -123,7 +117,6 @@ export default function HomeStore() {
 
   return (
     <div className="min-h-screen bg-[#22050d] text-white">
-      {/* Top Header */}
       <header className="bg-[#330814] border-b border-amber-900/40 sticky top-0 z-40 px-4 md:px-8 py-4 flex justify-between items-center shadow-md">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life</h1>
@@ -135,14 +128,13 @@ export default function HomeStore() {
           </Link>
           <button 
             onClick={() => setIsCartOpen(true)} 
-            className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 relative transition text-sm"
+            className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 relative transition text-sm shadow-md"
           >
             🛒 Cart ({cart.reduce((sum, item) => sum + item.qty, 0)})
           </button>
         </div>
       </header>
 
-      {/* Hero Slider Banner */}
       <div className="bg-gradient-to-r from-[#4a0d1e] to-[#22050d] py-12 px-4 text-center border-b border-amber-900/30 transition-all duration-500">
         <h2 className="text-2xl md:text-4xl font-extrabold text-amber-400 mb-2">{banners[currentBanner].title}</h2>
         <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base">{banners[currentBanner].subtitle}</p>
@@ -153,7 +145,6 @@ export default function HomeStore() {
         </div>
       </div>
 
-      {/* Search and Category Filter Section */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="max-w-md mx-auto mb-6">
           <input 
@@ -178,7 +169,6 @@ export default function HomeStore() {
         </div>
       </div>
 
-      {/* Main Products Grid */}
       <main className="max-w-7xl mx-auto px-4 pb-16">
         {loading ? (
           <div className="text-center py-20 text-amber-300">প্রোডাক্ট লোড হচ্ছে...</div>
@@ -190,7 +180,7 @@ export default function HomeStore() {
               <div 
                 key={prod.id} 
                 onClick={() => setSelectedProduct(prod)}
-                className="bg-[#330814] rounded-xl overflow-hidden border border-amber-600/30 flex flex-col justify-between shadow-lg hover:border-amber-400 transition cursor-pointer group"
+                className="bg-[#330814] rounded-xl overflow-hidden border border-amber-600/30 flex flex-col justify-between shadow-xl hover:border-amber-400 transition cursor-pointer group"
               >
                 <div>
                   <div className="h-48 overflow-hidden bg-black/40 relative">
@@ -208,13 +198,13 @@ export default function HomeStore() {
                 <div className="p-4 pt-0 grid grid-cols-2 gap-2">
                   <button 
                     onClick={(e) => addToCart(prod, e)} 
-                    className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg transition text-xs"
+                    className="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg transition text-xs shadow-md"
                   >
                     Add to Cart
                   </button>
                   <button 
                     onClick={(e) => handleWhatsAppOrder(prod, e)} 
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition text-xs flex items-center justify-center gap-1"
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition text-xs flex items-center justify-center gap-1 shadow-md"
                   >
                     💬 WhatsApp
                   </button>
@@ -225,7 +215,6 @@ export default function HomeStore() {
         )}
       </main>
 
-      {/* PRODUCT DETAILS MODAL */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="bg-[#330814] border border-amber-600/40 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl">
@@ -248,13 +237,13 @@ export default function HomeStore() {
             <div className="mt-6 flex gap-3">
               <button 
                 onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }} 
-                className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-xl text-sm transition"
+                className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-xl text-sm transition shadow-lg"
               >
                 Add to Cart
               </button>
               <button 
                 onClick={() => handleWhatsAppOrder(selectedProduct)} 
-                className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-3 rounded-xl text-sm transition"
+                className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-3 rounded-xl text-sm transition shadow-lg"
               >
                 Order via WhatsApp
               </button>
@@ -263,7 +252,6 @@ export default function HomeStore() {
         </div>
       )}
 
-      {/* SLIDE-OVER CART & CHECKOUT DRAWER */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm">
           <div className="w-full max-w-md bg-[#330814] h-full p-6 flex flex-col justify-between border-l border-amber-600/35 overflow-y-auto shadow-2xl">
@@ -274,10 +262,10 @@ export default function HomeStore() {
               </div>
 
               {orderSuccess ? (
-                <div className="bg-green-500/20 border border-green-500 text-green-300 p-6 rounded-xl text-center my-12">
+                <div className="bg-green-500/20 border border-green-500 text-green-300 p-6 rounded-xl text-center my-12 shadow-lg">
                   <h3 className="text-xl font-bold mb-2">🎉 অর্ডার সফল হয়েছে!</h3>
                   <p className="text-sm">খুব শীঘ্রই আমাদের প্রতিনিধি আপনার দেওয়া নম্বরে যোগাযোগ করবেন। ধন্যবাদ!</p>
-                  <button onClick={() => { setOrderSuccess(false); setIsCartOpen(false); }} className="mt-6 bg-amber-500 text-black font-bold px-6 py-2 rounded-lg">
+                  <button onClick={() => { setOrderSuccess(false); setIsCartOpen(false); }} className="mt-6 bg-amber-500 text-black font-bold px-6 py-2 rounded-lg shadow-md">
                     Continue Shopping
                   </button>
                 </div>
@@ -304,7 +292,6 @@ export default function HomeStore() {
                       <span>৳{totalAmount}</span>
                     </div>
 
-                    {/* Checkout Form */}
                     <form onSubmit={handleCheckout} className="space-y-3">
                       <h3 className="text-sm font-bold text-amber-400 mb-2">Checkout Details (Cash on Delivery)</h3>
                       <input 
@@ -334,7 +321,7 @@ export default function HomeStore() {
                       <button 
                         type="submit" 
                         disabled={orderSubmitting}
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-lg transition text-sm mt-2"
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-lg transition text-sm mt-2 shadow-lg"
                       >
                         {orderSubmitting ? "Processing..." : "Confirm Order (COD)"}
                       </button>
