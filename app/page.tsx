@@ -9,7 +9,11 @@ export default function HomeStore() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<any[]>([]);
+  
+  // Real Wishlist State (LocalStorage দিয়ে সেভ করা থাকবে)
   const [wishlist, setWishlist] = useState<string[]>([]);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -46,6 +50,16 @@ export default function HomeStore() {
 
   useEffect(() => {
     fetchStoreProducts();
+    // LocalStorage থেকে আগের সেভ করা উইশলিস্ট লোড করা
+    const savedWishlist = localStorage.getItem("sohoj_wishlist");
+    if (savedWishlist) {
+      try {
+        setWishlist(JSON.parse(savedWishlist));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     const bannerInterval = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
     }, 4000);
@@ -81,23 +95,26 @@ export default function HomeStore() {
 
   const toggleWishlist = (productId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    let updatedWishlist;
     if (wishlist.includes(productId)) {
-      setWishlist(wishlist.filter(id => id !== productId));
+      updatedWishlist = wishlist.filter(id => id !== productId);
     } else {
-      setWishlist([...wishlist, productId]);
+      updatedWishlist = [...wishlist, productId];
     }
+    setWishlist(updatedWishlist);
+    localStorage.setItem("sohoj_wishlist", JSON.stringify(updatedWishlist));
   };
 
   const applyCoupon = () => {
     if (couponCode.toUpperCase() === "EID10") {
-      setDiscount(0.10); // ১০% ছাড়
+      setDiscount(0.10);
       setCouponMessage("🎉 অভিনন্দন! ১০% ডিসকাউন্ট সফলভাবে যুক্ত হয়েছে।");
     } else if (couponCode.toUpperCase() === "SOHOJ20") {
-      setDiscount(0.20); // ২০% ছাড়
+      setDiscount(0.20);
       setCouponMessage("🎉 অভিনন্দন! ২০% ডিসকাউন্ট সফলভাবে যুক্ত হয়েছে।");
     } else {
       setDiscount(0);
-      setCouponMessage("❌ ভুল কুপন কোড! দয়া করে সঠিক কোড দিন (যেমন: EID10)।");
+      setCouponMessage("❌ ভুল কুপন কোড! (EID10 ব্যবহার করুন)");
     }
   };
 
@@ -162,7 +179,7 @@ export default function HomeStore() {
   const handleWhatsAppOrder = (product: any, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const phoneNumber = "8801700000000";
-    const message = encodeURIComponent(`Hello Sohoj Life, I want to order this product:\nName: ${product.name}\nPrice: ৳${product.price}\nImage: ${product.image}`);
+    const message = encodeURIComponent(`Hello Sohoj Life, I want to order this product:\nName: ${product.name}\nPrice: ৳${product.price}`);
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
 
@@ -176,6 +193,8 @@ export default function HomeStore() {
     if (sortBy === "Top Rated") return (b.rating || 4.5) - (a.rating || 4.5);
     return 0;
   });
+
+  const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
     <div className="min-h-screen bg-[#22050d] text-white">
@@ -201,9 +220,24 @@ export default function HomeStore() {
           >
             📦 Track Order
           </button>
+          
+          {/* Wishlist Button with Badge */}
+          <button 
+            onClick={() => setIsWishlistOpen(true)}
+            className="relative bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/35 transition flex items-center gap-1 text-xs"
+          >
+            ❤️ Wishlist
+            {wishlist.length > 0 && (
+              <span className="bg-amber-500 text-black font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                {wishlist.length}
+              </span>
+            )}
+          </button>
+
           <Link href="/admin" className="text-xs bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/35 transition">
             Admin Portal
           </Link>
+
           <button 
             onClick={() => setIsCartOpen(true)} 
             className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 relative transition text-sm shadow-md"
@@ -224,7 +258,7 @@ export default function HomeStore() {
         </div>
       </div>
 
-      {/* Search, Category Filter & Sorting Section */}
+      {/* Search & Category Filter Section */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
           <div className="w-full md:w-96">
@@ -237,7 +271,6 @@ export default function HomeStore() {
             />
           </div>
 
-          {/* Sort By Dropdown */}
           <div className="flex items-center gap-2 w-full md:w-auto justify-end">
             <span className="text-xs text-amber-200 font-semibold">Sort by</span>
             <select 
@@ -253,7 +286,6 @@ export default function HomeStore() {
           </div>
         </div>
 
-        {/* Categories */}
         <div className="flex flex-wrap gap-2 justify-center">
           {["All", "Men's Wear", "Women's Wear", "Kids' Wear", "Accessories"].map((cat) => (
             <button
@@ -290,7 +322,6 @@ export default function HomeStore() {
                   <div className="h-72 overflow-hidden bg-gray-100 relative rounded-2xl">
                     <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                     
-                    {/* Category Badge */}
                     <span className="absolute top-3 left-3 bg-white/90 text-gray-800 text-xs px-3.5 py-1.5 rounded-full font-medium shadow-sm">
                       {prod.category || "Panjabi"}
                     </span>
@@ -303,7 +334,6 @@ export default function HomeStore() {
                       {wishlist.includes(prod.id) ? "❤️" : "🤍"}
                     </button>
 
-                    {/* Quick Add Button overlay */}
                     <div className="absolute inset-x-4 bottom-4">
                       <button 
                         onClick={(e) => addToCart(prod, e)} 
@@ -314,11 +344,8 @@ export default function HomeStore() {
                     </div>
                   </div>
 
-                  {/* Product Details Section */}
                   <div className="p-3 pt-4">
                     <h3 className="font-semibold text-base text-gray-900 group-hover:text-[#4a0d1e] transition line-clamp-1">{prod.name}</h3>
-                    
-                    {/* Rating Star */}
                     <div className="flex items-center gap-1.5 mt-1">
                       <span className="text-amber-500 text-sm">★</span>
                       <span className="text-xs text-gray-700 font-medium">{prod.rating || "4.7"}</span>
@@ -326,10 +353,8 @@ export default function HomeStore() {
                   </div>
                 </div>
 
-                {/* Bottom Price & Add to Cart Button */}
                 <div className="p-3 pt-2 flex items-center justify-between mt-2 border-t border-gray-100">
                   <span className="text-[#4a0d1e] font-bold text-xl">৳{prod.price}</span>
-                  
                   <button 
                     onClick={(e) => addToCart(prod, e)} 
                     className="bg-[#4a0d1e] hover:bg-[#330814] text-white font-medium px-4 py-2.5 rounded-xl transition text-xs shadow-md"
@@ -342,6 +367,58 @@ export default function HomeStore() {
           </div>
         )}
       </main>
+
+      {/* WISHLIST DRAWER MODAL */}
+      {isWishlistOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-[#330814] h-full p-6 flex flex-col justify-between border-l border-amber-600/35 overflow-y-auto shadow-2xl text-white">
+            <div>
+              <div className="flex justify-between items-center mb-6 border-b border-amber-900/50 pb-4">
+                <h2 className="text-xl font-bold text-amber-400">❤️ Your Wishlist ({wishlistProducts.length})</h2>
+                <button onClick={() => setIsWishlistOpen(false)} className="text-gray-400 hover:text-white text-lg font-bold">✕</button>
+              </div>
+
+              {wishlistProducts.length === 0 ? (
+                <p className="text-gray-400 text-center py-12">আপনার উইশলিস্টে কোনো প্রডাক্ট নেই।</p>
+              ) : (
+                <div className="space-y-4">
+                  {wishlistProducts.map((item) => (
+                    <div key={item.id} className="flex justify-between items-center bg-[#22050d] p-3 rounded-lg border border-amber-900/40">
+                      <div className="flex items-center gap-3">
+                        <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded" />
+                        <div>
+                          <h4 className="font-semibold text-sm text-amber-200 line-clamp-1">{item.name}</h4>
+                          <p className="text-xs text-amber-300 font-bold">৳{item.price}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => { addToCart(item); }} 
+                          className="bg-amber-500 hover:bg-amber-600 text-black text-xs px-3 py-1.5 rounded font-bold shadow"
+                        >
+                          Add
+                        </button>
+                        <button 
+                          onClick={(e) => toggleWishlist(item.id, e)} 
+                          className="text-red-400 hover:text-red-300 text-sm font-bold p-1"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button 
+              onClick={() => setIsWishlistOpen(false)} 
+              className="mt-6 w-full bg-[#22050d] border border-amber-600/40 text-amber-300 py-2.5 rounded-xl text-sm font-semibold"
+            >
+              Close Wishlist
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ORDER TRACKING MODAL */}
       {isTrackingOpen && (
@@ -475,7 +552,6 @@ export default function HomeStore() {
                     </div>
                   ))}
 
-                  {/* Coupon Code Section */}
                   <div className="bg-[#22050d] p-3 rounded-xl border border-amber-900/40 mt-4">
                     <label className="text-xs font-bold text-amber-300 block mb-2">Have a Promo Code? (Use EID10)</label>
                     <div className="flex gap-2">
