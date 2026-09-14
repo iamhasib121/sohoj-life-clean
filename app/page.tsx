@@ -414,7 +414,7 @@ export default function StorePage() {
                           <div className="flex items-center gap-2 mt-1.5">
                             <button onClick={() => updateQuantity(item.id, -1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Minus size={10} /></button>
                             <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Plus size5={10} /></button>
+                            <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Plus size={10} /></button>
                           </div>
                         </div>
                       </div>
