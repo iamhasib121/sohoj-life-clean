@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, User, Search, Star, MessageCircle, ShieldCheck, Truck, Headphones, RotateCcw, X, CheckCircle2 } from 'lucide-react';
+import { ShoppingCart, Heart, User, Search, Star, MessageCircle, ShieldCheck, Truck, Headphones, RotateCcw, X, CheckCircle2, Settings } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All Products');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<any>(null); // Quick View Modal State
-  const [notification, setNotification] = useState<string | null>(null); // Pop-up Notification State
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [notification, setNotification] = useState<string | null>(null);
 
   const categories = [
     "All Products", 
@@ -36,24 +37,18 @@ export default function Home() {
     { id: 15, name: "Traditional Misti Box", category: "Food (ফুড)", price: "Tk 400", rating: 4.8, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=500&auto=format&fit=crop", description: "Assorted premium traditional Bengali sweets made with pure chhena and rich syrup.", sizes: ["1 KG Box"] },
   ];
 
-  // Trigger Pop-up Notification helper
   const showPopup = (msg: string) => {
     setNotification(msg);
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
+    setTimeout(() => setNotification(null), 3000);
   };
 
-  // WhatsApp Order Function with Number selection (01303422278 & 01879955594)
-  const handleWhatsAppOrder = (product: any, targetNumber: string, selectedSize?: string) => {
-    const sizeText = selectedSize ? `\n*Size/Variant:* ${selectedSize}` : '';
-    const message = `আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি অর্ডার করতে চাই:\n\n*প্রোডাক্ট:* ${product.name}${sizeText}\n*দাম:* ${product.price}\n\nদয়া করে অর্ডারটি কনফার্ম করুন।`;
+  const handleWhatsAppOrder = (product: any, targetNumber: string) => {
+    const message = `আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি অর্ডার করতে চাই:\n\n*প্রোডাক্ট:* ${product.name}\n*দাম:* ${product.price}\n\nদয়া করে অর্ডারটি কনফার্ম করুন।`;
     const url = `https://wa.me/${targetNumber}?text=${encodeURIComponent(message)}`;
     showPopup(`Redirecting to WhatsApp for ${product.name}...`);
     window.open(url, '_blank');
   };
 
-  // Live Search & Category Filtering Logic
   const filteredProducts = products.filter(product => {
     const matchesCategory = activeCategory === 'All Products' || product.category === activeCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -64,7 +59,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#581c23] text-white font-sans selection:bg-[#f5d77f] selection:text-[#581c23] relative">
       
-      {/* Pop-up Notification Animation Toast */}
       {notification && (
         <div className="fixed top-20 right-4 z-50 bg-[#f5d77f] text-[#581c23] px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-bold animate-bounce border border-white/20">
           <CheckCircle2 size={16} />
@@ -72,14 +66,13 @@ export default function Home() {
         </div>
       )}
 
-      {/* Top Bar / Header */}
+      {/* Header */}
       <header className="border-b border-white/10 bg-[#4a151b] sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
             <span className="text-xl font-extrabold tracking-wider text-[#f5d77f] cursor-pointer" onClick={() => { setActiveCategory('All Products'); setSearchQuery(''); }}>Sohoj Life</span>
           </div>
 
-          {/* Live Search Input Bar */}
           <div className="flex-1 max-w-md relative hidden sm:block">
             <input 
               type="text" 
@@ -96,14 +89,18 @@ export default function Home() {
             )}
           </div>
 
-          <div className="flex items-center space-x-4 text-sm">
-            <button onClick={() => showPopup("Wishlist feature activated!")} className="hover:text-[#f5d77f] p-1.5 rounded-full hover:bg-white/10 transition"><Heart size={18}/></button>
-            <button onClick={() => showPopup("Cart is ready for WhatsApp Checkout!")} className="hover:text-[#f5d77f] p-1.5 rounded-full hover:bg-white/10 transition relative"><ShoppingCart size={18}/></button>
-            <button onClick={() => showPopup("Welcome, Valued Customer!")} className="hover:text-[#f5d77f] p-1.5 rounded-full hover:bg-white/10 transition"><User size={18}/></button>
+          <div className="flex items-center space-x-3 text-sm">
+            <Link 
+              href="/admin"
+              className="bg-[#f5d77f] text-[#581c23] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow hover:bg-yellow-400 transition"
+            >
+              <Settings size={14} /> Admin
+            </Link>
+            <button onClick={() => showPopup("Wishlist activated!")} className="hover:text-[#f5d77f] p-1.5 rounded-full hover:bg-white/10 transition hidden sm:block"><Heart size={18}/></button>
+            <button onClick={() => showPopup("Cart ready!")} className="hover:text-[#f5d77f] p-1.5 rounded-full hover:bg-white/10 transition hidden sm:block"><ShoppingCart size={18}/></button>
           </div>
         </div>
 
-        {/* Mobile Search Bar Row */}
         <div className="px-4 pb-3 sm:hidden">
           <div className="relative">
             <input 
@@ -123,24 +120,10 @@ export default function Home() {
         <p className="text-xs text-gray-300 max-w-xl mx-auto">
           Crafted with care, delivered to your door. Authentic Bangladeshi artisan products & foods.
         </p>
-        <div className="mt-3 flex justify-center gap-3">
-          <button onClick={() => showPopup("Explore our latest arrivals below!")} className="bg-[#f5d77f] text-[#581c23] px-5 py-1.5 rounded-full text-xs font-semibold hover:bg-yellow-400 transition shadow-md">Shop Now →</button>
-        </div>
-        <div className="flex justify-center flex-wrap gap-4 sm:gap-6 mt-4 text-[11px] text-gray-300">
-          <span>✦ New Arrivals Weekly</span>
-          <span>✦ Handpicked Quality</span>
-          <span>✦ 7-Day Easy Return</span>
-        </div>
       </div>
 
-      {/* Main Container */}
+      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center mb-6">
-          <p className="text-xs uppercase tracking-widest text-[#f5d77f]">Shop by Category</p>
-          <h2 className="text-2xl font-serif font-bold mt-1">Curated for Every Occasion</h2>
-        </div>
-
-        {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {categories.map((cat) => (
             <button
@@ -157,17 +140,13 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Product Grid */}
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-16 text-gray-300 text-sm">
-            No products found matching your search. Try searching something else!
-          </div>
+          <div className="text-center py-16 text-gray-300 text-sm">No products found matching your search.</div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="bg-white text-gray-900 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between group hover:shadow-2xl transition-all duration-300">
+              <div key={product.id} className="bg-white text-gray-900 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between group">
                 <div>
-                  {/* Click on Image for Quick View Modal */}
                   <div className="h-44 w-full bg-gray-100 overflow-hidden relative cursor-pointer" onClick={() => setSelectedProduct(product)}>
                     <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                     <span className="absolute bottom-2 right-2 bg-black/60 text-white text-[9px] px-2 py-0.5 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition">Quick View</span>
@@ -183,23 +162,12 @@ export default function Home() {
                 </div>
                 
                 <div className="p-3 pt-0 flex flex-col gap-2 mt-auto">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#581c23]">{product.price}</span>
-                  </div>
-                  {/* WhatsApp Order Buttons for both numbers (01303422278 & 01879955594) */}
+                  <span className="text-xs font-bold text-[#581c23]">{product.price}</span>
                   <div className="grid grid-cols-2 gap-1">
-                    <button 
-                      onClick={() => handleWhatsAppOrder(product, "8801303422278")}
-                      className="bg-[#25D366] text-white text-[10px] py-1.5 rounded font-medium hover:bg-[#20ba5a] flex items-center justify-center gap-1 shadow transition active:scale-95"
-                      title="Order via WhatsApp 1"
-                    >
+                    <button onClick={() => handleWhatsAppOrder(product, "8801303422278")} className="bg-[#25D366] text-white text-[10px] py-1.5 rounded font-medium flex items-center justify-center gap-1">
                       <MessageCircle size={12} /> Order 1
                     </button>
-                    <button 
-                      onClick={() => handleWhatsAppOrder(product, "8801879955594")}
-                      className="bg-[#128C7E] text-white text-[10px] py-1.5 rounded font-medium hover:bg-[#0f756b] flex items-center justify-center gap-1 shadow transition active:scale-95"
-                      title="Order via WhatsApp 2"
-                    >
+                    <button onClick={() => handleWhatsAppOrder(product, "8801879955594")} className="bg-[#128C7E] text-white text-[10px] py-1.5 rounded font-medium flex items-center justify-center gap-1">
                       <MessageCircle size={12} /> Order 2
                     </button>
                   </div>
@@ -210,14 +178,11 @@ export default function Home() {
         )}
       </main>
 
-      {/* Quick View Modal (প্রোডাক্ট ডিটেইলস মোডাল) */}
+      {/* Quick View Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white text-gray-900 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200">
-            <button 
-              onClick={() => setSelectedProduct(null)} 
-              className="absolute top-3 right-3 bg-gray-200 hover:bg-gray-300 text-gray-700 p-1.5 rounded-full transition z-10"
-            >
+          <div className="bg-white text-gray-900 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative">
+            <button onClick={() => setSelectedProduct(null)} className="absolute top-3 right-3 bg-gray-200 hover:bg-gray-300 text-gray-700 p-1.5 rounded-full z-10">
               <X size={18} />
             </button>
             <div className="grid grid-cols-1 sm:grid-cols-2">
@@ -228,114 +193,26 @@ export default function Home() {
                 <div>
                   <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded uppercase font-semibold">{selectedProduct.category}</span>
                   <h3 className="text-base font-bold text-gray-900 mt-2">{selectedProduct.name}</h3>
-                  <p className="text-sm font-bold text-[#581c23] mt-1">{selectedProduct.price}</p>
+                  <p className="text-sm font-bold text-[#581c23] mt-1">{selectedProjectPrice(selectedProduct.price)}</p>
                   <p className="text-xs text-gray-600 mt-3 leading-relaxed">{selectedProduct.description}</p>
-                  
-                  {/* Available Sizes */}
-                  <div className="mt-4">
-                    <span className="text-[11px] font-semibold text-gray-700 block mb-1">Available Size / Variant:</span>
-                    <div className="flex flex-wrap gap-1">
-                      {selectedProduct.sizes?.map((size: string) => (
-                        <span key={size} className="text-[10px] border border-gray-300 px-2.5 py-1 rounded-md bg-gray-50 text-gray-800 font-medium">
-                          {size}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
                 </div>
-
-                <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-2">
-                  <span className="text-[10px] text-gray-500 text-center font-medium">Direct WhatsApp Order Buttons:</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button 
-                      onClick={() => { handleWhatsAppOrder(selectedProduct, "8801303422278"); setSelectedProduct(null); }}
-                      className="bg-[#25D366] text-white text-xs py-2 rounded-lg font-semibold hover:bg-[#20ba5a] flex items-center justify-center gap-1 shadow"
-                    >
-                      <MessageCircle size={14} /> WhatsApp 1
-                    </button>
-                    <button 
-                      onClick={() => { handleWhatsAppOrder(selectedProduct, "8801879955594"); setSelectedProduct(null); }}
-                      className="bg-[#128C7E] text-white text-xs py-2 rounded-lg font-semibold hover:bg-[#0f756b] flex items-center justify-center gap-1 shadow"
-                    >
-                      <MessageCircle size={14} /> WhatsApp 2
-                    </button>
-                  </div>
+                <div className="mt-6 pt-4 border-t border-gray-100 grid grid-cols-2 gap-2">
+                  <button onClick={() => { handleWhatsAppOrder(selectedProduct, "8801303422278"); setSelectedProduct(null); }} className="bg-[#25D366] text-white text-xs py-2 rounded-lg font-semibold flex items-center justify-center gap-1">
+                    <MessageCircle size={14} /> WhatsApp 1
+                  </button>
+                  <button onClick={() => { handleWhatsAppOrder(selectedProduct, "8801879955594"); setSelectedProduct(null); }} className="bg-[#128C7E] text-white text-xs py-2 rounded-lg font-semibold flex items-center justify-center gap-1">
+                    <MessageCircle size={14} /> WhatsApp 2
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
-
-      {/* Features Footer Strip */}
-      <div className="border-t border-b border-white/10 my-12 py-6 bg-[#4a151b]">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-xs">
-          <div className="flex flex-col items-center gap-1">
-            <Truck size={20} className="text-[#f5d77f]" />
-            <span className="font-semibold">Cash on Delivery</span>
-            <span className="text-[10px] text-gray-300">Pay when it arrives</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <RotateCcw size={20} className="text-[#f5d77f]" />
-            <span className="font-semibold">Fast Delivery</span>
-            <span className="text-[10px] text-gray-300">72-78 hrs nationwide</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <ShieldCheck size={20} className="text-[#f5d77f]" />
-            <span className="font-semibold">Secure Checkout</span>
-            <span className="text-[10px] text-gray-300">100% safe payments</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Headphones size={20} className="text-[#f5d77f]" />
-            <span className="font-semibold">24/7 Support</span>
-            <span className="text-[10px] text-gray-300">Always here to help</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer */}
-      <footer className="bg-[#421217] pt-10 pb-6 text-xs text-gray-300 border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <h4 className="font-bold text-white text-sm mb-2">Sohoj Life</h4>
-            <p className="text-[11px] leading-relaxed text-gray-300">
-              Your trusted destination for premium fashion and authentic Bengali flavours — making everyday life simple and beautiful.
-            </p>
-          </div>
-          <div>
-            <h5 className="font-semibold text-white mb-2 uppercase text-[11px] tracking-wider">Shop</h5>
-            <ul className="space-y-1.5 text-[11px]">
-              <li>Men's Wear</li>
-              <li>Women's Wear</li>
-              <li>Kid's Wear</li>
-              <li>Winter</li>
-              <li>Food</li>
-            </ul>
-          </div>
-          <div>
-            <h5 className="font-semibold text-white mb-2 uppercase text-[11px] tracking-wider">Company</h5>
-            <ul className="space-y-1.5 text-[11px]">
-              <li>About Us</li>
-              <li>Our Story</li>
-              <li>Careers</li>
-              <li>Blog</li>
-            </ul>
-          </div>
-          <div>
-            <h5 className="font-semibold text-white mb-2 uppercase text-[11px] tracking-wider">Support</h5>
-            <ul className="space-y-1.5 text-[11px]">
-              <li>Contact</li>
-              <li>Shipping</li>
-              <li>Returns</li>
-              <li>FAQ</li>
-            </ul>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 pt-4 border-t border-white/10 flex flex-col sm:flex-row justify-between text-[10px] text-gray-400">
-          <p>© 2026 Sohoj Life. All rights reserved.</p>
-          <p>Made with love in Bangladesh</p>
-        </div>
-      </footer>
     </div>
   );
+}
+
+function selectedProjectPrice(price: string) {
+  return price;
 }
