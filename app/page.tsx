@@ -1,7 +1,7 @@
-'use client';
+
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck, Star } from 'lucide-react';
+import { ShoppingBag, Search, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck, Star, Heart, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
@@ -129,159 +129,185 @@ export default function StorePage() {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
   };
 
-  // Exact Logo Component replicating the reference screenshot
+  // Logo styled to match the supplied Sohoj Life reference.
   const Logo = () => (
-    <div className="flex items-center gap-2 bg-[#2D060B] border border-[#D4AF37]/50 px-3 py-1.5 rounded-lg shadow-md">
-      <div className="bg-[#D4AF37] text-black font-black px-2 py-0.5 rounded text-xs tracking-wider shadow">SL</div>
-      <div className="flex flex-col">
-        <span className="text-white font-black tracking-widest text-xs flex items-center gap-1">
-          Sohoj <span className="text-[#D4AF37]">Life</span>
-        </span>
-        <span className="text-[7px] text-[#D4AF37] tracking-[0.2em] font-bold">PREMIUM BRANDS</span>
+    <div className="flex items-center gap-2">
+      <div className="relative w-9 h-9 rounded-full bg-[#4a0b17] border-2 border-[#d4af37] flex items-center justify-center shadow-sm">
+        <span className="text-[#d4af37] font-black text-[11px] tracking-tight">SL</span>
+        <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-[#d4af37] border-2 border-[#eee8e9]" />
+      </div>
+      <div className="leading-none">
+        <div className="text-[#4a0b17] font-black text-[15px] tracking-tight">
+          Sohoj <span className="text-[#a27a12]">Life</span>
+        </div>
+        <div className="mt-1 text-[6px] tracking-[0.24em] font-bold text-[#a27a12] uppercase">
+          Premium Lifestyle
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#3F0C13] text-[#2D2D2D] font-sans selection:bg-[#D4AF37] selection:text-white">
-      {/* Top Announcement Bar */}
-      <div className="bg-[#2D060B] text-[#D4AF37] py-1.5 px-4 text-center text-[11px] font-medium border-b border-[#5C111C]">
-        ✨ Free Express Shipping on Orders Over Tk 2,000
+    <div className="min-h-screen bg-white text-[#292526] font-sans selection:bg-[#4a0b17] selection:text-white">
+      {/* Top announcement strip */}
+      <div className="h-2 bg-[#4a0b17]" />
+      <div className="h-7 bg-[#eee8e9] border-b border-[#ddd5d7] flex items-center justify-center px-4 text-[8px] font-semibold text-[#5b3b40]">
+        <span>✦ Free delivery on orders over Tk 2,000 — Cash on Delivery available ✦</span>
       </div>
 
-      {/* Navbar with Exact Logo */}
-      <header className="sticky top-0 z-40 bg-[#3F0C13]/95 backdrop-blur-md border-b border-[#5C111C]">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
+      {/* Reference-style header */}
+      <header className="h-14 bg-[#f4eff0] border-b border-[#ded6d8]">
+        <div className="max-w-6xl mx-auto h-full px-6 flex items-center justify-between">
+          <div className="w-24" />
           <Logo />
-
-          <div className="hidden md:flex flex-1 max-w-sm relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" size={14} />
-            <input 
-              type="text" 
-              placeholder="Search products" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#2D060B] text-white placeholder-zinc-400 pl-10 pr-4 py-1.5 rounded-full border border-[#5C111C] focus:border-[#D4AF37] focus:outline-none text-xs transition"
-            />
-          </div>
-
-          <div className="flex items-center gap-3 text-xs text-white">
-            <button 
-              onClick={() => setIsCartOpen(true)}
-              className="flex items-center gap-1.5 bg-[#2D060B] hover:bg-[#5C111C] px-3 py-1.5 rounded-full border border-[#5C111C] transition font-semibold"
-            >
-              <ShoppingBag size={14} className="text-[#D4AF37]" /> Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
+          <div className="flex items-center gap-4 text-[#75676a]">
+            <button aria-label="Search" className="hover:text-[#4a0b17] transition">
+              <Search size={13} strokeWidth={1.8} />
             </button>
-            <Link 
-              href="/admin" 
-              className="bg-[#D4AF37] hover:bg-[#c29d30] text-black px-3 py-1.5 rounded-full font-bold transition flex items-center gap-1 shadow"
+            <button aria-label="Wishlist" className="hover:text-[#4a0b17] transition">
+              <Heart size={13} strokeWidth={1.8} />
+            </button>
+            <button aria-label="Account" className="hover:text-[#4a0b17] transition">
+              <UserRound size={13} strokeWidth={1.8} />
+            </button>
+            <button
+              onClick={() => setIsCartOpen(true)}
+              aria-label="Open cart"
+              className="relative hover:text-[#4a0b17] transition"
             >
-              <ShieldCheck size={12} /> Admin
-            </Link>
+              <ShoppingBag size={13} strokeWidth={1.8} />
+              {cart.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
+                <span className="absolute -top-2 -right-2 min-w-3 h-3 px-0.5 rounded-full bg-[#4a0b17] text-white text-[6px] flex items-center justify-center">
+                  {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Hero Banner Section */}
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="text-center text-zinc-300 text-[11px] mb-4">
-          crafted with care, delivered to your door across bangladesh.
-        </div>
-
-        <div className="flex justify-center items-center gap-3 mb-8">
-          <button 
-            onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-[#D4AF37] hover:bg-[#c29d30] text-black px-5 py-2 rounded-full text-xs font-bold shadow transition"
-          >
-            Shop Now →
-          </button>
-          <button 
-            onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
-            className="border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-5 py-2 rounded-full text-xs font-bold transition"
-          >
-            Explore Categories
-          </button>
-        </div>
-
-        <div className="flex justify-center items-center gap-6 text-[11px] text-zinc-300 font-medium mb-12">
-          <span>✨ New Arrivals Weekly</span>
-          <span>⭐ Handpicked Quality</span>
-          <span>🔄 7-Day Easy Return</span>
-        </div>
-
-        {/* Shop By Category Section */}
-        <div id="shop" className="text-center mb-8">
-          <span className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest block mb-1">SHOP BY CATEGORY</span>
-          <h2 className="text-xl font-black text-white mb-6">Curated for Every Occasion</h2>
-          
-          <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 flex-wrap">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition ${
-                  selectedCategory === cat 
-                    ? 'bg-[#D4AF37] text-black shadow' 
-                    : 'bg-[#2D060B] hover:bg-[#5C111C] text-zinc-300 border border-[#5C111C]'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+      {/* Maroon hero exactly in the visual position of the reference */}
+      <section className="bg-[#4a0b17] text-white">
+        <div className="max-w-6xl mx-auto px-6 h-40 flex flex-col items-center justify-center text-center">
+          <p className="text-[8px] text-[#d4af37] uppercase tracking-[0.22em] font-bold">
+            SIMPLE • AUTHENTIC • PREMIUM
+          </p>
+          <h1 className="mt-1 text-[19px] font-black tracking-tight">
+            Everyday essentials, selected for you
+          </h1>
+          <p className="mt-1 text-[8px] text-[#eadfe1]">
+            Quality fashion, kids' products and food — delivered across Bangladesh.
+          </p>
+          <div className="flex items-center gap-2.5 mt-3">
+            <button
+              onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
+              className="bg-[#d4af37] hover:bg-[#c39e2e] text-[#2d070d] px-5 py-1.5 rounded-full text-[8px] font-black shadow transition"
+            >
+              Shop Now →
+            </button>
+            <button
+              onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
+              className="border border-[#d4af37] text-[#f0d76d] hover:bg-white/5 px-5 py-1.5 rounded-full text-[8px] font-black transition"
+            >
+              Explore Categories
+            </button>
           </div>
+          <div className="flex items-center gap-5 mt-4 text-[7px] text-[#e7dadd] font-semibold">
+            <span>✦ New Arrivals Weekly</span>
+            <span>✦ Handpicked Quality</span>
+            <span>✦ 7-Day Easy Returns</span>
+          </div>
+        </div>
+      </section>
 
-          <div className="flex justify-between items-center mt-6 px-2 text-xs text-zinc-300">
-            <span>Showing {filteredProducts.length} products</span>
-            <select 
+      {/* Main catalogue */}
+      <main id="shop" className="max-w-6xl mx-auto px-6 pt-10 pb-16">
+        <div className="text-center mb-6">
+          <span className="text-[7px] text-[#a27a12] font-bold uppercase tracking-[0.28em] block mb-1">
+            SHOP BY CATEGORY
+          </span>
+          <h2 className="text-[20px] font-black text-[#201b1c] tracking-tight">
+            Curated for Every Occasion
+          </h2>
+        </div>
+
+        <div className="flex justify-center items-center gap-1.5 flex-wrap mb-6">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`whitespace-nowrap px-3.5 py-1.5 rounded-full text-[8px] font-bold transition border ${
+                selectedCategory === cat
+                  ? 'bg-[#4a0b17] text-white border-[#4a0b17] shadow-sm'
+                  : 'bg-white text-[#665b5d] border-[#d8d2d3] hover:border-[#4a0b17] hover:text-[#4a0b17]'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex justify-between items-center mb-3 text-[8px] text-[#81777a]">
+          <span>Showing <strong>{filteredProducts.length}</strong> products</span>
+          <div className="flex items-center gap-2">
+            <span>Sort by</span>
+            <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-[#2D060B] text-zinc-300 px-3 py-1.5 rounded-full border border-[#5C111C] text-xs focus:outline-none"
+              className="bg-white text-[#5d5355] px-2.5 py-1 rounded-full border border-[#d8d2d3] text-[8px] focus:outline-none"
             >
-              <option value="featured">Sort: Featured</option>
+              <option value="featured">Featured</option>
               <option value="low-high">Price: Low to High</option>
               <option value="high-low">Price: High to Low</option>
             </select>
           </div>
         </div>
 
-        {/* Product Grid */}
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="bg-white rounded-xl h-64 animate-pulse"></div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+            {[1,2,3,4,5,6,7,8].map((n) => (
+              <div key={n} className="bg-[#f0eeee] rounded-lg h-60 animate-pulse" />
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-16 bg-[#2D060B] rounded-xl border border-[#5C111C]">
-            <p className="text-zinc-400 text-xs">No items found.</p>
+          <div className="text-center py-16 bg-[#faf8f8] rounded-xl border border-[#e5dfe0]">
+            <p className="text-[#999092] text-xs">No items found.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {filteredProducts.map((product) => (
-              <div 
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+            {filteredProducts.map((product, index) => (
+              <div
                 key={product.id}
-                className="bg-white rounded-xl border border-zinc-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
+                className="bg-white rounded-lg border border-[#ded9da] overflow-hidden shadow-[0_2px_8px_rgba(50,30,35,0.10)] hover:shadow-[0_5px_14px_rgba(50,30,35,0.16)] transition flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative aspect-[4/5] bg-zinc-100 overflow-hidden">
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
+                  <div className="relative aspect-square bg-[#f0efed] overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
                       className="w-full h-full object-cover"
                     />
+                    <span className="absolute top-2 left-2 bg-white/95 border border-[#e3dddd] text-[#5b4448] rounded-full px-1.5 py-0.5 text-[6px] font-bold">
+                      {index < 4 ? 'New' : index % 3 === 0 ? 'Best Seller' : 'New'}
+                    </span>
                   </div>
-                  <div className="p-3 text-center">
-                    <h3 className="font-bold text-zinc-800 text-xs line-clamp-1 mb-1">{product.name}</h3>
-                    <div className="flex items-center justify-center gap-1 text-amber-500 text-[10px] mb-1">
-                      <Star size={10} fill="currentColor" /> <span>4.9</span>
+                  <div className="px-2.5 pt-2 pb-1.5">
+                    <h3 className="font-bold text-[#31292b] text-[8px] line-clamp-1 mb-1">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center gap-1 text-[#c58c12] text-[7px] mb-1">
+                      <Star size={8} fill="currentColor" />
+                      <span>4.9</span>
                     </div>
-                    <p className="text-xs font-black text-[#3F0C13]">{product.price}</p>
+                    <p className="text-[10px] font-black text-[#4a0b17]">
+                      {product.price}
+                    </p>
                   </div>
                 </div>
-                <div className="p-3 pt-0">
-                  <button 
+                <div className="px-2.5 pb-2.5">
+                  <button
                     onClick={() => addToCart(product)}
-                    className="w-full bg-[#3F0C13] hover:bg-[#581c25] text-white py-2 rounded-lg font-bold text-[11px] transition shadow"
+                    className="w-full bg-[#4a0b17] hover:bg-[#621323] text-white py-1.5 rounded-full font-bold text-[7px] transition"
                   >
                     Add to Cart
                   </button>
@@ -292,152 +318,154 @@ export default function StorePage() {
         )}
       </main>
 
-      {/* Footer Features Bar */}
-      <div className="bg-[#2D060B] border-t border-[#5C111C] py-6 px-4 mt-16 text-center text-zinc-300 text-xs">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Feature strip */}
+      <section className="border-t border-[#e7e2e3] bg-white py-6">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">Cash on Delivery</span>
-            <span className="text-[10px] text-zinc-400">Pay when it arrives</span>
+            <div className="mx-auto mb-1.5 w-7 h-7 rounded-full bg-[#f1e7e9] flex items-center justify-center text-[#4a0b17] text-[10px]">▣</div>
+            <span className="font-bold text-[#4a0b17] block text-[8px]">Cash on Delivery</span>
+            <span className="text-[7px] text-[#8b8183]">Pay when it arrives</span>
           </div>
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">Fast Delivery</span>
-            <span className="text-[10px] text-zinc-400">All nationwide</span>
+            <div className="mx-auto mb-1.5 w-7 h-7 rounded-full bg-[#f1e7e9] flex items-center justify-center text-[#4a0b17] text-[10px]">▸</div>
+            <span className="font-bold text-[#4a0b17] block text-[8px]">Fast Delivery</span>
+            <span className="text-[7px] text-[#8b8183]">All nationwide</span>
           </div>
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">Secure Checkout</span>
-            <span className="text-[10px] text-zinc-400">100% safe payments</span>
+            <div className="mx-auto mb-1.5 w-7 h-7 rounded-full bg-[#f1e7e9] flex items-center justify-center text-[#4a0b17] text-[10px]">◉</div>
+            <span className="font-bold text-[#4a0b17] block text-[8px]">Secure Checkout</span>
+            <span className="text-[7px] text-[#8b8183]">100% safe payments</span>
           </div>
           <div>
-            <span className="font-bold text-[#D4AF37] block mb-0.5">24/7 Support</span>
-            <span className="text-[10px] text-zinc-400">Always here to help</span>
+            <div className="mx-auto mb-1.5 w-7 h-7 rounded-full bg-[#f1e7e9] flex items-center justify-center text-[#4a0b17] text-[10px]">◌</div>
+            <span className="font-bold text-[#4a0b17] block text-[8px]">24/7 Support</span>
+            <span className="text-[7px] text-[#8b8183]">Always here to help</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Bottom Footer Details with Logo */}
-      <footer className="bg-[#200408] text-zinc-400 py-8 px-6 text-xs border-t border-[#3F0C13]">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      {/* Footer */}
+      <footer className="bg-[#4a0b17] text-[#d9cacc] py-8 px-6 border-t border-[#5d1825]">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8">
           <div>
-            <div className="mb-3">
-              <Logo />
-            </div>
-            <p className="text-[11px] max-w-xs text-zinc-400">
+            <div className="mb-3"><Logo /></div>
+            <p className="text-[8px] leading-4 max-w-xs text-[#cdbdc0]">
               Your trusted destination for premium lifestyle and authentic Bengali fashion — making everyday life simple and beautiful.
             </p>
           </div>
-          <div className="flex gap-12">
-            <div>
-              <span className="text-white font-bold block mb-2 text-[11px]">SHOP</span>
-              <ul className="space-y-1 text-[11px] text-zinc-400">
-                <li>Men's Wear</li>
-                <li>Women's Wear</li>
-                <li>Kids' Wear</li>
-                <li>Winter Jackets</li>
-                <li>Food</li>
-              </ul>
-            </div>
-            <div>
-              <span className="text-white font-bold block mb-2 text-[11px]">COMPANY</span>
-              <ul className="space-y-1 text-[11px] text-zinc-400">
-                <li>About Us</li>
-                <li>Our Story</li>
-                <li>Careers</li>
-                <li>Blog</li>
-              </ul>
-            </div>
-            <div>
-              <span className="text-white font-bold block mb-2 text-[11px]">SUPPORT</span>
-              <ul className="space-y-1 text-[11px] text-zinc-400">
-                <li>Contact</li>
-                <li>Shipping</li>
-                <li>Returns</li>
-                <li>FAQ</li>
-              </ul>
-            </div>
+          <div>
+            <span className="text-[#d4af37] font-bold block mb-2 text-[8px]">SHOP</span>
+            <ul className="space-y-1 text-[8px] text-[#cdbdc0]">
+              <li>Men's Wear</li><li>Women's Wear</li><li>Kids' Wear</li><li>Winter Jackets</li><li>Food</li>
+            </ul>
           </div>
+          <div>
+            <span className="text-[#d4af37] font-bold block mb-2 text-[8px]">COMPANY</span>
+            <ul className="space-y-1 text-[8px] text-[#cdbdc0]">
+              <li>About Us</li><li>Our Story</li><li>Careers</li><li>Blog</li>
+            </ul>
+          </div>
+          <div>
+            <span className="text-[#d4af37] font-bold block mb-2 text-[8px]">SUPPORT</span>
+            <ul className="space-y-1 text-[8px] text-[#cdbdc0]">
+              <li>Contact</li><li>Shipping</li><li>Returns</li><li>FAQ</li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto mt-7 pt-3 border-t border-[#68202c] text-center text-[7px] text-[#bca9ac]">
+          © 2026 Sohoj Life. All rights reserved.
         </div>
       </footer>
 
       {/* Cart Drawer */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
-          <div className="w-full max-w-md bg-white text-zinc-900 border-l border-zinc-200 h-full p-6 flex flex-col justify-between overflow-y-auto shadow-2xl">
-            <div>
-              <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
-                <h2 className="text-sm font-bold text-zinc-900 flex items-center gap-2">
-                  <ShoppingBag size={16} className="text-[#3F0C13]" /> Your Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
-                </h2>
-                <button onClick={() => setIsCartOpen(false)} className="text-zinc-500 hover:text-black p-1 rounded-lg">
-                  <X size={18} />
-                </button>
-              </div>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+          <div className="w-full max-w-md bg-white text-zinc-900 border-l border-zinc-200 h-full p-5 flex flex-col overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-200">
+              <h2 className="text-xs font-bold text-zinc-900 flex items-center gap-2">
+                <ShoppingBag size={15} className="text-[#3F0C13]" />
+                Your Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
+              </h2>
+              <button onClick={() => setIsCartOpen(false)} className="text-zinc-500 hover:text-black p-1 rounded-lg">
+                <X size={17} />
+              </button>
+            </div>
 
-              {cart.length === 0 ? (
-                <div className="text-center py-20 text-zinc-500 text-xs">Your cart is empty</div>
-              ) : (
-                <>
-                  <div className="space-y-3 my-4">
-                    {cart.map(item => (
-                      <div key={item.id} className="flex items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
-                        <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg" />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-zinc-900 text-xs truncate">{item.name}</h4>
-                          <p className="text-[#3F0C13] text-xs font-bold">{item.price}</p>
-                          <div className="flex items-center gap-2 mt-1.5">
-                            <button onClick={() => updateQuantity(item.id, -1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Minus size={10} /></button>
-                            <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-zinc-200 rounded text-zinc-800"><Plus size={10} /></button>
-                          </div>
+            {cart.length === 0 ? (
+              <div className="text-center py-20 text-zinc-500 text-xs">Your cart is empty</div>
+            ) : (
+              <div className="flex-1">
+                <div className="space-y-3 my-4">
+                  {cart.map(item => (
+                    <div key={item.id} className="flex items-center gap-3 bg-zinc-50 p-2.5 rounded-xl border border-zinc-200">
+                      <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg" />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-zinc-900 text-[10px] truncate">{item.name}</h4>
+                        <p className="text-[#3F0C13] text-[10px] font-bold">{item.price}</p>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <button onClick={() => updateQuantity(item.id, -1)} className="p-1 bg-zinc-200 rounded text-zinc-800">
+                            <Minus size={10} />
+                          </button>
+                          <span className="text-[10px] font-bold w-4 text-center">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-zinc-200 rounded text-zinc-800">
+                            <Plus size={10} />
+                          </button>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
+                </div>
+
+                <form onSubmit={handleWhatsAppCheckout} className="space-y-2.5 pt-4 border-t border-zinc-200 text-[10px]">
+                  <h3 className="font-bold text-[#3F0C13]">Checkout Details</h3>
+
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full bg-zinc-50 text-zinc-900 p-2.5 rounded-lg border border-zinc-300 focus:outline-none focus:border-[#3F0C13]"
+                    required
+                  />
+
+                  <input
+                    type="tel"
+                    placeholder="Mobile Number"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full bg-zinc-50 text-zinc-900 p-2.5 rounded-lg border border-zinc-300 focus:outline-none focus:border-[#3F0C13]"
+                    required
+                  />
+
+                  <textarea
+                    placeholder="Delivery Address"
+                    value={customerAddress}
+                    onChange={(e) => setCustomerAddress(e.target.value)}
+                    rows={2}
+                    className="w-full bg-zinc-50 text-zinc-900 p-2.5 rounded-lg border border-zinc-300 focus:outline-none focus:border-[#3F0C13] resize-none"
+                    required
+                  />
+
+                  <div className="flex justify-between items-center font-bold text-xs pt-1">
+                    <span className="text-zinc-600">Total:</span>
+                    <span className="text-[#3F0C13]">Tk {cartTotal.toLocaleString()}</span>
                   </div>
 
-                  <form onSubmit={handleWhatsAppCheckout} className="space-y-3 pt-4 border-t border-zinc-200 text-xs">
-                    <h3 className="font-bold text-[#3F0C13]">Checkout Details</h3>
-                    <input 
-                      type="text" 
-                      placeholder="Full Name" 
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full bg-zinc-50 text-zinc-900 p-3 rounded-xl border border-zinc-300 focus:outline-none focus:border-[#3F0C13]"
-                      required
-                    />
-                    <input 
-                      type="tel" 
-                      placeholder="Mobile Number" 
-                      value={customerPhone}
-                      onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full bg-zinc-50 text-zinc-900 p-3 rounded-xl border border-zinc-300 focus:outline-none focus:border-[#3F0C13]"
-                      required
-                    />
-                    <textarea 
-                      placeholder="Delivery Address" 
-                      value={customerAddress}
-                      onChange={(e) => setCustomerAddress(e.target.value)}
-                      rows={2}
-                      className="w-full bg-zinc-50 text-zinc-900 p-3 rounded-xl border border-zinc-300 focus:outline-none focus:border-[#3F0C13] resize-none"
-                      required
-                    ></textarea>
-
-                    <div className="flex justify-between items-center font-bold text-sm pt-2">
-                      <span className="text-zinc-600">Total:</span>
-                      <span className="text-[#3F0C13]">Tk {cartTotal.toLocaleString()}</span>
-                    </div>
-
-                    <button 
-                      type="submit"
-                      className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition"
-                    >
-                      <MessageCircle size={16} /> Order via WhatsApp <ExternalLink size={14} />
-                    </button>
-                  </form>
-                </>
-              )}
-            </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition"
+                  >
+                    <MessageCircle size={15} />
+                    Order via WhatsApp
+                    <ExternalLink size={13} />
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       )}
     </div>
   );
+
 }
