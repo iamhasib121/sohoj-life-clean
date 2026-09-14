@@ -43,7 +43,8 @@ export default function AdminPage() {
       setIsAdmin(true);
       showPopup("Logged in successfully!");
     } catch (err: any) {
-      setError("Invalid email or password!");
+      console.error(err);
+      setError(err.message); // ফায়ারবেসের আসল এরর মেসেজ স্ক্রিনে দেখাবে
     }
   };
 
@@ -91,7 +92,7 @@ export default function AdminPage() {
           <div className="max-w-md mx-auto bg-[#4a151b] p-8 rounded-2xl border border-white/10 shadow-2xl text-center mt-12">
             <ShieldAlert size={48} className="mx-auto text-[#f5d77f] mb-4" />
             <h2 className="text-lg font-bold mb-2">Admin Sign In</h2>
-            {error && <p className="bg-red-500/20 text-red-200 p-2 rounded mb-4 text-xs">{error}</p>}
+            {error && <p className="bg-red-500/20 text-red-200 p-3 rounded-lg mb-4 text-xs text-left break-words">{error}</p>}
             
             <form onSubmit={handleLogin} className="space-y-4 text-xs text-left">
               <div>
