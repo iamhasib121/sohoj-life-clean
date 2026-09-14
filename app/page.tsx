@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, X, Plus, Minus, MessageCircle, ExternalLink, ShieldCheck, Star, Heart, User } from 'lucide-react';
+import { ShoppingBag, Search, X, Plus, Minus, MessageCircle, ExternalLink, Star, Heart, User } from 'lucide-react';
 import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
@@ -137,7 +137,7 @@ export default function StorePage() {
         ✨ Free Express Shipping on Orders Over Tk 2,000 — Cash on Delivery available
       </div>
 
-      {/* Navbar matching clean design */}
+      {/* Navbar */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
           <Link href="/" className="flex items-center gap-2.5">
@@ -468,5 +468,4 @@ export default function StorePage() {
       )}
     </div>
   );
-}
 }
