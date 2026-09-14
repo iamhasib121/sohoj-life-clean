@@ -1,57 +1,49 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { auth, db } from "@/app/firebase"; // আপনার প্রজেক্টের ফায়ারবেস পাথ অনুযায়ী ঠিক করে নিবেন
 import { 
-  signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut, 
-  User as FirebaseUser 
-} from 'firebase/auth';
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
-import { ShoppingBag, Trash2, Plus, LogOut, Lock, Mail, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+  collection, 
+  addFirestore, // বা addDoc
+  addDoc, 
+  getDocs, 
+  deleteDoc, 
+  doc, 
+  updateDoc, 
+  serverTimestamp 
+} from "firebase/firestore";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  priceNum: number;
-  price: string;
-  image: string;
-}
+export default function AdminDashboard() {
+  const [user, setUser] = useState<any>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
-export default function AdminPage() {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  // Product Form States
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("Men's Wear");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("10");
+  const [image, setImage] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Login Form States
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState('');
+  // Data States
+  const [products, setProducts] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"products" | "orders">("products");
 
-  // Admin Dashboard States
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState("Men's Wear (মেনস ওয়্যার)");
-  const [priceNum, setPriceNum] = useState('');
-  const [image, setImage] = useState('');
-
-  const categories = [
-    "Men's Wear (মেনস ওয়্যার)", 
-    "Women's Wear (উমেনস ওয়্যার)", 
-    "Kids' Wear (কিডস ওয়্যার)", 
-    "Winter Jacket (উইন্টার জ্যাকেট)", 
-    "Food (ফুড)"
-  ];
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setAuthLoading(false);
+      setLoading(false);
       if (currentUser) {
         fetchProducts();
+        fetchOrders();
       }
     });
     return () => unsubscribe();
@@ -59,12 +51,11 @@ export default function AdminPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError('');
+    setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-      console.error("Firebase Login Error:", error.code, error.message);
-      setLoginError(`লগইন ব্যর্থ: ${error.code}`);
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -72,250 +63,340 @@ export default function AdminPage() {
     await signOut(auth);
   };
 
+  // Fetch Products
   const fetchProducts = async () => {
-    setLoading(true);
     try {
       const querySnapshot = await getDocs(collection(db, "products"));
-      const list: Product[] = [];
-      querySnapshot.forEach((docSnap) => {
-        list.push({ id: docSnap.id, ...docSnap.data() } as Product);
-      });
+      const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setProducts(list);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching products:", err);
     }
   };
 
-  const handleAddProduct = async (e: React.FormEvent) => {
+  // Fetch Orders
+  const fetchOrders = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "orders"));
+      const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setOrders(list);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+    }
+  };
+
+  // Save or Update Product
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !priceNum || !image) {
-      alert("দয়া করে সব ফিল্ড পূরণ করুন।");
+    if (!name || !price || !image) {
+      alert("দয়া করে সব ফিল্ড পূরণ করুন!");
       return;
     }
 
     try {
-      await addDoc(collection(db, "products"), {
-        name,
-        category,
-        priceNum: Number(priceNum),
-        price: `Tk ${Number(priceNum).toLocaleString()}`,
-        image
-      });
-      alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
-      setName('');
-      setPriceNum('');
-      setImage('');
-      fetchProducts();
-    } catch (error) {
-      console.error("Error adding product:", error);
-      alert("প্রোডাক্ট যোগ করতে সমস্যা হয়েছে।");
-    }
-  };
-
-  const handleDeleteProduct = async (id: string) => {
-    if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
-      try {
-        await deleteDoc(doc(db, "products", id));
-        fetchProducts();
-      } catch (error) {
-        console.error("Error deleting product:", error);
+      if (editingId) {
+        // Update
+        const docRef = doc(db, "products", editingId);
+        await updateDoc(docRef, {
+          name,
+          category,
+          price: Number(price),
+          stock: Number(stock),
+          image,
+        });
+        alert("প্রোডাক্ট সফলভাবে আপডেট হয়েছে!");
+        setEditingId(null);
+      } else {
+        // Add New
+        await addDoc(collection(db, "products"), {
+          name,
+          category,
+          price: Number(price),
+          stock: Number(stock),
+          image,
+          createdAt: serverTimestamp(),
+        });
+        alert("নতুন প্রোডাক্ট সফলভাবে যুক্ত হয়েছে!");
       }
+
+      // Reset Form
+      setName("");
+      setPrice("");
+      setStock("10");
+      setImage("");
+      fetchProducts();
+    } catch (err: any) {
+      alert("ত্রুটি: " + err.message);
     }
   };
 
-  if (authLoading) {
-    return <div className="min-h-screen bg-[#2D060B] flex items-center justify-center text-[#D4AF37]">Loading...</div>;
+  // Edit Trigger
+  const handleEditClick = (prod: any) => {
+    setEditingId(prod.id);
+    setName(prod.name);
+    setCategory(prod.category || "Men's Wear");
+    setPrice(prod.price);
+    setStock(prod.stock || 10);
+    setImage(prod.image);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Delete Product
+  const handleDeleteProduct = async (id: string) => {
+    if (confirm("আপনি কি নিশ্চিত এই প্রোডাক্টটি ডিলিট করতে চান?")) {
+      await deleteDoc(doc(db, "products", id));
+      fetchProducts();
+    }
+  };
+
+  // Update Order Status
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const docRef = doc(db, "orders", orderId);
+      await updateDoc(docRef, { status: newStatus });
+      alert("অর্ডার স্ট্যাটাস আপডেট হয়েছে!");
+      fetchOrders();
+    } catch (err: any) {
+      alert("সমস্যা হয়েছে: " + err.message);
+    }
+  };
+
+  if (loading) {
+    return <div className="min-h-screen bg-[#330814] text-white flex items-center justify-center">লোড হচ্ছে...</div>;
   }
 
-  // ইউজার লগইন করা না থাকলে লগইন পেজ দেখাবে
+  // Login Screen if not authenticated
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#2D060B] flex items-center justify-center px-4 font-sans">
-        <div className="max-w-md w-full bg-[#3F060D] border border-[#5C111C] p-8 rounded-2xl shadow-2xl text-white">
-          <div className="text-center mb-8">
-            <div className="inline-flex p-3 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full mb-3">
-              <Lock size={24} />
-            </div>
-            <h1 className="text-xl font-black text-white tracking-tight">Admin Login</h1>
-            <p className="text-xs text-zinc-400 mt-1">Sohoj Life Management Portal</p>
-          </div>
-
-          {loginError && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs mb-4 text-center break-words">
-              {loginError}
-            </div>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-4 text-xs">
+      <div className="min-h-screen bg-[#330814] flex items-center justify-center p-4">
+        <div className="bg-[#4a0d1e] p-8 rounded-xl shadow-2xl w-full max-w-md border border-amber-600/30">
+          <h2 className="text-2xl font-bold text-center text-amber-400 mb-6">Admin Login</h2>
+          {error && <div className="bg-red-500/20 border border-red-500 text-red-300 p-3 rounded mb-4 text-sm">{error}</div>}
+          <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Admin Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@sohojlife.com"
-                  className="w-full bg-[#2D060B] text-white pl-10 pr-4 py-3 rounded-xl border border-[#5C111C] focus:outline-none focus:border-[#D4AF37]"
-                  required
-                />
-              </div>
+              <label className="block text-amber-200 text-sm mb-1">Email</label>
+              <input 
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                className="w-full p-3 rounded bg-[#330814] border border-amber-600/40 text-white focus:outline-none focus:border-amber-400"
+                required 
+              />
             </div>
-
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-                <input 
-                  type="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-[#2D060B] text-white pl-10 pr-4 py-3 rounded-xl border border-[#5C111C] focus:outline-none focus:border-[#D4AF37]"
-                  required
-                />
-              </div>
+              <label className="block text-amber-200 text-sm mb-1">Password</label>
+              <input 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                className="w-full p-3 rounded bg-[#330814] border border-amber-600/40 text-white focus:outline-none focus:border-amber-400"
+                required 
+              />
             </div>
-
-            <button 
-              type="submit"
-              className="w-full bg-[#D4AF37] hover:bg-[#c29d30] text-black font-black py-3 rounded-xl transition shadow-lg mt-2 cursor-pointer"
-            >
-              Login to Dashboard
+            <button type="submit" className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold p-3 rounded transition">
+              Login
             </button>
           </form>
-
-          <div className="text-center mt-6">
-            <Link href="/" className="text-zinc-400 hover:text-[#D4AF37] text-xs flex items-center justify-center gap-1.5 transition">
-              <ArrowLeft size={14} /> Back to Store
-            </Link>
-          </div>
         </div>
       </div>
     );
   }
 
-  // লগইন করা থাকলে ড্যাশবোর্ড দেখাবে
   return (
-    <div className="min-h-screen bg-[#2D060B] text-white font-sans p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center bg-[#3F060D] border border-[#5C111C] p-4 rounded-2xl mb-8 shadow-lg">
-          <Link href="/" className="text-zinc-300 hover:text-[#D4AF37] text-xs flex items-center gap-1.5 font-medium transition">
-            <ArrowLeft size={16} /> Back to Store
-          </Link>
-          <h1 className="text-sm md:text-base font-black text-[#D4AF37] flex items-center gap-2">
-            <ShoppingBag size={18} /> Sohoj Life Admin Dashboard
-          </h1>
-          <button 
-            onClick={handleLogout}
-            className="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 border border-red-500/20 transition cursor-pointer"
-          >
-            <LogOut size={14} /> Logout
+    <div className="min-h-screen bg-[#22050d] text-white p-4 md:p-8">
+      {/* Top Header */}
+      <div className="flex justify-between items-center bg-[#330814] p-4 rounded-xl border border-amber-600/30 mb-8">
+        <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life Admin Dashboard</h1>
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.push('/')} className="text-sm bg-amber-900/40 hover:bg-amber-900/70 px-4 py-2 rounded text-amber-200">
+            Back to Store
+          </button>
+          <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-semibold">
+            Logout
           </button>
         </div>
+      </div>
 
-        {/* Add Product Form */}
-        <div className="bg-[#3F060D] border border-[#5C111C] p-6 rounded-2xl mb-8 shadow-xl">
-          <h2 className="text-sm font-black text-[#D4AF37] mb-4 flex items-center gap-2">
-            <Plus size={16} /> Add New Product
-          </h2>
-          
-          <form onSubmit={handleAddProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div>
-              <label className="block text-zinc-300 mb-1">Product Name</label>
-              <input 
-                type="text" 
-                placeholder="e.g. Premium Panjabi" 
-                value={name} 
-                onChange={e => setName(e.target.value)}
-                className="w-full bg-[#2D060B] text-white p-3 rounded-xl border border-[#5C111C] focus:outline-none focus:border-[#D4AF37]"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-zinc-300 mb-1">Category</label>
-              <select 
-                value={category} 
-                onChange={e => setCategory(e.target.value)}
-                className="w-full bg-[#2D060B] text-white p-3 rounded-xl border border-[#5C111C] focus:outline-none focus:border-[#D4AF37]"
-              >
-                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-zinc-300 mb-1">Price (Number only, e.g. 1850)</label>
-              <input 
-                type="number" 
-                placeholder="1850" 
-                value={priceNum} 
-                onChange={e => setPriceNum(e.target.value)}
-                className="w-full bg-[#2D060B] text-white p-3 rounded-xl border border-[#5C111C] focus:outline-none focus:border-[#D4AF37]"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-zinc-300 mb-1">Image URL (Unsplash or direct link)</label>
-              <input 
-                type="text" 
-                placeholder="https://images.unsplash.com/..." 
-                value={image} 
-                onChange={e => setImage(e.target.value)}
-                className="w-full bg-[#2D060B] text-white p-3 rounded-xl border border-[#5C111C] focus:outline-none focus:border-[#D4AF37]"
-                required
-              />
-            </div>
-
-            <div className="md:col-span-2 mt-2">
-              <button 
-                type="submit" 
-                className="w-full bg-[#D4AF37] hover:bg-[#c29d30] text-black font-black py-3.5 rounded-xl shadow transition cursor-pointer"
-              >
-                Save Product to Database
-              </button>
-            </div>
-          </form>
+      {/* Analytics Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+          <h3 className="text-gray-400 text-sm">Total Products</h3>
+          <p className="text-3xl font-bold text-amber-400 mt-2">{products.length}</p>
         </div>
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+          <h3 className="text-gray-400 text-sm">Customer Orders</h3>
+          <p className="text-3xl font-bold text-amber-400 mt-2">{orders.length}</p>
+        </div>
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+          <h3 className="text-gray-400 text-sm">Admin Status</h3>
+          <p className="text-lg font-semibold text-green-400 mt-2">● Active & Secure</p>
+        </div>
+      </div>
 
-        {/* Existing Products List */}
-        <div className="bg-[#3F060D] border border-[#5C111C] p-6 rounded-2xl shadow-xl">
-          <h2 className="text-sm font-black text-[#D4AF37] mb-4">
-            Manage Existing Products ({products.length})
-          </h2>
+      {/* Navigation Tabs */}
+      <div className="flex gap-4 mb-6 border-b border-amber-900/40 pb-3">
+        <button 
+          onClick={() => setActiveTab("products")} 
+          className={`px-6 py-2 rounded-lg font-semibold transition ${activeTab === "products" ? "bg-amber-500 text-black" : "bg-[#330814] text-amber-200"}`}
+        >
+          Manage Products
+        </button>
+        <button 
+          onClick={() => setActiveTab("orders")} 
+          className={`px-6 py-2 rounded-lg font-semibold transition ${activeTab === "orders" ? "bg-amber-500 text-black" : "bg-[#330814] text-amber-200"}`}
+        >
+          Manage Orders ({orders.length})
+        </button>
+      </div>
 
-          {loading ? (
-            <p className="text-zinc-400 text-xs text-center py-6">Loading products...</p>
-          ) : products.length === 0 ? (
-            <p className="text-zinc-400 text-xs text-center py-6">No products found in database.</p>
-          ) : (
-            <div className="space-y-3">
-              {products.map(product => (
-                <div key={product.id} className="flex items-center justify-between bg-[#2D060B] p-3 rounded-xl border border-[#5C111C]">
-                  <div className="flex items-center gap-3">
-                    <img src={product.image} alt={product.name} className="w-12 h-12 object-cover rounded-lg" />
-                    <div>
-                      <h4 className="font-bold text-white text-xs">{product.name}</h4>
-                      <p className="text-[#D4AF37] text-[11px]">{product.price} • <span className="text-zinc-400">{product.category}</span></p>
+      {/* TAB 1: PRODUCTS MANAGEMENT */}
+      {activeTab === "products" && (
+        <div>
+          {/* Add / Edit Form */}
+          <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30 mb-8">
+            <h2 className="text-lg font-bold text-amber-400 mb-4">
+              {editingId ? "✏️ Edit Product" : "➕ Add New Product"}
+            </h2>
+            <form onSubmit={handleSaveProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-amber-200 mb-1">Product Name</label>
+                <input 
+                  type="text" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} 
+                  placeholder="e.g. Premium Panjabi" 
+                  className="w-full p-3 rounded bg-[#22050d] border border-amber-600/40 text-white"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-amber-200 mb-1">Category</label>
+                <select 
+                  value={category} 
+                  onChange={(e) => setCategory(e.target.value)} 
+                  className="w-full p-3 rounded bg-[#22050d] border border-amber-600/40 text-white"
+                >
+                  <option value="Men's Wear">Men's Wear (মেনস ওয়্যার)</option>
+                  <option value="Women's Wear">Women's Wear (উমেনস ওয়্যার)</option>
+                  <option value="Kids' Wear">Kids' Wear (কিডস ওয়্যার)</option>
+                  <option value="Accessories">Accessories (অ্যাক্সেসরিজ)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm text-amber-200 mb-1">Price (Tk)</label>
+                <input 
+                  type="number" 
+                  value={price} 
+                  onChange={(e) => setPrice(e.target.value)} 
+                  placeholder="1850" 
+                  className="w-full p-3 rounded bg-[#22050d] border border-amber-600/40 text-white"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-amber-200 mb-1">Stock Quantity</label>
+                <input 
+                  type="number" 
+                  value={stock} 
+                  onChange={(e) => setStock(e.target.value)} 
+                  placeholder="10" 
+                  className="w-full p-3 rounded bg-[#22050d] border border-amber-600/40 text-white"
+                  required 
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm text-amber-200 mb-1">Image URL</label>
+                <input 
+                  type="url" 
+                  value={image} 
+                  onChange={(e) => setImage(e.target.value)} 
+                  placeholder="https://i.ibb.co/... or ImgBB link" 
+                  className="w-full p-3 rounded bg-[#22050d] border border-amber-600/40 text-white"
+                  required 
+                />
+              </div>
+              <div className="md:col-span-2 flex gap-4">
+                <button type="submit" className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold p-3 rounded transition">
+                  {editingId ? "Update Product" : "Save Product to Database"}
+                </button>
+                {editingId && (
+                  <button 
+                    type="button" 
+                    onClick={() => { setEditingId(null); setName(""); setPrice(""); setImage(""); }} 
+                    className="bg-gray-600 hover:bg-gray-700 px-6 py-3 rounded font-bold"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          {/* Product List */}
+          <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+            <h2 className="text-lg font-bold text-amber-400 mb-4">Manage Existing Products ({products.length})</h2>
+            <div className="space-y-4">
+              {products.length === 0 ? (
+                <p className="text-gray-400 text-center py-4">কোনো প্রোডাক্ট পাওয়া যায়নি। উপরে ফর্ম থেকে নতুন প্রোডাক্ট যুক্ত করুন।</p>
+              ) : (
+                products.map((prod) => (
+                  <div key={prod.id} className="flex flex-col md:flex-row justify-between items-center bg-[#22050d] p-4 rounded-lg border border-amber-900/30 gap-4">
+                    <div className="flex items-center gap-4">
+                      <img src={prod.image} alt={prod.name} className="w-16 h-16 object-cover rounded-md border border-amber-600/30" />
+                      <div>
+                        <h4 className="font-bold text-amber-200">{prod.name}</h4>
+                        <p className="text-sm text-gray-400">Category: {prod.category} | Price: ৳{prod.price} | Stock: {prod.stock || 10}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => handleEditClick(prod)} className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm font-semibold">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteProduct(prod.id)} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-semibold">
+                        Delete
+                      </button>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => handleDeleteProduct(product.id)}
-                    className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition cursor-pointer"
-                    title="Delete Product"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: ORDERS MANAGEMENT */}
+      {activeTab === "orders" && (
+        <div className="bg-[#330814] p-6 rounded-xl border border-amber-600/30">
+          <h2 className="text-lg font-bold text-amber-400 mb-4">Customer Orders List</h2>
+          {orders.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">এখনো কোনো অর্ডার আসেনি।</p>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <div key={order.id} className="bg-[#22050d] p-4 rounded-lg border border-amber-900/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div>
+                    <h4 className="font-bold text-amber-300">Customer: {order.customerName || "N/A"}</h4>
+                    <p className="text-sm text-gray-300">Phone: {order.phone} | Address: {order.address}</p>
+                    <p className="text-xs text-amber-500 mt-1">Items: {order.itemsSummary || "General Order"} | Total: ৳{order.totalAmount}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <select 
+                      value={order.status || "Pending"} 
+                      onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                      className="bg-[#330814] border border-amber-600/40 text-amber-200 p-2 rounded text-sm"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Processing">Processing</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
