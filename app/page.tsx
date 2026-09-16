@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import {
   ShoppingCart, Heart, Search, Star, MessageCircle, CheckCircle2,
-  Lock, Truck, ShieldCheck, RotateCcw, Facebook, Phone, MapPin,
+  Lock, Truck, ShieldCheck, RotateCcw, Phone, MapPin,
   ChevronLeft, ChevronRight, X
 } from 'lucide-react';
 import Link from 'next/link';
@@ -457,7 +457,9 @@ export default function Home() {
               rel="noreferrer"
               className="inline-flex items-center gap-2 bg-[#4a151b] border border-white/10 px-4 py-2 rounded-lg hover:border-[#f5d77f] transition text-gray-300"
             >
-              <Facebook size={14} className="text-[#f5d77f]" /> Facebook Page
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#f5d77f]">
+  <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.89h-2.33v6.99A10 10 0 0 0 22 12Z"/>
+</svg> Facebook Page
             </a>
           </div>
         </div>
