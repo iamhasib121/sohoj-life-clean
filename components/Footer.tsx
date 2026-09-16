@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Facebook, Twitter, Youtube, Instagram } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -15,16 +14,16 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-3">
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <Facebook className="w-4 h-4" />
+              <span className="w-4 h-4 flex items-center justify-center text-xs font-bold">f</span>
             </Link>
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <Twitter className="w-4 h-4" />
+              <span className="w-4 h-4 flex items-center justify-center text-xs font-bold">𝕏</span>
             </Link>
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <Youtube className="w-4 h-4" />
+              <span className="w-4 h-4 flex items-center justify-center text-xs font-bold">▶</span>
             </Link>
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <Instagram className="w-4 h-4" />
+              <span className="w-4 h-4 flex items-center justify-center text-xs font-bold">◎</span>
             </Link>
           </div>
         </div>
