@@ -1,11 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
-// 🛒 CartContext থেকে useCart হুক ইমপোর্ট করা হলো
+import React, { useState, use } from "react";
 import { useCart } from "../../../src/context/CartContext";
 
-export default function UpdatedPickabooPage() {
-  // 📱 ১. আপনার হোয়াটসঅ্যাপ নম্বরটি এখানে দিন (কান্ট্রি কোডসহ, যেমন: 88017XXXXXXXX)
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default function UpdatedPickabooPage({ params }: PageProps) {
+  // 🔗 Dynamic Route Parameter (ID) Unwrapping
+  const resolvedParams = use(params);
+  const productId = resolvedParams.id;
+
+  // 📱 ১. আপনার হোয়াটসঅ্যাপ নম্বরটি এখানে দিন (কান্ট্রি কোডসহ)
   const WHATSAPP_NUMBER = "8801303422278";
 
   const images = [
@@ -39,6 +46,7 @@ export default function UpdatedPickabooPage() {
   // 🛒 Global Add to Cart Handler
   const handleAddToCart = () => {
     addToCart({
+      id: productId,
       title: "Redmi Note 12 Pro Max 5G",
       variant: selectedVariant,
       color: selectedColor,
@@ -60,8 +68,8 @@ export default function UpdatedPickabooPage() {
     const unitPrice = 64999;
     const totalPrice = unitPrice * quantity;
 
-    const message = `Hello, I want to order this product:\n\n` +
-      `📌 Product: ${productName}\n` +
+    const message = `Hello Sohoj Life, I want to order this product:\n\n` +
+      `📌 Product: ${productName} (ID: ${productId})\n` +
       `⚙️ Variant: ${selectedVariant}\n` +
       `🎨 Color: ${selectedColor}\n` +
       `🔢 Quantity: ${quantity}\n` +
@@ -79,7 +87,7 @@ export default function UpdatedPickabooPage() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 lg:px-10 py-3 shadow-sm">
         <div className="max-w-[1440px] mx-auto flex justify-between items-center">
           <div className="text-xl font-black text-blue-600 tracking-tight cursor-pointer">
-            pickaboo<span className="text-orange-500">.com</span>
+            Sohoj Life<span className="text-orange-500">.com</span>
           </div>
 
           {/* Cart Icon */}
