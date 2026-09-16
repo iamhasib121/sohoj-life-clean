@@ -11,7 +11,7 @@ export default function OrderTrackingModal({ isOpen, onClose }: { isOpen: boolea
     e.preventDefault();
     if (!phone) return;
     // ডেমো স্ট্যাটাস চেক (ফায়ারবেস কানেক্ট থাকলে সরাসরি ডেটাবেস থেকে আনতে পারবেন)
-    if (phone === "01700000000") {
+    if (phone === "01303422278") {
       setStatusResult("আপনার অর্ডারটি বর্তমানে 'Pending' অবস্থায় রয়েছে এবং খুব শীঘ্রই ডেলিভারির জন্য পাঠানো হবে।");
     } else {
       setStatusResult("এই নম্বরে কোনো চলমান অর্ডার পাওয়া যায়নি। সঠিক নম্বর দিয়ে আবার চেষ্টা করুন।");
@@ -29,7 +29,7 @@ export default function OrderTrackingModal({ isOpen, onClose }: { isOpen: boolea
         <form onSubmit={handleTrack} className="space-y-3">
           <input 
             type="text" 
-            placeholder="আপনার ফোন নম্বর (যেমন: 01700000000)" 
+            placeholder="আপনার ফোন নম্বর (যেমন: 01303422278)" 
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
