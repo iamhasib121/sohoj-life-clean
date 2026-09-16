@@ -3,7 +3,11 @@
 import React, { useState } from "react";
 // 🛒 CartContext থেকে useCart হুক ইমপোর্ট করা হলো
 import { useCart } from "../../../src/context/CartContext";
+
 export default function UpdatedPickabooPage() {
+  // 📱 ১. আপনার হোয়াটসঅ্যাপ নম্বরটি এখানে দিন (কান্ট্রি কোডসহ, যেমন: 88017XXXXXXXX)
+  const WHATSAPP_NUMBER = "8801700000000";
+
   const images = [
     "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800",
     "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800",
@@ -13,13 +17,13 @@ export default function UpdatedPickabooPage() {
     "https://images.unsplash.com/photo-1574944985070-8f30c4397e3c?q=80&w=800",
   ];
 
-  const [selectedImage, setSelectedImage] = useState(images[0]);
-  const [selectedVariant, setSelectedVariant] = useState("12GB / 256GB");
-  const [selectedColor, setSelectedColor] = useState("Graphite Black");
-  const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState("specifications");
+  const [selectedImage, setSelectedImage] = useState<string>(images[0]);
+  const [selectedVariant, setSelectedVariant] = useState<string>("12GB / 256GB");
+  const [selectedColor, setSelectedColor] = useState<string>("Graphite Black");
+  const [quantity, setQuantity] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<string>("specifications");
 
-  // 🛒 Cart Context থেকে গ্লোবাল স্টেট ও ফাংশনগুলো নিয়ে আসা হলো
+  // 🛒 Cart Context থেকে গ্লোবাল স্টেট ও ফাংশন
   const { 
     cartItems, 
     addToCart, 
@@ -30,7 +34,7 @@ export default function UpdatedPickabooPage() {
     totalAmount 
   } = useCart();
 
-  const [showNotification, setShowNotification] = useState(false);
+  const [showNotification, setShowNotification] = useState<boolean>(false);
 
   // 🛒 Global Add to Cart Handler
   const handleAddToCart = () => {
@@ -48,6 +52,24 @@ export default function UpdatedPickabooPage() {
     setTimeout(() => {
       setShowNotification(false);
     }, 3000);
+  };
+
+  // 💬 WhatsApp Order Handler
+  const handleWhatsAppOrder = () => {
+    const productName = "Redmi Note 12 Pro Max 5G";
+    const unitPrice = 64999;
+    const totalPrice = unitPrice * quantity;
+
+    const message = `Hello, I want to order this product:\n\n` +
+      `📌 Product: ${productName}\n` +
+      `⚙️ Variant: ${selectedVariant}\n` +
+      `🎨 Color: ${selectedColor}\n` +
+      `🔢 Quantity: ${quantity}\n` +
+      `💰 Total Price: ৳ ${totalPrice.toLocaleString()}\n\n` +
+      `Please let me know how to proceed.`;
+
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
@@ -263,12 +285,21 @@ export default function UpdatedPickabooPage() {
 
               {/* Action Buttons */}
               <div className="space-y-2.5">
+                {/* 💬 WhatsApp Order Button */}
+                <button
+                  onClick={handleWhatsAppOrder}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-lg text-xs tracking-wider transition shadow-md uppercase flex items-center justify-center gap-2"
+                >
+                  💬 Order via WhatsApp
+                </button>
+
                 <button
                   onClick={handleAddToCart}
                   className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-lg text-xs tracking-wider transition shadow-sm uppercase"
                 >
                   🛒 Add To Cart
                 </button>
+
                 <button
                   onClick={() => {
                     handleAddToCart();
@@ -337,7 +368,7 @@ export default function UpdatedPickabooPage() {
                     <p className="text-xs mt-1">Add products to your cart to checkout.</p>
                   </div>
                 ) : (
-                  cartItems.map((item) => (
+                  cartItems.map((item: any) => (
                     <div key={item.id} className="flex gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl relative">
                       <img src={item.image} alt="cart-item" className="w-16 h-16 object-contain bg-white rounded-lg border p-1" />
                       <div className="flex-1 text-xs">
@@ -406,21 +437,18 @@ export default function UpdatedPickabooPage() {
       )}
 
       {/* Mobile Sticky Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-3 px-4 flex gap-3 z-40 shadow-lg">
+      <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-3 px-4 flex gap-2 z-40 shadow-lg">
+        <button
+          onClick={handleWhatsAppOrder}
+          className="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-lg text-xs uppercase flex items-center justify-center gap-1"
+        >
+          💬 WhatsApp
+        </button>
         <button
           onClick={handleAddToCart}
           className="flex-1 bg-slate-900 text-white font-bold py-3 rounded-lg text-xs uppercase"
         >
           Add To Cart
-        </button>
-        <button
-          onClick={() => {
-            handleAddToCart();
-            setIsCartOpen(true);
-          }}
-          className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg text-xs uppercase"
-        >
-          Buy Now
         </button>
       </div>
 
