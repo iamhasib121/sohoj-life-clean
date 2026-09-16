@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { collection, getDocs, addDoc, serverTimestamp, query, where } from "firebase/firestore";
 import Link from "next/link";
+import { uploadDemoProducts } from "./seed"; // Seed Script Import
 
 interface Product {
   id: string;
@@ -236,6 +237,17 @@ export default function HomeStore() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            {/* 🟢 ডেমো প্রোডাক্ট আপলোড করার বাটন 🟢 */}
+            <button 
+              onClick={async () => {
+                await uploadDemoProducts();
+                fetchStoreProducts();
+              }} 
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-2 rounded-lg transition shadow-md"
+            >
+              ➕ Upload 40 Products
+            </button>
+
             <button onClick={() => setIsTrackingOpen(true)} className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
               📦 Track Order
             </button>
@@ -336,7 +348,7 @@ export default function HomeStore() {
           {loading ? (
             <div className="text-center py-20 text-slate-500 font-medium">প্রোডাক্ট লোড হচ্ছে...</div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 text-slate-400">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>
+            <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 text-slate-400">কোনো প্রোডাক্ট পাওয়া যায়নি। উপরের "Upload 40 Products" বাটনে ক্লিক করুন।</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredProducts.map((prod) => (
@@ -395,7 +407,6 @@ export default function HomeStore() {
 
       {/* Footer & Feature Badges */}
       <div>
-        {/* Feature Badges Section */}
         <section className="bg-white border-t border-b border-slate-200 py-8 px-4">
           <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="flex items-center gap-3 justify-center md:justify-start">
@@ -448,11 +459,8 @@ export default function HomeStore() {
           </div>
         </section>
 
-        {/* Main Footer Section */}
         <footer className="bg-slate-900 text-slate-300 pt-12 pb-6 px-4 md:px-8 border-t border-slate-800">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
-            
-            {/* Brand Info */}
             <div className="md:col-span-2 space-y-3">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-slate-800 border border-slate-700 rounded-lg">
@@ -467,7 +475,6 @@ export default function HomeStore() {
               </p>
             </div>
 
-            {/* Shop Column */}
             <div>
               <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">SHOP</h4>
               <ul className="space-y-2 text-xs text-slate-400">
@@ -478,7 +485,6 @@ export default function HomeStore() {
               </ul>
             </div>
 
-            {/* Company Column */}
             <div>
               <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">COMPANY</h4>
               <ul className="space-y-2 text-xs text-slate-400">
@@ -489,7 +495,6 @@ export default function HomeStore() {
               </ul>
             </div>
 
-            {/* Support Column */}
             <div>
               <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">SUPPORT</h4>
               <ul className="space-y-2 text-xs text-slate-400">
@@ -499,10 +504,8 @@ export default function HomeStore() {
                 <li><a href="#" className="hover:text-amber-400 transition">FAQ</a></li>
               </ul>
             </div>
-
           </div>
 
-          {/* Bottom Bar */}
           <div className="max-w-7xl mx-auto pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-500 gap-2">
             <p>© 2026 Sohoj Life. All rights reserved.</p>
             <p>Made with care in Bangladesh 🇧🇩</p>
@@ -511,7 +514,6 @@ export default function HomeStore() {
       </div>
 
       {/* Modals & Drawers */}
-      {/* Product Detail Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white text-slate-900 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200 border border-slate-200">
@@ -551,7 +553,6 @@ export default function HomeStore() {
         </div>
       )}
 
-      {/* Wishlist Drawer */}
       {isWishlistOpen && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex justify-end">
           <div className="bg-white w-full max-w-md h-full p-6 overflow-y-auto text-slate-900 flex flex-col justify-between shadow-2xl border-l border-slate-200">
@@ -587,7 +588,6 @@ export default function HomeStore() {
         </div>
       )}
 
-      {/* Cart Drawer & Checkout */}
       {isCartOpen && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex justify-end">
           <div className="bg-white w-full max-w-md h-full p-6 overflow-y-auto text-slate-900 flex flex-col justify-between shadow-2xl border-l border-slate-200">
@@ -625,7 +625,6 @@ export default function HomeStore() {
                     ))}
                   </div>
 
-                  {/* Coupon Section */}
                   <div className="mt-5 pt-3 border-t border-slate-100">
                     <div className="flex gap-2">
                       <input 
@@ -642,7 +641,6 @@ export default function HomeStore() {
                     {couponMessage && <p className="text-[11px] mt-2 text-emerald-600 font-medium">{couponMessage}</p>}
                   </div>
 
-                  {/* Order Form */}
                   <form onSubmit={handleCheckout} className="mt-5 space-y-2.5 pt-3 border-t border-slate-100">
                     <h3 className="font-bold text-slate-900 text-xs">ডেলিভারি তথ্য:</h3>
                     <input 
@@ -692,7 +690,6 @@ export default function HomeStore() {
         </div>
       )}
 
-      {/* Track Order Modal */}
       {isTrackingOpen && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 text-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
