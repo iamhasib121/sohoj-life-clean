@@ -218,179 +218,299 @@ export default function HomeStore() {
   const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
-    <div className="bg-slate-50 min-h-screen text-slate-800 font-sans">
-      {/* Header */}
-      <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-4 md:px-8 py-3.5 flex justify-between items-center shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="relative p-2 bg-slate-800 border border-slate-700 rounded-xl">
-            <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-900 rounded-full p-0.5 text-[10px] font-bold">🍃</span>
+    <div className="bg-slate-50 min-h-screen text-slate-800 font-sans flex flex-col justify-between">
+      <div>
+        {/* Header */}
+        <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-4 md:px-8 py-3.5 flex justify-between items-center shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="relative p-2 bg-slate-800 border border-slate-700 rounded-xl">
+              <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-900 rounded-full p-0.5 text-[10px] font-bold">🍃</span>
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white">Sohoj <span className="text-amber-400">Life</span></h1>
+              <p className="text-[11px] text-slate-400 hidden sm:block">Elevate Your Style with Luxury Essentials</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white">Sohoj <span className="text-amber-400">Life</span></h1>
-            <p className="text-[11px] text-slate-400 hidden sm:block">Elevate Your Style with Luxury Essentials</p>
+
+          <div className="flex items-center gap-2 md:gap-3">
+            <button onClick={() => setIsTrackingOpen(true)} className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+              📦 Track Order
+            </button>
+            
+            <button onClick={() => setIsWishlistOpen(true)} className="relative text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition flex items-center gap-1.5">
+              ❤️ Wishlist
+              {wishlist.length > 0 && (
+                <span className="bg-amber-500 text-slate-950 font-extrabold px-1.5 py-0.2 rounded-full text-[10px]">
+                  {wishlist.length}
+                </span>
+              )}
+            </button>
+
+            <Link href="/admin" className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition hidden sm:block">
+              Admin Portal
+            </Link>
+
+            <button onClick={() => setIsCartOpen(true)} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition text-xs md:text-sm shadow-md">
+              🛒 Cart ({cart.reduce((sum, item) => sum + item.qty, 0)})
+            </button>
           </div>
-        </div>
+        </header>
 
-        <div className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => setIsTrackingOpen(true)} className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
-            📦 Track Order
-          </button>
-          
-          <button onClick={() => setIsWishlistOpen(true)} className="relative text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition flex items-center gap-1.5">
-            ❤️ Wishlist
-            {wishlist.length > 0 && (
-              <span className="bg-amber-500 text-slate-950 font-extrabold px-1.5 py-0.2 rounded-full text-[10px]">
-                {wishlist.length}
-              </span>
-            )}
-          </button>
+        {/* Hero Banner */}
+        <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-12 px-4 text-center border-b border-slate-800 relative overflow-hidden">
+          <div className="absolute inset-0 bg-amber-500/5 blur-3xl rounded-full transform -translate-y-1/2"></div>
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <span className="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs px-3 py-1 rounded-full font-medium mb-3">
+              New Season Collections ✨
+            </span>
+            <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+              {banners[currentBanner].title}
+            </h2>
+            <p className="text-slate-300 text-sm md:text-base font-light">{banners[currentBanner].subtitle}</p>
+            <div className="flex justify-center gap-2 mt-5">
+              {banners.map((_, idx) => (
+                <span key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${currentBanner === idx ? "w-6 bg-amber-400" : "w-2 bg-slate-700"}`} />
+              ))}
+            </div>
+          </div>
+        </section>
 
-          <Link href="/admin" className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition hidden sm:block">
-            Admin Portal
-          </Link>
+        {/* Search & Filter */}
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <div className="w-full md:w-96 relative">
+              <input 
+                type="text" 
+                placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-4 pr-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-sm placeholder-slate-400 transition"
+              />
+            </div>
 
-          <button onClick={() => setIsCartOpen(true)} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition text-xs md:text-sm shadow-md">
-            🛒 Cart ({cart.reduce((sum, item) => sum + item.qty, 0)})
-          </button>
-        </div>
-      </header>
+            <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+              <span className="text-xs text-slate-500 font-medium">Sort by:</span>
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-white border border-slate-300 text-slate-800 text-xs md:text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm cursor-pointer"
+              >
+                <option value="Featured">Featured</option>
+                <option value="Price: Low to High">Price: Low to High</option>
+                <option value="Price: High to Low">Price: High to Low</option>
+                <option value="Top Rated">Top Rated</option>
+              </select>
+            </div>
+          </div>
 
-      {/* Hero Banner */}
-      <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-12 px-4 text-center border-b border-slate-800 relative overflow-hidden">
-        <div className="absolute inset-0 bg-amber-500/5 blur-3xl rounded-full transform -translate-y-1/2"></div>
-        <div className="relative z-10 max-w-3xl mx-auto">
-          <span className="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs px-3 py-1 rounded-full font-medium mb-3">
-            New Season Collections ✨
-          </span>
-          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white mb-2 leading-tight">
-            {banners[currentBanner].title}
-          </h2>
-          <p className="text-slate-300 text-sm md:text-base font-light">{banners[currentBanner].subtitle}</p>
-          <div className="flex justify-center gap-2 mt-5">
-            {banners.map((_, idx) => (
-              <span key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${currentBanner === idx ? "w-6 bg-amber-400" : "w-2 bg-slate-700"}`} />
+          {/* Categories */}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {["All", "Men's Wear", "Women's Wear", "Kids' Wear", "Accessories"].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition shadow-sm ${
+                  selectedCategory === cat 
+                    ? "bg-slate-900 text-amber-400 font-semibold shadow-md" 
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+              >
+                {cat}
+              </button>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* Search & Filter */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-          <div className="w-full md:w-96 relative">
-            <input 
-              type="text" 
-              placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-4 pr-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-sm placeholder-slate-400 transition"
-            />
+        {/* Main Grid */}
+        <main className="max-w-7xl mx-auto px-4 pb-12">
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-xs text-slate-500 font-medium">Showing {filteredProducts.length} products</p>
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
+              💡 টিপস: চেকআউটে কুপন কোড <strong className="font-bold">EID10</strong> ব্যবহার করে নিন ১০% ছাড়!
+            </p>
           </div>
+          
+          {loading ? (
+            <div className="text-center py-20 text-slate-500 font-medium">প্রোডাক্ট লোড হচ্ছে...</div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 text-slate-400">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((prod) => (
+                <div 
+                  key={prod.id} 
+                  onClick={() => setSelectedProduct(prod)}
+                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group p-3 text-slate-900 relative"
+                >
+                  <div>
+                    <div className="h-72 overflow-hidden bg-slate-100 relative rounded-xl">
+                      <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                      <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full shadow-sm border border-slate-200/50">
+                        {prod.category || "General"}
+                      </span>
+                      <button 
+                        onClick={(e) => toggleWishlist(prod.id, e)}
+                        className="absolute top-3 right-3 bg-white/90 hover:bg-white w-8 h-8 rounded-full flex items-center justify-center shadow transition text-sm"
+                      >
+                        {wishlist.includes(prod.id) ? "❤️" : "🤍"}
+                      </button>
+                      
+                      <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        <button 
+                          onClick={(e) => addToCart(prod, e)} 
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl text-xs shadow-lg flex items-center justify-center gap-1 transition"
+                        >
+                          <span className="text-amber-400 font-bold">+</span> Quick Add
+                        </button>
+                      </div>
+                    </div>
 
-          <div className="flex items-center gap-2 w-full md:w-auto justify-end">
-            <span className="text-xs text-slate-500 font-medium">Sort by:</span>
-            <select 
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-white border border-slate-300 text-slate-800 text-xs md:text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm cursor-pointer"
-            >
-              <option value="Featured">Featured</option>
-              <option value="Price: Low to High">Price: Low to High</option>
-              <option value="Price: High to Low">Price: High to Low</option>
-              <option value="Top Rated">Top Rated</option>
-            </select>
-          </div>
-        </div>
+                    <div className="p-2 pt-3">
+                      <h3 className="font-semibold text-sm text-slate-900 group-hover:text-amber-600 transition line-clamp-1">{prod.name}</h3>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="text-amber-500 text-xs">★</span>
+                        <span className="text-xs text-slate-500 font-medium">{prod.rating || "4.8"}</span>
+                      </div>
+                    </div>
+                  </div>
 
-        {/* Categories */}
-        <div className="flex flex-wrap gap-2 justify-center">
-          {["All", "Men's Wear", "Women's Wear", "Kids' Wear", "Accessories"].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition shadow-sm ${
-                selectedCategory === cat 
-                  ? "bg-slate-900 text-amber-400 font-semibold shadow-md" 
-                  : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+                  <div className="p-2 pt-2 flex items-center justify-between mt-2 border-t border-slate-100">
+                    <span className="text-slate-900 font-extrabold text-lg">৳{prod.price}</span>
+                    <button 
+                      onClick={(e) => addToCart(prod, e)} 
+                      className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-2 rounded-xl transition text-xs shadow-sm"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
       </div>
 
-      {/* Main Grid */}
-      <main className="max-w-7xl mx-auto px-4 pb-16">
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-xs text-slate-500 font-medium">Showing {filteredProducts.length} products</p>
-          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
-            💡 টিপস: চেকআউটে কুপন কোড <strong className="font-bold">EID10</strong> ব্যবহার করে নিন ১০% ছাড়!
-          </p>
-        </div>
-        
-        {loading ? (
-          <div className="text-center py-20 text-slate-500 font-medium">প্রোডাক্ট লোড হচ্ছে...</div>
-        ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 text-slate-400">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((prod) => (
-              <div 
-                key={prod.id} 
-                onClick={() => setSelectedProduct(prod)}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group p-3 text-slate-900 relative"
-              >
-                <div>
-                  <div className="h-72 overflow-hidden bg-slate-100 relative rounded-xl">
-                    <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full shadow-sm border border-slate-200/50">
-                      {prod.category || "General"}
-                    </span>
-                    <button 
-                      onClick={(e) => toggleWishlist(prod.id, e)}
-                      className="absolute top-3 right-3 bg-white/90 hover:bg-white w-8 h-8 rounded-full flex items-center justify-center shadow transition text-sm"
-                    >
-                      {wishlist.includes(prod.id) ? "❤️" : "🤍"}
-                    </button>
-                    
-                    <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition duration-300 transform translate-y-2 group-hover:translate-y-0">
-                      <button 
-                        onClick={(e) => addToCart(prod, e)} 
-                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl text-xs shadow-lg flex items-center justify-center gap-1 transition"
-                      >
-                        <span className="text-amber-400 font-bold">+</span> Quick Add
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-2 pt-3">
-                    <h3 className="font-semibold text-sm text-slate-900 group-hover:text-amber-600 transition line-clamp-1">{prod.name}</h3>
-                    <div className="flex items-center gap-1 mt-1">
-                      <span className="text-amber-500 text-xs">★</span>
-                      <span className="text-xs text-slate-500 font-medium">{prod.rating || "4.8"}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-2 pt-2 flex items-center justify-between mt-2 border-t border-slate-100">
-                  <span className="text-slate-900 font-extrabold text-lg">৳{prod.price}</span>
-                  <button 
-                    onClick={(e) => addToCart(prod, e)} 
-                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-2 rounded-xl transition text-xs shadow-sm"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
+      {/* Footer & Feature Badges */}
+      <div>
+        {/* Feature Badges Section */}
+        <section className="bg-white border-t border-b border-slate-200 py-8 px-4">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="flex items-center gap-3 justify-center md:justify-start">
+              <div className="p-3 bg-amber-50 rounded-2xl text-amber-600 border border-amber-100">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
               </div>
-            ))}
-          </div>
-        )}
-      </main>
+              <div>
+                <h4 className="font-bold text-slate-900 text-xs md:text-sm">Cash on Delivery</h4>
+                <p className="text-[11px] text-slate-500">Pay when it arrives</p>
+              </div>
+            </div>
 
+            <div className="flex items-center gap-3 justify-center md:justify-start">
+              <div className="p-3 bg-amber-50 rounded-2xl text-amber-600 border border-amber-100">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-xs md:text-sm">Fast Delivery</h4>
+                <p className="text-[11px] text-slate-500">24–72 hrs nationwide</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 justify-center md:justify-start">
+              <div className="p-3 bg-amber-50 rounded-2xl text-amber-600 border border-amber-100">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-xs md:text-sm">Secure Checkout</h4>
+                <p className="text-[11px] text-slate-500">100% safe payments</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 justify-center md:justify-start">
+              <div className="p-3 bg-amber-50 rounded-2xl text-amber-600 border border-amber-100">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-xs md:text-sm">24/7 Support</h4>
+                <p className="text-[11px] text-slate-500">Always here to help</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Main Footer Section */}
+        <footer className="bg-slate-900 text-slate-300 pt-12 pb-6 px-4 md:px-8 border-t border-slate-800">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
+            
+            {/* Brand Info */}
+            <div className="md:col-span-2 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-slate-800 border border-slate-700 rounded-lg">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-white">Sohoj <span className="text-amber-400">Life</span></h3>
+              </div>
+              <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+                Your trusted destination for premium fashion and authentic Bengali flavours — making everyday life simple and beautiful.
+              </p>
+            </div>
+
+            {/* Shop Column */}
+            <div>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">SHOP</h4>
+              <ul className="space-y-2 text-xs text-slate-400">
+                <li><button onClick={() => setSelectedCategory("Men's Wear")} className="hover:text-amber-400 transition">Men's Wear</button></li>
+                <li><button onClick={() => setSelectedCategory("Women's Wear")} className="hover:text-amber-400 transition">Women's Wear</button></li>
+                <li><button onClick={() => setSelectedCategory("Kids' Wear")} className="hover:text-amber-400 transition">Kids' Wear</button></li>
+                <li><button onClick={() => setSelectedCategory("Accessories")} className="hover:text-amber-400 transition">Accessories</button></li>
+              </ul>
+            </div>
+
+            {/* Company Column */}
+            <div>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">COMPANY</h4>
+              <ul className="space-y-2 text-xs text-slate-400">
+                <li><a href="#" className="hover:text-amber-400 transition">About Us</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition">Our Story</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition">Careers</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition">Blog</a></li>
+              </ul>
+            </div>
+
+            {/* Support Column */}
+            <div>
+              <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">SUPPORT</h4>
+              <ul className="space-y-2 text-xs text-slate-400">
+                <li><a href="#" className="hover:text-amber-400 transition">Contact</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition">Shipping</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition">Returns</a></li>
+                <li><a href="#" className="hover:text-amber-400 transition">FAQ</a></li>
+              </ul>
+            </div>
+
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="max-w-7xl mx-auto pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-500 gap-2">
+            <p>© 2026 Sohoj Life. All rights reserved.</p>
+            <p>Made with care in Bangladesh 🇧🇩</p>
+          </div>
+        </footer>
+      </div>
+
+      {/* Modals & Drawers */}
       {/* Product Detail Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
