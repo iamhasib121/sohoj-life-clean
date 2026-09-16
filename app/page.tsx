@@ -5,7 +5,6 @@ import { db } from "./firebase";
 import { collection, getDocs, addDoc, serverTimestamp, query, where } from "firebase/firestore";
 import Link from "next/link";
 
-// TypeScript Interfaces
 interface Product {
   id: string;
   name: string;
@@ -221,9 +220,9 @@ export default function HomeStore() {
   return (
     <div style={{ backgroundColor: "#22050d", minHeight: "100vh", color: "#ffffff" }}>
       {/* Top Header */}
-      <header style={{ backgroundColor: "#330814", borderColor: "rgba(180, 83, 9, 0.4)" }} className="border-b sticky top-0 z-40 px-4 md:px-8 py-4 flex justify-between items-center shadow-md">
+      <header style={{ backgroundColor: "#330814", borderColor: "rgba(255, 255, 255, 0.2)" }} className="border-b sticky top-0 z-40 px-4 md:px-8 py-4 flex justify-between items-center shadow-md">
         <div className="flex items-center gap-3">
-          <div style={{ backgroundColor: "#4a0d1e", borderColor: "rgba(217, 119, 6, 0.4)" }} className="relative p-2 rounded-xl border">
+          <div style={{ backgroundColor: "#4a0d1e", borderColor: "rgba(255, 255, 255, 0.3)" }} className="relative p-2 rounded-xl border">
             <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -231,16 +230,16 @@ export default function HomeStore() {
           </div>
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life</h1>
-            <p className="text-xs text-amber-200/70">Elevate Your Style with Luxury Essentials</p>
+            <p className="text-xs text-gray-300">Elevate Your Style with Luxury Essentials</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => setIsTrackingOpen(true)} style={{ backgroundColor: "rgba(120, 53, 15, 0.3)", borderColor: "rgba(217, 119, 6, 0.35)" }} className="text-xs text-amber-200 px-3 py-2 rounded-lg border transition">
+          <button onClick={() => setIsTrackingOpen(true)} style={{ backgroundColor: "rgba(255, 255, 255, 0.08)", borderColor: "rgba(255, 255, 255, 0.3)" }} className="text-xs text-white px-3 py-2 rounded-lg border transition hover:bg-white/20">
             📦 Track Order
           </button>
           
-          <button onClick={() => setIsWishlistOpen(true)} style={{ backgroundColor: "rgba(120, 53, 15, 0.3)", borderColor: "rgba(217, 119, 6, 0.35)" }} className="relative text-amber-200 px-3 py-2 rounded-lg border transition flex items-center gap-1 text-xs">
+          <button onClick={() => setIsWishlistOpen(true)} style={{ backgroundColor: "rgba(255, 255, 255, 0.08)", borderColor: "rgba(255, 255, 255, 0.3)" }} className="relative text-white px-3 py-2 rounded-lg border transition hover:bg-white/20 flex items-center gap-1 text-xs">
             ❤️ Wishlist
             {wishlist.length > 0 && (
               <span className="bg-amber-500 text-black font-bold px-1.5 py-0.2 rounded-full text-[10px]">
@@ -249,7 +248,7 @@ export default function HomeStore() {
             )}
           </button>
 
-          <Link href="/admin" style={{ backgroundColor: "rgba(120, 53, 15, 0.3)", borderColor: "rgba(217, 119, 6, 0.35)" }} className="text-xs text-amber-200 px-3 py-2 rounded-lg border transition">
+          <Link href="/admin" style={{ backgroundColor: "rgba(255, 255, 255, 0.08)", borderColor: "rgba(255, 255, 255, 0.3)" }} className="text-xs text-white px-3 py-2 rounded-lg border transition hover:bg-white/20">
             Admin Portal
           </Link>
 
@@ -260,7 +259,7 @@ export default function HomeStore() {
       </header>
 
       {/* Hero Banner */}
-      <div style={{ background: "linear-gradient(to right, #4a0d1e, #22050d)", borderColor: "rgba(180, 83, 9, 0.3)" }} className="py-12 px-4 text-center border-b transition-all duration-500">
+      <div style={{ background: "linear-gradient(to right, #4a0d1e, #22050d)", borderColor: "rgba(255, 255, 255, 0.15)" }} className="py-12 px-4 text-center border-b transition-all duration-500">
         <h2 className="text-2xl md:text-4xl font-extrabold text-amber-400 mb-2">{banners[currentBanner].title}</h2>
         <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base">{banners[currentBanner].subtitle}</p>
         <div className="flex justify-center gap-2 mt-4">
@@ -279,18 +278,18 @@ export default function HomeStore() {
               placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ backgroundColor: "#330814", borderColor: "rgba(217, 119, 6, 0.4)" }}
-              className="w-full p-3 rounded-xl border text-white text-sm focus:outline-none focus:border-amber-400 shadow-inner"
+              style={{ backgroundColor: "#330814", borderColor: "#ffffff" }}
+              className="w-full p-3 rounded-xl border-2 text-white text-sm focus:outline-none focus:border-amber-400 shadow-sm placeholder-gray-400"
             />
           </div>
 
           <div className="flex items-center gap-2 w-full md:w-auto justify-end">
-            <span className="text-xs text-amber-200 font-semibold">Sort by</span>
+            <span className="text-xs text-white font-semibold">Sort by</span>
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              style={{ backgroundColor: "#330814", borderColor: "rgba(217, 119, 6, 0.4)" }}
-              className="border text-amber-200 text-sm px-4 py-2 rounded-xl focus:outline-none focus:border-amber-400"
+              style={{ backgroundColor: "#330814", borderColor: "#ffffff" }}
+              className="border-2 text-white text-sm px-4 py-2 rounded-xl focus:outline-none focus:border-amber-400"
             >
               <option value="Featured">Featured</option>
               <option value="Price: Low to High">Price: Low to High</option>
@@ -305,8 +304,8 @@ export default function HomeStore() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              style={selectedCategory === cat ? {} : { backgroundColor: "#330814", borderColor: "rgba(180, 83, 9, 0.4)" }}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${selectedCategory === cat ? "bg-amber-500 text-black shadow-lg" : "text-amber-200 border hover:border-amber-600"}`}
+              style={selectedCategory === cat ? {} : { backgroundColor: "#330814", borderColor: "rgba(255, 255, 255, 0.7)" }}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${selectedCategory === cat ? "bg-amber-500 text-black shadow-lg" : "text-white border hover:bg-white/10"}`}
             >
               {cat}
             </button>
@@ -422,9 +421,9 @@ export default function HomeStore() {
       {/* Wishlist Drawer */}
       {isWishlistOpen && (
         <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
-          <div className="bg-[#330814] border-l border-amber-900/40 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
+          <div className="bg-[#330814] border-l border-white/20 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
             <div>
-              <div className="flex justify-between items-center mb-6 border-b border-amber-900/40 pb-4">
+              <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
                 <h2 className="text-xl font-bold text-amber-400">❤️ Your Wishlist</h2>
                 <button onClick={() => setIsWishlistOpen(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
               </div>
@@ -434,7 +433,7 @@ export default function HomeStore() {
               ) : (
                 <div className="space-y-4">
                   {wishlistProducts.map((item) => (
-                    <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-amber-900/30">
+                    <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-white/20">
                       <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
                       <div className="flex-1">
                         <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
@@ -458,9 +457,9 @@ export default function HomeStore() {
       {/* Cart Drawer & Checkout */}
       {isCartOpen && (
         <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
-          <div className="bg-[#330814] border-l border-amber-900/40 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
+          <div className="bg-[#330814] border-l border-white/20 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
             <div>
-              <div className="flex justify-between items-center mb-6 border-b border-amber-900/40 pb-4">
+              <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
                 <h2 className="text-xl font-bold text-amber-400">🛒 Shopping Cart</h2>
                 <button onClick={() => setIsCartOpen(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
               </div>
@@ -480,7 +479,7 @@ export default function HomeStore() {
                 <>
                   <div className="space-y-4 max-h-60 overflow-y-auto pr-1">
                     {cart.map((item) => (
-                      <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-amber-900/30">
+                      <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-white/20">
                         <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
                         <div className="flex-1">
                           <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
@@ -494,14 +493,14 @@ export default function HomeStore() {
                   </div>
 
                   {/* Coupon Section */}
-                  <div className="mt-6 pt-4 border-t border-amber-900/40">
+                  <div className="mt-6 pt-4 border-t border-white/20">
                     <div className="flex gap-2">
                       <input 
                         type="text" 
                         placeholder="কুপন কোড (যেমন: EID10)" 
                         value={couponCode} 
                         onChange={(e) => setCouponCode(e.target.value)}
-                        className="flex-1 bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                        className="flex-1 bg-[#22050d] border border-white/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
                       />
                       <button onClick={applyCoupon} className="bg-amber-600 hover:bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">
                         প্রয়োগ
@@ -511,7 +510,7 @@ export default function HomeStore() {
                   </div>
 
                   {/* Order Form */}
-                  <form onSubmit={handleCheckout} className="mt-6 space-y-3 pt-4 border-t border-amber-900/40">
+                  <form onSubmit={handleCheckout} className="mt-6 space-y-3 pt-4 border-t border-white/20">
                     <h3 className="font-bold text-amber-400 text-sm">ডেলিভারি তথ্য:</h3>
                     <input 
                       type="text" 
@@ -519,7 +518,7 @@ export default function HomeStore() {
                       required 
                       value={customerName} 
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
                     />
                     <input 
                       type="tel" 
@@ -527,20 +526,20 @@ export default function HomeStore() {
                       required 
                       value={phone} 
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
                     />
                     <textarea 
                       placeholder="সম্পূর্ণ ঠিকানা" 
                       required 
                       value={address} 
                       onChange={(e) => setAddress(e.target.value)}
-                      className="w-full bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none h-20"
+                      className="w-full bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none h-20"
                     />
 
                     <div className="pt-2 text-xs space-y-1 text-gray-300">
                       <div className="flex justify-between"><span>Subtotal:</span><span>৳{subtotal}</span></div>
                       {discount > 0 && <div className="flex justify-between text-amber-400"><span>Discount:</span><span>-৳{discountAmount}</span></div>}
-                      <div className="flex justify-between font-bold text-sm text-amber-400 pt-1 border-t border-amber-900/40">
+                      <div className="flex justify-between font-bold text-sm text-amber-400 pt-1 border-t border-white/20">
                         <span>Total:</span><span>৳{totalAmount}</span>
                       </div>
                     </div>
@@ -563,7 +562,7 @@ export default function HomeStore() {
       {/* Track Order Modal */}
       {isTrackingOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#330814] border border-amber-900/40 text-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+          <div className="bg-[#330814] border border-white/20 text-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
             <button onClick={() => setIsTrackingOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">✕</button>
             <h3 className="text-xl font-bold text-amber-400 mb-4">📦 Track Your Order</h3>
             <form onSubmit={handleTrackOrder} className="flex gap-2 mb-6">
@@ -572,7 +571,7 @@ export default function HomeStore() {
                 placeholder="আপনার মোবাইল নম্বর লিখুন" 
                 value={trackPhone} 
                 onChange={(e) => setTrackPhone(e.target.value)}
-                className="flex-1 bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                className="flex-1 bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
               />
               <button type="submit" className="bg-amber-500 text-black font-bold px-4 py-2.5 rounded-xl text-xs">
                 খুঁজুন
@@ -584,7 +583,7 @@ export default function HomeStore() {
             ) : trackedOrders.length > 0 ? (
               <div className="space-y-3 max-h-60 overflow-y-auto">
                 {trackedOrders.map((ord) => (
-                  <div key={ord.id} className="bg-[#22050d] p-3 rounded-xl border border-amber-900/40 text-xs">
+                  <div key={ord.id} className="bg-[#22050d] p-3 rounded-xl border border-white/20 text-xs">
                     <div className="flex justify-between font-bold text-amber-400">
                       <span>অর্ডার # {ord.id.slice(0, 6)}</span>
                       <span className="bg-amber-900/50 px-2 py-0.5 rounded text-[10px]">{ord.status}</span>
