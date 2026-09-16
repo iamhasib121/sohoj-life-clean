@@ -2,8 +2,6 @@ import Header from "@/components/Header";
 import FlashSaleTimer from "@/components/FlashSaleTimer";
 import ProductDetails from "@/components/ProductDetails";
 import FaqSection from "@/components/FaqSection";
-import CustomerReviews from "@/components/CustomerReviews"; 
-import SocialShare from "@/components/SocialShare";           
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
@@ -21,16 +19,6 @@ export default function Home() {
         {/* Featured Product Detail Section */}
         <section className="my-6">
           <ProductDetails />
-        </section>
-
-        {/* Social Share Section */}
-        <div className="max-w-7xl mx-auto px-4">
-          <SocialShare />
-        </div>
-
-        {/* Customer Reviews Section */}
-        <section className="my-8">
-          <CustomerReviews />
         </section>
 
         {/* FAQ Section */}
