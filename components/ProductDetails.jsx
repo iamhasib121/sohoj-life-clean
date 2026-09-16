@@ -71,13 +71,19 @@ export default function ProductDetails() {
           </h1>
 
           {/* Price */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-2">
             <span className="text-xl text-gray-400 line-through">
               {product.originalPrice}৳
             </span>
             <span className="text-2xl font-bold text-green-600">
               {product.price}৳
             </span>
+          </div>
+
+          {/* স্টক কাউন্টডাউন বা লিমিটেড স্টক অ্যালার্ট */}
+          <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 px-3 py-2 rounded-xl text-xs font-semibold my-3 w-fit animate-pulse">
+            <span>🔥</span>
+            <span>সীমিত স্টক: মাত্র ৩টি পণ্য বাকি আছে! দ্রুত অর্ডার করুন।</span>
           </div>
 
           <p className="text-gray-600 text-sm mb-6 leading-relaxed">
@@ -161,6 +167,9 @@ export default function ProductDetails() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
     </div>
   );
 }
