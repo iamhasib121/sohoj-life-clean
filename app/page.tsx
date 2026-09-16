@@ -3,7 +3,7 @@ import FlashSaleTimer from "@/components/FlashSaleTimer";
 import ProductDetails from "@/components/ProductDetails";
 import FaqSection from "@/components/FaqSection";
 import CustomerReviews from "@/components/CustomerReviews"; // 👈 কাস্টমার রিভিউ ইম্পোর্ট করলাম
-import SocialShare from "@/components/SocialShare";           // 👈 সোশ্যাল শেয়ার ইম্পোর্ট করলাম
+//import SocialShare from "@/components/SocialShare";           // 👈 সোশ্যাল শেয়ার ইম্পোর্ট করলাম
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
