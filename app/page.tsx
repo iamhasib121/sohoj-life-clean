@@ -218,78 +218,84 @@ export default function HomeStore() {
   const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
-    <div style={{ backgroundColor: "#22050d", minHeight: "100vh", color: "#ffffff" }}>
-      {/* Top Header */}
-      <header style={{ backgroundColor: "#330814", borderColor: "rgba(255, 255, 255, 0.2)" }} className="border-b sticky top-0 z-40 px-4 md:px-8 py-4 flex justify-between items-center shadow-md">
+    <div className="bg-slate-50 min-h-screen text-slate-800 font-sans">
+      {/* Header */}
+      <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-4 md:px-8 py-3.5 flex justify-between items-center shadow-lg">
         <div className="flex items-center gap-3">
-          <div style={{ backgroundColor: "#4a0d1e", borderColor: "rgba(255, 255, 255, 0.3)" }} className="relative p-2 rounded-xl border">
+          <div className="relative p-2 bg-slate-800 border border-slate-700 rounded-xl">
             <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span className="absolute -top-1 -right-1 bg-amber-500 text-black rounded-full p-0.5 text-[10px]">🍃</span>
+            <span className="absolute -top-1 -right-1 bg-amber-500 text-slate-900 rounded-full p-0.5 text-[10px] font-bold">🍃</span>
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-amber-400">Sohoj Life</h1>
-            <p className="text-xs text-gray-300">Elevate Your Style with Luxury Essentials</p>
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white">Sohoj <span className="text-amber-400">Life</span></h1>
+            <p className="text-[11px] text-slate-400 hidden sm:block">Elevate Your Style with Luxury Essentials</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => setIsTrackingOpen(true)} style={{ backgroundColor: "rgba(255, 255, 255, 0.08)", borderColor: "rgba(255, 255, 255, 0.3)" }} className="text-xs text-white px-3 py-2 rounded-lg border transition hover:bg-white/20">
+          <button onClick={() => setIsTrackingOpen(true)} className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
             📦 Track Order
           </button>
           
-          <button onClick={() => setIsWishlistOpen(true)} style={{ backgroundColor: "rgba(255, 255, 255, 0.08)", borderColor: "rgba(255, 255, 255, 0.3)" }} className="relative text-white px-3 py-2 rounded-lg border transition hover:bg-white/20 flex items-center gap-1 text-xs">
+          <button onClick={() => setIsWishlistOpen(true)} className="relative text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition flex items-center gap-1.5">
             ❤️ Wishlist
             {wishlist.length > 0 && (
-              <span className="bg-amber-500 text-black font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+              <span className="bg-amber-500 text-slate-950 font-extrabold px-1.5 py-0.2 rounded-full text-[10px]">
                 {wishlist.length}
               </span>
             )}
           </button>
 
-          <Link href="/admin" style={{ backgroundColor: "rgba(255, 255, 255, 0.08)", borderColor: "rgba(255, 255, 255, 0.3)" }} className="text-xs text-white px-3 py-2 rounded-lg border transition hover:bg-white/20">
+          <Link href="/admin" className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition hidden sm:block">
             Admin Portal
           </Link>
 
-          <button onClick={() => setIsCartOpen(true)} className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 relative transition text-sm shadow-md">
+          <button onClick={() => setIsCartOpen(true)} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition text-xs md:text-sm shadow-md">
             🛒 Cart ({cart.reduce((sum, item) => sum + item.qty, 0)})
           </button>
         </div>
       </header>
 
       {/* Hero Banner */}
-      <div style={{ background: "linear-gradient(to right, #4a0d1e, #22050d)", borderColor: "rgba(255, 255, 255, 0.15)" }} className="py-12 px-4 text-center border-b transition-all duration-500">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-amber-400 mb-2">{banners[currentBanner].title}</h2>
-        <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base">{banners[currentBanner].subtitle}</p>
-        <div className="flex justify-center gap-2 mt-4">
-          {banners.map((_, idx) => (
-            <span key={idx} className={`h-2 rounded-full transition-all duration-300 ${currentBanner === idx ? "w-6 bg-amber-400" : "w-2 bg-amber-900"}`} />
-          ))}
+      <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-12 px-4 text-center border-b border-slate-800 relative overflow-hidden">
+        <div className="absolute inset-0 bg-amber-500/5 blur-3xl rounded-full transform -translate-y-1/2"></div>
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <span className="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs px-3 py-1 rounded-full font-medium mb-3">
+            New Season Collections ✨
+          </span>
+          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+            {banners[currentBanner].title}
+          </h2>
+          <p className="text-slate-300 text-sm md:text-base font-light">{banners[currentBanner].subtitle}</p>
+          <div className="flex justify-center gap-2 mt-5">
+            {banners.map((_, idx) => (
+              <span key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${currentBanner === idx ? "w-6 bg-amber-400" : "w-2 bg-slate-700"}`} />
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Search & Filter */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-          <div className="w-full md:w-96">
+          <div className="w-full md:w-96 relative">
             <input 
               type="text" 
               placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ backgroundColor: "#330814", borderColor: "#ffffff" }}
-              className="w-full p-3 rounded-xl border-2 text-white text-sm focus:outline-none focus:border-amber-400 shadow-sm placeholder-gray-400"
+              className="w-full pl-4 pr-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-sm placeholder-slate-400 transition"
             />
           </div>
 
           <div className="flex items-center gap-2 w-full md:w-auto justify-end">
-            <span className="text-xs text-white font-semibold">Sort by</span>
+            <span className="text-xs text-slate-500 font-medium">Sort by:</span>
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              style={{ backgroundColor: "#330814", borderColor: "#ffffff" }}
-              className="border-2 text-white text-sm px-4 py-2 rounded-xl focus:outline-none focus:border-amber-400"
+              className="bg-white border border-slate-300 text-slate-800 text-xs md:text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm cursor-pointer"
             >
               <option value="Featured">Featured</option>
               <option value="Price: Low to High">Price: Low to High</option>
@@ -299,13 +305,17 @@ export default function HomeStore() {
           </div>
         </div>
 
+        {/* Categories */}
         <div className="flex flex-wrap gap-2 justify-center">
           {["All", "Men's Wear", "Women's Wear", "Kids' Wear", "Accessories"].map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              style={selectedCategory === cat ? {} : { backgroundColor: "#330814", borderColor: "rgba(255, 255, 255, 0.7)" }}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${selectedCategory === cat ? "bg-amber-500 text-black shadow-lg" : "text-white border hover:bg-white/10"}`}
+              className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition shadow-sm ${
+                selectedCategory === cat 
+                  ? "bg-slate-900 text-amber-400 font-semibold shadow-md" 
+                  : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900"
+              }`}
             >
               {cat}
             </button>
@@ -316,58 +326,61 @@ export default function HomeStore() {
       {/* Main Grid */}
       <main className="max-w-7xl mx-auto px-4 pb-16">
         <div className="flex justify-between items-center mb-4">
-          <p className="text-xs text-gray-400">Showing {filteredProducts.length} products</p>
-          <p className="text-xs text-amber-300">💡 টিপস: চেকআউটে কুপন কোড **EID10** ব্যবহার করে নিন ১০% ছাড়!</p>
+          <p className="text-xs text-slate-500 font-medium">Showing {filteredProducts.length} products</p>
+          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
+            💡 টিপস: চেকআউটে কুপন কোড <strong className="font-bold">EID10</strong> ব্যবহার করে নিন ১০% ছাড়!
+          </p>
         </div>
         
         {loading ? (
-          <div className="text-center py-20 text-amber-300">প্রোডাক্ট লোড হচ্ছে...</div>
+          <div className="text-center py-20 text-slate-500 font-medium">প্রোডাক্ট লোড হচ্ছে...</div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>
+          <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 text-slate-400">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map((prod) => (
               <div 
                 key={prod.id} 
                 onClick={() => setSelectedProduct(prod)}
-                className="bg-white rounded-3xl overflow-hidden border border-amber-100 flex flex-col justify-between shadow-xl transition cursor-pointer group p-3 text-gray-900 relative"
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group p-3 text-slate-900 relative"
               >
                 <div>
-                  <div className="h-72 overflow-hidden bg-gray-100 relative rounded-2xl">
-                    <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                    <span className="absolute top-3 left-3 bg-white/90 text-gray-800 text-xs px-3.5 py-1.5 rounded-full font-medium shadow-sm">
-                      {prod.category || "Panjabi"}
+                  <div className="h-72 overflow-hidden bg-slate-100 relative rounded-xl">
+                    <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full shadow-sm border border-slate-200/50">
+                      {prod.category || "General"}
                     </span>
                     <button 
                       onClick={(e) => toggleWishlist(prod.id, e)}
-                      className="absolute top-3 right-3 bg-white/90 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center shadow transition text-lg"
+                      className="absolute top-3 right-3 bg-white/90 hover:bg-white w-8 h-8 rounded-full flex items-center justify-center shadow transition text-sm"
                     >
                       {wishlist.includes(prod.id) ? "❤️" : "🤍"}
                     </button>
-                    <div className="absolute inset-x-4 bottom-4">
+                    
+                    <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition duration-300 transform translate-y-2 group-hover:translate-y-0">
                       <button 
                         onClick={(e) => addToCart(prod, e)} 
-                        className="w-full bg-white hover:bg-gray-50 text-[#4a0d1e] font-semibold py-3 rounded-full text-sm shadow-md flex items-center justify-center gap-1.5 transition border border-gray-100"
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl text-xs shadow-lg flex items-center justify-center gap-1 transition"
                       >
-                        <span className="text-lg font-bold">+</span> Quick Add
+                        <span className="text-amber-400 font-bold">+</span> Quick Add
                       </button>
                     </div>
                   </div>
 
-                  <div className="p-3 pt-4">
-                    <h3 className="font-semibold text-base text-gray-900 group-hover:text-[#4a0d1e] transition line-clamp-1">{prod.name}</h3>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-amber-500 text-sm">★</span>
-                      <span className="text-xs text-gray-700 font-medium">{prod.rating || "4.7"}</span>
+                  <div className="p-2 pt-3">
+                    <h3 className="font-semibold text-sm text-slate-900 group-hover:text-amber-600 transition line-clamp-1">{prod.name}</h3>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="text-amber-500 text-xs">★</span>
+                      <span className="text-xs text-slate-500 font-medium">{prod.rating || "4.8"}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-3 pt-2 flex items-center justify-between mt-2 border-t border-gray-100">
-                  <span className="text-[#4a0d1e] font-bold text-xl">৳{prod.price}</span>
+                <div className="p-2 pt-2 flex items-center justify-between mt-2 border-t border-slate-100">
+                  <span className="text-slate-900 font-extrabold text-lg">৳{prod.price}</span>
                   <button 
                     onClick={(e) => addToCart(prod, e)} 
-                    className="bg-[#4a0d1e] hover:bg-[#330814] text-white font-medium px-4 py-2.5 rounded-xl transition text-xs shadow-md"
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-2 rounded-xl transition text-xs shadow-sm"
                   >
                     Add to Cart
                   </button>
@@ -380,35 +393,35 @@ export default function HomeStore() {
 
       {/* Product Detail Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white text-gray-900 rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white text-slate-900 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200 border border-slate-200">
             <button 
               onClick={() => setSelectedProduct(null)} 
-              className="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-800 w-8 h-8 rounded-full flex items-center justify-center font-bold z-10"
+              className="absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 w-8 h-8 rounded-full flex items-center justify-center font-bold z-10 transition"
             >
               ✕
             </button>
-            <div className="h-80 bg-gray-100 relative">
+            <div className="h-80 bg-slate-100 relative">
               <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover" />
             </div>
             <div className="p-6">
               <span className="text-xs bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full">{selectedProduct.category}</span>
-              <h3 className="text-2xl font-bold text-gray-900 mt-2">{selectedProduct.name}</h3>
-              <p className="text-2xl font-bold text-[#4a0d1e] mt-2">৳{selectedProduct.price}</p>
-              <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+              <h3 className="text-xl font-bold text-slate-900 mt-2">{selectedProduct.name}</h3>
+              <p className="text-2xl font-black text-amber-600 mt-1">৳{selectedProduct.price}</p>
+              <p className="text-xs text-slate-600 mt-3 leading-relaxed">
                 প্রিমিয়াম কোয়ালিটির কাপড়ে তৈরি এই প্রোডাক্টটি আপনাকে দেবে সর্বোচ্চ আরাম এবং স্টাইলিশ লুক।
               </p>
               
               <div className="flex gap-3 mt-6">
                 <button 
                   onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
-                  className="flex-1 bg-[#4a0d1e] text-white py-3 rounded-xl font-bold hover:bg-[#330814] transition"
+                  className="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition text-sm shadow-md"
                 >
                   🛒 Add to Cart
                 </button>
                 <button 
                   onClick={() => handleWhatsAppOrder(selectedProduct)}
-                  className="bg-green-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-green-700 transition flex items-center gap-1"
+                  className="bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-sm flex items-center gap-1 shadow-md"
                 >
                   💬 WhatsApp
                 </button>
@@ -420,29 +433,29 @@ export default function HomeStore() {
 
       {/* Wishlist Drawer */}
       {isWishlistOpen && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
-          <div className="bg-[#330814] border-l border-white/20 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex justify-end">
+          <div className="bg-white w-full max-w-md h-full p-6 overflow-y-auto text-slate-900 flex flex-col justify-between shadow-2xl border-l border-slate-200">
             <div>
-              <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
-                <h2 className="text-xl font-bold text-amber-400">❤️ Your Wishlist</h2>
-                <button onClick={() => setIsWishlistOpen(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+              <div className="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">❤️ Your Wishlist</h2>
+                <button onClick={() => setIsWishlistOpen(false)} className="text-slate-400 hover:text-slate-700 text-lg">✕</button>
               </div>
 
               {wishlistProducts.length === 0 ? (
-                <p className="text-center text-gray-400 py-10">আপনার উইশলিস্ট খালি!</p>
+                <p className="text-center text-slate-400 py-10 text-sm">আপনার উইশলিস্ট খালি!</p>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {wishlistProducts.map((item) => (
-                    <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-white/20">
-                      <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
+                    <div key={item.id} className="flex gap-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
+                      <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg" />
                       <div className="flex-1">
-                        <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
-                        <p className="text-amber-400 text-sm font-bold">৳{item.price}</p>
+                        <h4 className="font-semibold text-xs text-slate-800 line-clamp-1">{item.name}</h4>
+                        <p className="text-slate-900 text-xs font-bold mt-0.5">৳{item.price}</p>
                       </div>
-                      <button onClick={(e) => addToCart(item, e)} className="bg-amber-500 text-black px-3 py-1.5 rounded-lg text-xs font-bold">
+                      <button onClick={(e) => addToCart(item, e)} className="bg-amber-500 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold">
                         Cart
                       </button>
-                      <button onClick={(e) => toggleWishlist(item.id, e)} className="text-red-400 hover:text-red-300 text-sm">
+                      <button onClick={(e) => toggleWishlist(item.id, e)} className="text-slate-400 hover:text-rose-500 text-sm px-1">
                         ✕
                       </button>
                     </div>
@@ -456,69 +469,69 @@ export default function HomeStore() {
 
       {/* Cart Drawer & Checkout */}
       {isCartOpen && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
-          <div className="bg-[#330814] border-l border-white/20 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex justify-end">
+          <div className="bg-white w-full max-w-md h-full p-6 overflow-y-auto text-slate-900 flex flex-col justify-between shadow-2xl border-l border-slate-200">
             <div>
-              <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-4">
-                <h2 className="text-xl font-bold text-amber-400">🛒 Shopping Cart</h2>
-                <button onClick={() => setIsCartOpen(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+              <div className="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">🛒 Shopping Cart</h2>
+                <button onClick={() => setIsCartOpen(false)} className="text-slate-400 hover:text-slate-700 text-lg">✕</button>
               </div>
 
               {orderSuccess ? (
                 <div className="text-center py-12">
-                  <div className="text-5xl mb-4">🎉</div>
-                  <h3 className="text-xl font-bold text-amber-400">অর্ডার সফল হয়েছে!</h3>
-                  <p className="text-sm text-gray-300 mt-2">আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।</p>
-                  <button onClick={() => { setOrderSuccess(false); setIsCartOpen(false); }} className="mt-6 bg-amber-500 text-black font-bold px-6 py-2.5 rounded-xl text-sm">
+                  <div className="text-5xl mb-3">🎉</div>
+                  <h3 className="text-lg font-bold text-slate-900">অর্ডার সফল হয়েছে!</h3>
+                  <p className="text-xs text-slate-500 mt-2">আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।</p>
+                  <button onClick={() => { setOrderSuccess(false); setIsCartOpen(false); }} className="mt-6 bg-slate-900 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md">
                     কেনাকাটা চালিয়ে যান
                   </button>
                 </div>
               ) : cart.length === 0 ? (
-                <p className="text-center text-gray-400 py-10">আপনার কার্ট একদম খালি!</p>
+                <p className="text-center text-slate-400 py-10 text-sm">আপনার কার্ট একদম খালি!</p>
               ) : (
                 <>
-                  <div className="space-y-4 max-h-60 overflow-y-auto pr-1">
+                  <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
                     {cart.map((item) => (
-                      <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-white/20">
-                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
+                      <div key={item.id} className="flex gap-3 items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                        <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg" />
                         <div className="flex-1">
-                          <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
-                          <p className="text-amber-400 text-sm font-bold">৳{item.price} x {item.qty}</p>
+                          <h4 className="font-semibold text-xs text-slate-800 line-clamp-1">{item.name}</h4>
+                          <p className="text-amber-600 text-xs font-bold mt-0.5">৳{item.price} x {item.qty}</p>
                         </div>
-                        <button onClick={() => removeFromCart(item.id)} className="text-red-400 hover:text-red-300 text-xs bg-red-950/40 p-2 rounded-lg">
-                          মুছে ফেলুন
+                        <button onClick={() => removeFromCart(item.id)} className="text-rose-500 hover:text-rose-700 text-xs bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">
+                          মুছুন
                         </button>
                       </div>
                     ))}
                   </div>
 
                   {/* Coupon Section */}
-                  <div className="mt-6 pt-4 border-t border-white/20">
+                  <div className="mt-5 pt-3 border-t border-slate-100">
                     <div className="flex gap-2">
                       <input 
                         type="text" 
                         placeholder="কুপন কোড (যেমন: EID10)" 
                         value={couponCode} 
                         onChange={(e) => setCouponCode(e.target.value)}
-                        className="flex-1 bg-[#22050d] border border-white/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-500"
                       />
-                      <button onClick={applyCoupon} className="bg-amber-600 hover:bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">
+                      <button onClick={applyCoupon} className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-xs">
                         প্রয়োগ
                       </button>
                     </div>
-                    {couponMessage && <p className="text-xs mt-2 text-amber-300">{couponMessage}</p>}
+                    {couponMessage && <p className="text-[11px] mt-2 text-emerald-600 font-medium">{couponMessage}</p>}
                   </div>
 
                   {/* Order Form */}
-                  <form onSubmit={handleCheckout} className="mt-6 space-y-3 pt-4 border-t border-white/20">
-                    <h3 className="font-bold text-amber-400 text-sm">ডেলিভারি তথ্য:</h3>
+                  <form onSubmit={handleCheckout} className="mt-5 space-y-2.5 pt-3 border-t border-slate-100">
+                    <h3 className="font-bold text-slate-900 text-xs">ডেলিভারি তথ্য:</h3>
                     <input 
                       type="text" 
                       placeholder="আপনার নাম" 
                       required 
                       value={customerName} 
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     />
                     <input 
                       type="tel" 
@@ -526,28 +539,28 @@ export default function HomeStore() {
                       required 
                       value={phone} 
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     />
                     <textarea 
                       placeholder="সম্পূর্ণ ঠিকানা" 
                       required 
                       value={address} 
                       onChange={(e) => setAddress(e.target.value)}
-                      className="w-full bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none h-20"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-500 h-16"
                     />
 
-                    <div className="pt-2 text-xs space-y-1 text-gray-300">
+                    <div className="pt-2 text-xs space-y-1 text-slate-600">
                       <div className="flex justify-between"><span>Subtotal:</span><span>৳{subtotal}</span></div>
-                      {discount > 0 && <div className="flex justify-between text-amber-400"><span>Discount:</span><span>-৳{discountAmount}</span></div>}
-                      <div className="flex justify-between font-bold text-sm text-amber-400 pt-1 border-t border-white/20">
-                        <span>Total:</span><span>৳{totalAmount}</span>
+                      {discount > 0 && <div className="flex justify-between text-emerald-600"><span>Discount:</span><span>-৳{discountAmount}</span></div>}
+                      <div className="flex justify-between font-bold text-sm text-slate-900 pt-2 border-t border-slate-100">
+                        <span>Total Amount:</span><span>৳{totalAmount}</span>
                       </div>
                     </div>
 
                     <button 
                       type="submit" 
                       disabled={orderSubmitting} 
-                      className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-xl transition text-sm shadow-lg mt-4 disabled:opacity-50"
+                      className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-md mt-3 disabled:opacity-50"
                     >
                       {orderSubmitting ? "অর্ডার প্রসেস হচ্ছে..." : `অর্ডার নিশ্চিত করুন (৳${totalAmount})`}
                     </button>
@@ -561,40 +574,40 @@ export default function HomeStore() {
 
       {/* Track Order Modal */}
       {isTrackingOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#330814] border border-white/20 text-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onClick={() => setIsTrackingOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">✕</button>
-            <h3 className="text-xl font-bold text-amber-400 mb-4">📦 Track Your Order</h3>
-            <form onSubmit={handleTrackOrder} className="flex gap-2 mb-6">
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 text-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onClick={() => setIsTrackingOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">✕</button>
+            <h3 className="text-lg font-bold text-slate-900 mb-4">📦 Track Your Order</h3>
+            <form onSubmit={handleTrackOrder} className="flex gap-2 mb-4">
               <input 
                 type="tel" 
                 placeholder="আপনার মোবাইল নম্বর লিখুন" 
                 value={trackPhone} 
                 onChange={(e) => setTrackPhone(e.target.value)}
-                className="flex-1 bg-[#22050d] border border-white/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-500"
               />
-              <button type="submit" className="bg-amber-500 text-black font-bold px-4 py-2.5 rounded-xl text-xs">
+              <button type="submit" className="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-sm">
                 খুঁজুন
               </button>
             </form>
 
             {isTrackingLoading ? (
-              <p className="text-center text-xs text-amber-200">খোঁজা হচ্ছে...</p>
+              <p className="text-center text-xs text-slate-500">খোঁজা হচ্ছে...</p>
             ) : trackedOrders.length > 0 ? (
-              <div className="space-y-3 max-h-60 overflow-y-auto">
+              <div className="space-y-2.5 max-h-56 overflow-y-auto">
                 {trackedOrders.map((ord) => (
-                  <div key={ord.id} className="bg-[#22050d] p-3 rounded-xl border border-white/20 text-xs">
-                    <div className="flex justify-between font-bold text-amber-400">
+                  <div key={ord.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                    <div className="flex justify-between font-bold text-slate-900">
                       <span>অর্ডার # {ord.id.slice(0, 6)}</span>
-                      <span className="bg-amber-900/50 px-2 py-0.5 rounded text-[10px]">{ord.status}</span>
+                      <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-semibold">{ord.status}</span>
                     </div>
-                    <p className="text-gray-300 mt-1">{ord.itemsSummary}</p>
-                    <p className="font-bold text-white mt-1">মোট: ৳{ord.totalAmount}</p>
+                    <p className="text-slate-600 mt-1">{ord.itemsSummary}</p>
+                    <p className="font-bold text-slate-900 mt-1">মোট: ৳{ord.totalAmount}</p>
                   </div>
                 ))}
               </div>
             ) : trackPhone ? (
-              <p className="text-center text-xs text-gray-400">কোনো অর্ডার পাওয়া যায়নি।</p>
+              <p className="text-center text-xs text-slate-400">কোনো অর্ডার পাওয়া যায়নি।</p>
             ) : null}
           </div>
         </div>
