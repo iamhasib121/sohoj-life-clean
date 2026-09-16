@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { collection, getDocs, addDoc, serverTimestamp, query, where } from "firebase/firestore";
 import Link from "next/link";
-import Image from "next/image";
 
 // TypeScript Interfaces
 interface Product {
@@ -34,7 +33,7 @@ export default function HomeStore() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>([]);
-  
+
   // Wishlist State
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
@@ -76,8 +75,7 @@ export default function HomeStore() {
 
   useEffect(() => {
     fetchStoreProducts();
-    
-    // LocalStorage থেকে উইশলিস্ট লোড
+
     const savedWishlist = localStorage.getItem("sohoj_wishlist");
     if (savedWishlist) {
       try {
@@ -106,7 +104,6 @@ export default function HomeStore() {
     }
   };
 
-  // Safe Cart Update
   const addToCart = (product: Product, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setCart((prevCart) => {
@@ -123,7 +120,6 @@ export default function HomeStore() {
     setCart((prevCart) => prevCart.filter(item => item.id !== id));
   };
 
-  // Wishlist Toggle Logic
   const toggleWishlist = (productId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setWishlist((prevWishlist) => {
@@ -162,7 +158,7 @@ export default function HomeStore() {
     setOrderSubmitting(true);
     try {
       const itemsSummary = cart.map(item => `${item.name} (${item.qty} pcs)`).join(", ");
-      
+
       await addDoc(collection(db, "orders"), {
         customerName,
         phone,
@@ -223,11 +219,11 @@ export default function HomeStore() {
   const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
-    <div className="min-h-screen bg-[#22050d] text-white">
+    <div style={{ backgroundColor: "#22050d", minHeight: "100vh", color: "#ffffff" }}>
       {/* Top Header */}
-      <header className="bg-[#330814] border-b border-amber-900/40 sticky top-0 z-40 px-4 md:px-8 py-4 flex justify-between items-center shadow-md">
+      <header style={{ backgroundColor: "#330814", borderColor: "rgba(180, 83, 9, 0.4)" }} className="border-b sticky top-0 z-40 px-4 md:px-8 py-4 flex justify-between items-center shadow-md">
         <div className="flex items-center gap-3">
-          <div className="relative bg-[#4a0d1e] p-2 rounded-xl border border-amber-600/40">
+          <div style={{ backgroundColor: "#4a0d1e", borderColor: "rgba(217, 119, 6, 0.4)" }} className="relative p-2 rounded-xl border">
             <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -240,11 +236,11 @@ export default function HomeStore() {
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => setIsTrackingOpen(true)} className="text-xs bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/35 transition">
+          <button onClick={() => setIsTrackingOpen(true)} style={{ backgroundColor: "rgba(120, 53, 15, 0.3)", borderColor: "rgba(217, 119, 6, 0.35)" }} className="text-xs text-amber-200 px-3 py-2 rounded-lg border transition">
             📦 Track Order
           </button>
           
-          <button onClick={() => setIsWishlistOpen(true)} className="relative bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/35 transition flex items-center gap-1 text-xs">
+          <button onClick={() => setIsWishlistOpen(true)} style={{ backgroundColor: "rgba(120, 53, 15, 0.3)", borderColor: "rgba(217, 119, 6, 0.35)" }} className="relative text-amber-200 px-3 py-2 rounded-lg border transition flex items-center gap-1 text-xs">
             ❤️ Wishlist
             {wishlist.length > 0 && (
               <span className="bg-amber-500 text-black font-bold px-1.5 py-0.2 rounded-full text-[10px]">
@@ -253,7 +249,7 @@ export default function HomeStore() {
             )}
           </button>
 
-          <Link href="/admin" className="text-xs bg-amber-900/30 hover:bg-amber-900/60 text-amber-200 px-3 py-2 rounded-lg border border-amber-600/35 transition">
+          <Link href="/admin" style={{ backgroundColor: "rgba(120, 53, 15, 0.3)", borderColor: "rgba(217, 119, 6, 0.35)" }} className="text-xs text-amber-200 px-3 py-2 rounded-lg border transition">
             Admin Portal
           </Link>
 
@@ -264,7 +260,7 @@ export default function HomeStore() {
       </header>
 
       {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-[#4a0d1e] to-[#22050d] py-12 px-4 text-center border-b border-amber-900/30 transition-all duration-500">
+      <div style={{ background: "linear-gradient(to right, #4a0d1e, #22050d)", borderColor: "rgba(180, 83, 9, 0.3)" }} className="py-12 px-4 text-center border-b transition-all duration-500">
         <h2 className="text-2xl md:text-4xl font-extrabold text-amber-400 mb-2">{banners[currentBanner].title}</h2>
         <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base">{banners[currentBanner].subtitle}</p>
         <div className="flex justify-center gap-2 mt-4">
@@ -283,7 +279,8 @@ export default function HomeStore() {
               placeholder="🔍 আপনার পছন্দের পণ্য সার্চ করুন..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full p-3 rounded-xl bg-[#330814] border border-amber-600/40 text-white text-sm focus:outline-none focus:border-amber-400 shadow-inner"
+              style={{ backgroundColor: "#330814", borderColor: "rgba(217, 119, 6, 0.4)" }}
+              className="w-full p-3 rounded-xl border text-white text-sm focus:outline-none focus:border-amber-400 shadow-inner"
             />
           </div>
 
@@ -292,7 +289,8 @@ export default function HomeStore() {
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-[#330814] border border-amber-600/40 text-amber-200 text-sm px-4 py-2 rounded-xl focus:outline-none focus:border-amber-400"
+              style={{ backgroundColor: "#330814", borderColor: "rgba(217, 119, 6, 0.4)" }}
+              className="border text-amber-200 text-sm px-4 py-2 rounded-xl focus:outline-none focus:border-amber-400"
             >
               <option value="Featured">Featured</option>
               <option value="Price: Low to High">Price: Low to High</option>
@@ -307,7 +305,8 @@ export default function HomeStore() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${selectedCategory === cat ? "bg-amber-500 text-black shadow-lg" : "bg-[#330814] text-amber-200 border border-amber-900/40 hover:border-amber-600"}`}
+              style={selectedCategory === cat ? {} : { backgroundColor: "#330814", borderColor: "rgba(180, 83, 9, 0.4)" }}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${selectedCategory === cat ? "bg-amber-500 text-black shadow-lg" : "text-amber-200 border hover:border-amber-600"}`}
             >
               {cat}
             </button>
@@ -379,6 +378,228 @@ export default function HomeStore() {
           </div>
         )}
       </main>
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white text-gray-900 rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button 
+              onClick={() => setSelectedProduct(null)} 
+              className="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-800 w-8 h-8 rounded-full flex items-center justify-center font-bold z-10"
+            >
+              ✕
+            </button>
+            <div className="h-80 bg-gray-100 relative">
+              <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover" />
+            </div>
+            <div className="p-6">
+              <span className="text-xs bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full">{selectedProduct.category}</span>
+              <h3 className="text-2xl font-bold text-gray-900 mt-2">{selectedProduct.name}</h3>
+              <p className="text-2xl font-bold text-[#4a0d1e] mt-2">৳{selectedProduct.price}</p>
+              <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+                প্রিমিয়াম কোয়ালিটির কাপড়ে তৈরি এই প্রোডাক্টটি আপনাকে দেবে সর্বোচ্চ আরাম এবং স্টাইলিশ লুক।
+              </p>
+              
+              <div className="flex gap-3 mt-6">
+                <button 
+                  onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
+                  className="flex-1 bg-[#4a0d1e] text-white py-3 rounded-xl font-bold hover:bg-[#330814] transition"
+                >
+                  🛒 Add to Cart
+                </button>
+                <button 
+                  onClick={() => handleWhatsAppOrder(selectedProduct)}
+                  className="bg-green-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-green-700 transition flex items-center gap-1"
+                >
+                  💬 WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wishlist Drawer */}
+      {isWishlistOpen && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
+          <div className="bg-[#330814] border-l border-amber-900/40 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-center mb-6 border-b border-amber-900/40 pb-4">
+                <h2 className="text-xl font-bold text-amber-400">❤️ Your Wishlist</h2>
+                <button onClick={() => setIsWishlistOpen(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+              </div>
+
+              {wishlistProducts.length === 0 ? (
+                <p className="text-center text-gray-400 py-10">আপনার উইশলিস্ট খালি!</p>
+              ) : (
+                <div className="space-y-4">
+                  {wishlistProducts.map((item) => (
+                    <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-amber-900/30">
+                      <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
+                        <p className="text-amber-400 text-sm font-bold">৳{item.price}</p>
+                      </div>
+                      <button onClick={(e) => addToCart(item, e)} className="bg-amber-500 text-black px-3 py-1.5 rounded-lg text-xs font-bold">
+                        Cart
+                      </button>
+                      <button onClick={(e) => toggleWishlist(item.id, e)} className="text-red-400 hover:text-red-300 text-sm">
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cart Drawer & Checkout */}
+      {isCartOpen && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
+          <div className="bg-[#330814] border-l border-amber-900/40 w-full max-w-md h-full p-6 overflow-y-auto text-white flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-center mb-6 border-b border-amber-900/40 pb-4">
+                <h2 className="text-xl font-bold text-amber-400">🛒 Shopping Cart</h2>
+                <button onClick={() => setIsCartOpen(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+              </div>
+
+              {orderSuccess ? (
+                <div className="text-center py-12">
+                  <div className="text-5xl mb-4">🎉</div>
+                  <h3 className="text-xl font-bold text-amber-400">অর্ডার সফল হয়েছে!</h3>
+                  <p className="text-sm text-gray-300 mt-2">আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।</p>
+                  <button onClick={() => { setOrderSuccess(false); setIsCartOpen(false); }} className="mt-6 bg-amber-500 text-black font-bold px-6 py-2.5 rounded-xl text-sm">
+                    কেনাকাটা চালিয়ে যান
+                  </button>
+                </div>
+              ) : cart.length === 0 ? (
+                <p className="text-center text-gray-400 py-10">আপনার কার্ট একদম খালি!</p>
+              ) : (
+                <>
+                  <div className="space-y-4 max-h-60 overflow-y-auto pr-1">
+                    {cart.map((item) => (
+                      <div key={item.id} className="flex gap-4 items-center bg-[#4a0d1e]/50 p-3 rounded-xl border border-amber-900/30">
+                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
+                          <p className="text-amber-400 text-sm font-bold">৳{item.price} x {item.qty}</p>
+                        </div>
+                        <button onClick={() => removeFromCart(item.id)} className="text-red-400 hover:text-red-300 text-xs bg-red-950/40 p-2 rounded-lg">
+                          মুছে ফেলুন
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Coupon Section */}
+                  <div className="mt-6 pt-4 border-t border-amber-900/40">
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="কুপন কোড (যেমন: EID10)" 
+                        value={couponCode} 
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        className="flex-1 bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                      />
+                      <button onClick={applyCoupon} className="bg-amber-600 hover:bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">
+                        প্রয়োগ
+                      </button>
+                    </div>
+                    {couponMessage && <p className="text-xs mt-2 text-amber-300">{couponMessage}</p>}
+                  </div>
+
+                  {/* Order Form */}
+                  <form onSubmit={handleCheckout} className="mt-6 space-y-3 pt-4 border-t border-amber-900/40">
+                    <h3 className="font-bold text-amber-400 text-sm">ডেলিভারি তথ্য:</h3>
+                    <input 
+                      type="text" 
+                      placeholder="আপনার নাম" 
+                      required 
+                      value={customerName} 
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      className="w-full bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                    />
+                    <input 
+                      type="tel" 
+                      placeholder="মোবাইল নম্বর" 
+                      required 
+                      value={phone} 
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+                    />
+                    <textarea 
+                      placeholder="সম্পূর্ণ ঠিকানা" 
+                      required 
+                      value={address} 
+                      onChange={(e) => setAddress(e.target.value)}
+                      className="w-full bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none h-20"
+                    />
+
+                    <div className="pt-2 text-xs space-y-1 text-gray-300">
+                      <div className="flex justify-between"><span>Subtotal:</span><span>৳{subtotal}</span></div>
+                      {discount > 0 && <div className="flex justify-between text-amber-400"><span>Discount:</span><span>-৳{discountAmount}</span></div>}
+                      <div className="flex justify-between font-bold text-sm text-amber-400 pt-1 border-t border-amber-900/40">
+                        <span>Total:</span><span>৳{totalAmount}</span>
+                      </div>
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      disabled={orderSubmitting} 
+                      className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-xl transition text-sm shadow-lg mt-4 disabled:opacity-50"
+                    >
+                      {orderSubmitting ? "অর্ডার প্রসেস হচ্ছে..." : `অর্ডার নিশ্চিত করুন (৳${totalAmount})`}
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Track Order Modal */}
+      {isTrackingOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#330814] border border-amber-900/40 text-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onClick={() => setIsTrackingOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">✕</button>
+            <h3 className="text-xl font-bold text-amber-400 mb-4">📦 Track Your Order</h3>
+            <form onSubmit={handleTrackOrder} className="flex gap-2 mb-6">
+              <input 
+                type="tel" 
+                placeholder="আপনার মোবাইল নম্বর লিখুন" 
+                value={trackPhone} 
+                onChange={(e) => setTrackPhone(e.target.value)}
+                className="flex-1 bg-[#22050d] border border-amber-600/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"
+              />
+              <button type="submit" className="bg-amber-500 text-black font-bold px-4 py-2.5 rounded-xl text-xs">
+                খুঁজুন
+              </button>
+            </form>
+
+            {isTrackingLoading ? (
+              <p className="text-center text-xs text-amber-200">খোঁজা হচ্ছে...</p>
+            ) : trackedOrders.length > 0 ? (
+              <div className="space-y-3 max-h-60 overflow-y-auto">
+                {trackedOrders.map((ord) => (
+                  <div key={ord.id} className="bg-[#22050d] p-3 rounded-xl border border-amber-900/40 text-xs">
+                    <div className="flex justify-between font-bold text-amber-400">
+                      <span>অর্ডার # {ord.id.slice(0, 6)}</span>
+                      <span className="bg-amber-900/50 px-2 py-0.5 rounded text-[10px]">{ord.status}</span>
+                    </div>
+                    <p className="text-gray-300 mt-1">{ord.itemsSummary}</p>
+                    <p className="font-bold text-white mt-1">মোট: ৳{ord.totalAmount}</p>
+                  </div>
+                ))}
+              </div>
+            ) : trackPhone ? (
+              <p className="text-center text-xs text-gray-400">কোনো অর্ডার পাওয়া যায়নি।</p>
+            ) : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
