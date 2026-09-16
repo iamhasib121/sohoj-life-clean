@@ -1,21 +1,29 @@
-// app/layout.tsx
-import './globals.css'
-import type { Metadata } from "next"
-import type { ReactNode } from "react"
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+// CartProvider ইমপোর্ট করুন
+import { CartProvider } from "@/context/CartContext";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sohoj Life - Premium Store",
-  description: "Easy shopping for lifestyle products",
-}
+  title: "Sohoj Life",
+  description: "E-commerce platform",
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={inter.className}>
+        {/* CartProvider দিয়ে children কে Wrap করুন */}
+        <CartProvider>
+          {children}
+        </CartProvider>
+      </body>
     </html>
-  )
+  );
 }
