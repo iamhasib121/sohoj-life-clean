@@ -8,11 +8,11 @@ interface PageProps {
 }
 
 export default function UpdatedPickabooPage({ params }: PageProps) {
-  // 🔗 Dynamic Route Parameter (ID) Unwrapping
+  // 🔗 Dynamic Route Parameter (ID) Unwrapping for Next.js 15+
   const resolvedParams = use(params);
   const productId = resolvedParams.id;
 
-  // 📱 ১. আপনার হোয়াটসঅ্যাপ নম্বরটি এখানে দিন (কান্ট্রি কোডসহ)
+  // 📱 ১. আপনার হোয়াটসঅ্যাপ নম্বর (Country code সহ)
   const WHATSAPP_NUMBER = "8801303422278";
 
   const images = [
@@ -43,10 +43,9 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
 
   const [showNotification, setShowNotification] = useState<boolean>(false);
 
-  // 🛒 Global Add to Cart Handler
+  // 🛒 Global Add to Cart Handler (TypeScript Error TS2353 Fixed)
   const handleAddToCart = () => {
     addToCart({
-      id: productId,
       title: "Redmi Note 12 Pro Max 5G",
       variant: selectedVariant,
       color: selectedColor,
@@ -376,14 +375,13 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
                     <p className="text-xs mt-1">Add products to your cart to checkout.</p>
                   </div>
                 ) : (
-                  cartItems.map((item: any) => (
-                    <div key={item.id} className="flex gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl relative">
+                  cartItems.map((item: any, idx: number) => (
+                    <div key={item.id || idx} className="flex gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl relative">
                       <img src={item.image} alt="cart-item" className="w-16 h-16 object-contain bg-white rounded-lg border p-1" />
                       <div className="flex-1 text-xs">
                         <p className="font-bold text-slate-800 line-clamp-1">{item.title}</p>
                         <p className="text-slate-500 mt-0.5">{item.variant} | {item.color}</p>
                         
-                        {/* Dynamic Quantity Controller inside Cart */}
                         <div className="flex justify-between items-center mt-2">
                           <span className="font-extrabold text-blue-600">৳ {(item.price * item.quantity).toLocaleString()}</span>
                           
