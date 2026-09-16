@@ -12,7 +12,7 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
   const resolvedParams = use(params);
   const productId = resolvedParams.id;
 
-  // 📱 ১. আপনার হোয়াটসঅ্যাপ নম্বর (Country code সহ)
+  // 📱 আপনার আসল হোয়াটসঅ্যাপ নম্বর (Country code সহ)
   const WHATSAPP_NUMBER = "8801303422278";
 
   const images = [
@@ -61,7 +61,7 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
     }, 3000);
   };
 
-  // 💬 WhatsApp Order Handler
+  // 💬 WhatsApp Order Handler (সরাসরি সঠিক নম্বর রিডাইরেক্ট)
   const handleWhatsAppOrder = () => {
     const productName = "Redmi Note 12 Pro Max 5G";
     const unitPrice = 64999;
@@ -75,7 +75,8 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
       `💰 Total Price: ৳ ${totalPrice.toLocaleString()}\n\n` +
       `Please let me know how to proceed.`;
 
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
   };
 
