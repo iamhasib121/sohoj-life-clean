@@ -6,7 +6,7 @@ import { useCart } from "../../../src/context/CartContext";
 
 export default function UpdatedPickabooPage() {
   // 📱 ১. আপনার হোয়াটসঅ্যাপ নম্বরটি এখানে দিন (কান্ট্রি কোডসহ, যেমন: 88017XXXXXXXX)
-  const WHATSAPP_NUMBER = "8801700000000";
+  const WHATSAPP_NUMBER = "8801303422278";
 
   const images = [
     "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800",
