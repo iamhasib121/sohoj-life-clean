@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 // CartProvider ইমপোর্ট করুন
-import { useCart } from "../../src/context/CartContext";
-
+import { CartProvider } from "../src/context/CartContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
