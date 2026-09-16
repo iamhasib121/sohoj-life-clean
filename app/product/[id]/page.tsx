@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+// 🛒 CartContext থেকে useCart হুক ইমপোর্ট করা হলো
+import { useCart } from "@/context/CartContext";
 
 export default function UpdatedPickabooPage() {
   const images = [
@@ -18,32 +20,36 @@ export default function UpdatedPickabooPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("specifications");
 
-  // 🛒 Dynamic Cart States
-  const [cartItems, setCartItems] = useState<any[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // 🛒 Cart Context থেকে গ্লোবাল স্টেট ও ফাংশনগুলো নিয়ে আসা হলো
+  const { 
+    cartItems, 
+    addToCart, 
+    removeFromCart, 
+    updateQuantity, 
+    isCartOpen, 
+    setIsCartOpen, 
+    totalAmount 
+  } = useCart();
+
   const [showNotification, setShowNotification] = useState(false);
 
-  // Add to Cart Logic
+  // 🛒 Global Add to Cart Handler
   const handleAddToCart = () => {
-    const newItem = {
-      id: Date.now(),
+    addToCart({
       title: "Redmi Note 12 Pro Max 5G",
       variant: selectedVariant,
       color: selectedColor,
       price: 64999,
       quantity: quantity,
       image: selectedImage,
-    };
+    });
 
-    setCartItems((prev) => [...prev, newItem]);
     setShowNotification(true);
 
     setTimeout(() => {
       setShowNotification(false);
     }, 3000);
   };
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="bg-[#f4f6f9] min-h-screen font-sans text-slate-800 relative pb-20 lg:pb-6">
@@ -338,13 +344,30 @@ export default function UpdatedPickabooPage() {
                       <div className="flex-1 text-xs">
                         <p className="font-bold text-slate-800 line-clamp-1">{item.title}</p>
                         <p className="text-slate-500 mt-0.5">{item.variant} | {item.color}</p>
+                        
+                        {/* Dynamic Quantity Controller inside Cart */}
                         <div className="flex justify-between items-center mt-2">
                           <span className="font-extrabold text-blue-600">৳ {(item.price * item.quantity).toLocaleString()}</span>
-                          <span className="text-slate-500 font-semibold">Qty: {item.quantity}</span>
+                          
+                          <div className="flex items-center border rounded bg-white overflow-hidden">
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 font-bold"
+                            >
+                              -
+                            </button>
+                            <span className="px-2 font-semibold">{item.quantity}</span>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 font-bold"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <button
-                        onClick={() => setCartItems((prev) => prev.filter((i) => i.id !== item.id))}
+                        onClick={() => removeFromCart(item.id)}
                         className="text-slate-400 hover:text-rose-600 text-xs font-bold px-1"
                       >
                         ✕
@@ -358,7 +381,7 @@ export default function UpdatedPickabooPage() {
                 <div className="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
                   <div className="flex justify-between text-xs font-bold text-slate-600">
                     <span>Subtotal</span>
-                    <span className="text-slate-900">৳ {subtotal.toLocaleString()}</span>
+                    <span className="text-slate-900">৳ {totalAmount.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-xs font-bold text-slate-600">
                     <span>Delivery</span>
@@ -366,7 +389,7 @@ export default function UpdatedPickabooPage() {
                   </div>
                   <div className="flex justify-between text-sm font-black text-slate-900 border-t border-slate-200 pt-2">
                     <span>Total</span>
-                    <span className="text-blue-600">৳ {subtotal.toLocaleString()}</span>
+                    <span className="text-blue-600">৳ {totalAmount.toLocaleString()}</span>
                   </div>
 
                   <button
