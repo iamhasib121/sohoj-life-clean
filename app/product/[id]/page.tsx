@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 // 🛒 CartContext থেকে useCart হুক ইমপোর্ট করা হলো
-import { useCart } from "../../src/context/CartContext";
+import { useCart } from "../../../src/context/CartContext";
 export default function UpdatedPickabooPage() {
   const images = [
     "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800",
