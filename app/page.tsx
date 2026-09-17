@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { collection, getDocs, addDoc, serverTimestamp, query, where } from "firebase/firestore";
 import Link from "next/link";
-import { uploadDemoProducts } from "./seed"; // Seed Script Import
+import { useCart } from "../src/context/CartContext";
+import { STORE_CONFIG } from "./storeConfig";
 
 interface Product {
   id: string;
@@ -32,14 +33,21 @@ interface Order {
 export default function HomeStore() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const { cartItems, addToCart: addCartItem, removeFromCart: removeCartItem, setIsCartOpen, isCartOpen, clearCart } = useCart();
+  const cart: CartItem[] = cartItems.map((item) => ({
+    id: item.productId,
+    name: item.title,
+    price: item.price,
+    image: item.image,
+    category: "",
+    qty: item.quantity,
+  }));
 
   // Wishlist State
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
 
   // Modals & Drawers
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -106,18 +114,20 @@ export default function HomeStore() {
 
   const addToCart = (product: Product, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    setCart((prevCart) => {
-      const existing = prevCart.find(item => item.id === product.id);
-      if (existing) {
-        return prevCart.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
-      }
-      return [...prevCart, { ...product, qty: 1 }];
+    addCartItem({
+      productId: product.id,
+      title: product.name,
+      variant: "Standard",
+      color: "Default",
+      price: product.price,
+      quantity: 1,
+      image: product.image,
     });
     setIsCartOpen(true);
   };
 
   const removeFromCart = (id: string) => {
-    setCart((prevCart) => prevCart.filter(item => item.id !== id));
+    removeCartItem(id);
   };
 
   const toggleWishlist = (productId: string, e: React.MouseEvent) => {
@@ -172,7 +182,7 @@ export default function HomeStore() {
       });
 
       setOrderSuccess(true);
-      setCart([]);
+      clearCart();
       setDiscount(0);
       setCouponCode("");
     } catch (err: any) {
@@ -200,7 +210,7 @@ export default function HomeStore() {
 
   const handleWhatsAppOrder = (product: Product, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    const phoneNumber = "8801700000000";
+    const phoneNumber = STORE_CONFIG.whatsappNumber;
     const message = encodeURIComponent(`Hello Sohoj Life, I want to order this product:\nName: ${product.name}\nPrice: ৳${product.price}`);
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
@@ -237,15 +247,7 @@ export default function HomeStore() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <button 
-              onClick={async () => {
-                await uploadDemoProducts();
-                fetchStoreProducts();
-              }} 
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-2 rounded-lg transition shadow-md"
-            >
-              ➕ Upload 40 Products
-            </button>
+
 
             <button onClick={() => setIsTrackingOpen(true)} className="text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
               📦 Track Order
@@ -347,7 +349,7 @@ export default function HomeStore() {
           {loading ? (
             <div className="text-center py-20 text-slate-500 font-medium">প্রোডাক্ট লোড হচ্ছে...</div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 text-slate-400">কোনো প্রোডাক্ট পাওয়া যায়নি। উপরের "Upload 40 Products" বাটনে ক্লিক করুন।</div>
+            <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 text-slate-400">কোনো প্রোডাক্ট পাওয়া যায়নি। Admin Portal থেকে প্রোডাক্ট যোগ করুন।</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredProducts.map((prod) => (
@@ -534,6 +536,12 @@ export default function HomeStore() {
               </p>
               
               <div className="flex gap-3 mt-6">
+                <Link
+                  href={`/product/${selectedProduct.id}`}
+                  className="flex-1 border border-slate-300 text-slate-800 py-3 rounded-xl font-bold hover:bg-slate-50 transition text-sm text-center"
+                >
+                  View Details
+                </Link>
                 <button 
                   onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
                   className="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition text-sm shadow-md"
