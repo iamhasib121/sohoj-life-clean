@@ -1,10 +1,26 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useEffect, useState, use } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { STORE_CONFIG } from "../../storeConfig";
 import { useCart } from "../../../src/context/CartContext";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category?: string;
+  rating?: number;
+  stock?: number;
+  description?: string;
+  variants?: string[];
+  colors?: string[];
 }
 
 export default function UpdatedPickabooPage({ params }: PageProps) {
@@ -12,21 +28,35 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
   const resolvedParams = use(params);
   const productId = resolvedParams.id;
 
-  // 📱 আপনার আসল হোয়াটসঅ্যাপ নম্বর (Country code সহ)
-  const WHATSAPP_NUMBER = "8801303422278";
+  const WHATSAPP_NUMBER = STORE_CONFIG.whatsappNumber;
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const images = [
-    "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800",
-    "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800",
-    "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?q=80&w=800",
-    "https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=800",
-    "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=800",
-    "https://images.unsplash.com/photo-1574944985070-8f30c4397e3c?q=80&w=800",
-  ];
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const snap = await getDoc(doc(db, "products", productId));
+        if (!snap.exists()) {
+          setError("Product not found.");
+          return;
+        }
+        setProduct({ id: snap.id, ...snap.data() } as Product);
+      } catch (err) {
+        console.error("Error loading product:", err);
+        setError("Product load করতে সমস্যা হয়েছে।");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProduct();
+  }, [productId]);
 
-  const [selectedImage, setSelectedImage] = useState<string>(images[0]);
-  const [selectedVariant, setSelectedVariant] = useState<string>("12GB / 256GB");
-  const [selectedColor, setSelectedColor] = useState<string>("Graphite Black");
+  const images = product?.image ? [product.image] : [];
+
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedVariant, setSelectedVariant] = useState<string>("Standard");
+  const [selectedColor, setSelectedColor] = useState<string>("Default");
   const [quantity, setQuantity] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<string>("specifications");
 
@@ -43,13 +73,23 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
 
   const [showNotification, setShowNotification] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (product?.image) setSelectedImage(product.image);
+    if (product?.variants?.length) setSelectedVariant(product.variants[0]);
+    if (product?.colors?.length) setSelectedColor(product.colors[0]);
+  }, [product]);
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-600">Product loading...</div>;
+  if (error || !product) return <div className="min-h-screen flex items-center justify-center text-red-600">{error || "Product not found."}</div>;
+
   // 🛒 Global Add to Cart Handler (TypeScript Error TS2353 Fixed)
   const handleAddToCart = () => {
     addToCart({
-      title: "Redmi Note 12 Pro Max 5G",
+      productId: product.id,
+      title: product.name,
       variant: selectedVariant,
       color: selectedColor,
-      price: 64999,
+      price: product.price,
       quantity: quantity,
       image: selectedImage,
     });
@@ -63,8 +103,8 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
 
   // 💬 WhatsApp Order Handler (সরাসরি সঠিক নম্বর রিডাইরেক্ট)
   const handleWhatsAppOrder = () => {
-    const productName = "Redmi Note 12 Pro Max 5G";
-    const unitPrice = 64999;
+    const productName = product.name;
+    const unitPrice = product.price;
     const totalPrice = unitPrice * quantity;
 
     const message = `Hello Sohoj Life, I want to order this product:\n\n` +
@@ -174,28 +214,28 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
 
             <div className="mt-8 border-t border-slate-100 pt-6">
               <h1 className="text-lg md:text-2xl font-extrabold text-slate-900 leading-snug">
-                Redmi Note 12 Pro Max 5G (12GB RAM, 256GB Storage) - Official Warranty
+                {product.name}
               </h1>
 
               <div className="flex items-center gap-4 mt-2 text-xs">
                 <div className="flex items-center text-amber-500 font-bold">
-                  ★★★★☆ <span className="text-slate-500 ml-1.5">(4.8 / 5.0 - 124 Reviews)</span>
+                  ★★★★★☆ <span className="text-slate-500 ml-1.5">({product.rating || 4.8} / 5.0)</span>
                 </div>
                 <span className="text-slate-300">|</span>
                 <span className="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded">In Stock</span>
               </div>
 
               <div className="mt-4 flex items-baseline gap-3 bg-slate-50 p-3.5 rounded-lg border border-slate-100">
-                <span className="text-3xl font-black text-blue-600">৳ 64,999</span>
-                <span className="text-base text-slate-400 line-through">৳ 69,999</span>
-                <span className="text-xs font-extrabold bg-rose-500 text-white px-2 py-0.5 rounded-md">Save ৳5,000</span>
+                <span className="text-3xl font-black text-blue-600">৳ {product.price.toLocaleString()}</span>
+                <span className="text-base text-slate-400 line-through">৳ {(product.price * 1.08).toFixed(0)}</span>
+                <span className="text-xs font-extrabold bg-rose-500 text-white px-2 py-0.5 rounded-md">Product Price</span>
               </div>
 
               {/* Variants */}
               <div className="mt-5">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Variant</label>
                 <div className="flex gap-2.5">
-                  {["8GB / 128GB", "12GB / 256GB"].map((variant) => (
+                  {(product.variants?.length ? product.variants : ["Standard"]).map((variant) => (
                     <button
                       key={variant}
                       onClick={() => setSelectedVariant(variant)}
@@ -215,7 +255,7 @@ export default function UpdatedPickabooPage({ params }: PageProps) {
               <div className="mt-4">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Color: <span className="text-slate-800">{selectedColor}</span></label>
                 <div className="flex gap-2.5">
-                  {["Graphite Black", "Ocean Blue", "Aurora Purple"].map((color) => (
+                  {(product.colors?.length ? product.colors : ["Default"]).map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
