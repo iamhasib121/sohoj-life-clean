@@ -1,30 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { FaFacebook, FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
+import { Facebook, Twitter, Youtube, Instagram } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="bg-[#0b7300] text-white pt-12 pb-6 mt-12">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-        {/* Brand Info */}
         <div>
           <h2 className="text-2xl font-extrabold tracking-wider mb-3">EKOMART</h2>
           <p className="text-sm text-green-100 leading-relaxed mb-6">
-            Your trusted online grocery store for fresh and quality daily essentials. We deliver premium grocery products at affordable prices with fast and reliable delivery service.
+            Your trusted online grocery store for fresh and quality daily essentials.
           </p>
           <div className="flex items-center gap-3">
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <FaFacebook className="w-4 h-4" />
+              <Facebook className="w-4 h-4" />
             </Link>
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <FaTwitter className="w-4 h-4" />
+              <Twitter className="w-4 h-4" />
             </Link>
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <FaYoutube className="w-4 h-4" />
+              <Youtube className="w-4 h-4" />
             </Link>
             <Link href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
-              <FaInstagram className="w-4 h-4" />
+              <Instagram className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -63,7 +62,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Payment Gateway Logos & Copyright */}
       <div className="border-t border-green-800 pt-6 max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-green-200">
         <div className="flex items-center gap-2 flex-wrap">
           <span>Pay With</span>
