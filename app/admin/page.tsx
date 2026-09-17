@@ -12,7 +12,6 @@ import {
   serverTimestamp 
 } from "firebase/firestore";
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/navigation";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState<any>(null);
@@ -34,13 +33,18 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"products" | "orders">("products");
 
-  const router = useRouter();
+  const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.trim().toLowerCase();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
       if (currentUser) {
+        if (!ADMIN_EMAIL || currentUser.email?.toLowerCase() !== ADMIN_EMAIL) {
+          setError("এই অ্যাকাউন্টের Admin access নেই।");
+          signOut(auth);
+          return;
+        }
         fetchProducts();
         fetchOrders();
       }
