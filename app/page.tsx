@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import FlashSaleTimer from "@/components/FlashSaleTimer";
-import ProductDetails from "@/components/ProductDetails";
+import ProductDetails from "@/components/ProductDetails"; // 👈 এখান থেকে এটি কল হচ্ছে
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -8,34 +8,18 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      {/* 1. Sticky Header */}
       <Header />
-
-      {/* Main Content Area */}
       <main className="flex-grow">
-        {/* Flash Sale Banner with Timer */}
         <FlashSaleTimer />
-
-        {/* Featured Product Detail Section */}
         <section className="my-6">
-          <ProductDetails />
+          <ProductDetails /> {/* 👈 এখানে প্রোডাক্ট ডিটেইলস সেকশনটি রেন্ডার হচ্ছে */}
         </section>
-
-        {/* FAQ Section */}
-        <section className="my-10">
+        <main className="my-10">
           <FaqSection />
-        </section>
+        </main>
       </main>
-
-      {/* 2. Floating WhatsApp Chat */}
       <FloatingWhatsApp />
-
-      {/* 3. Professional Footer */}
       <Footer />
-    </div>
-  );
-}
-      )}
     </div>
   );
 }
