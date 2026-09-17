@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface CartItem {
   id: string;
+  productId: string;
   title: string;
   variant: string;
   color: string;
@@ -21,6 +22,7 @@ interface CartContextType {
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
   totalAmount: number;
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -28,26 +30,32 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   // Load cart from LocalStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem("pickaboo_cart");
+    const savedCart = localStorage.getItem("sohoj_cart") || localStorage.getItem("pickaboo_cart");
     if (savedCart) {
       try {
-        setCartItems(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) {
+          setCartItems(parsed.filter((item) => item && item.productId && item.title));
+        }
       } catch (e) {
         console.error("Failed to parse cart", e);
       }
     }
+    setHydrated(true);
   }, []);
 
-  // Save cart to LocalStorage when changed
+  // Save only after the initial cart has been restored.
   useEffect(() => {
-    localStorage.setItem("pickaboo_cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (!hydrated) return;
+    localStorage.setItem("sohoj_cart", JSON.stringify(cartItems));
+  }, [cartItems, hydrated]);
 
   const addToCart = (newItemData: Omit<CartItem, "id">) => {
-    const itemId = `${newItemData.title}-${newItemData.variant}-${newItemData.color}`;
+    const itemId = `${newItemData.productId}-${newItemData.variant}-${newItemData.color}`;
     
     setCartItems((prev) => {
       const existingIndex = prev.findIndex((item) => item.id === itemId);
@@ -74,6 +82,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const clearCart = () => setCartItems([]);
+
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -89,6 +99,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         isCartOpen,
         setIsCartOpen,
         totalAmount,
+        clearCart,
       }}
     >
       {children}
