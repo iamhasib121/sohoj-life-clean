@@ -1,8 +1,9 @@
 "use client";
+import { STORE_CONFIG } from "../app/storeConfig";
 import React from "react";
 
 export default function FloatingWhatsApp() {
-  const phoneNumber = "8801303422278";
+  const phoneNumber = STORE_CONFIG.whatsappNumber;
   const message = "Hello! I want to know more about your products.";
 
   const handleClick = () => {
